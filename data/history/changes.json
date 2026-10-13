@@ -1,3 +1,18 @@
 {
- "events": []
+ "events": [
+  {
+   "ts": "2026-10-13T17:42:28.751510Z",
+   "added": [],
+   "removed": [
+    "inclusionai/ling-3.1-flash"
+   ]
+  },
+  {
+   "ts": "2026-10-13T20:03:37.077470Z",
+   "added": [],
+   "removed": [
+    "apodex/apodex-1.1-mini:free"
+   ]
+  }
+ ]
 }

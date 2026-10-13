@@ -1,58 +1,10 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-13T09:06:39.232550Z",
+ "generated_at": "2026-10-13T21:19:21.688454Z",
+ "reliability_at": "2026-10-13T21:03:47.289195Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 459,
+ "total_models": 461,
  "models": [
-  {
-   "id": "apodex/apodex-1.1-mini:free",
-   "name": "Apodex: Apodex 1.1 Mini (free)",
-   "description": "Apodex 1.1 Mini is a reasoning-first model from Apodex, built for complex, long-horizon research and forecasting tasks. It works directly with files, data, code, and tools to produce verifiable results,...",
-   "context_length": 262144,
-   "max_completion_tokens": 235929,
-   "input_modalities": [
-    "text"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "presence_penalty",
-    "reasoning",
-    "repetition_penalty",
-    "response_format",
-    "seed",
-    "stop",
-    "structured_outputs",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_p"
-   ],
-   "created": 1790875335,
-   "expiration_date": null,
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": null,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
-  },
   {
    "id": "cohere/north-mini-code:free",
    "name": "Cohere: North Mini Code (free)",
@@ -92,7 +44,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93055555555556,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -135,8 +87,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 20.0,
-    "uptime_1d": 96.875,
+    "uptime_30m": 100.0,
+    "uptime_1d": 83.95833333333333,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -180,8 +132,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 99.81884057971014,
+    "uptime_30m": null,
+    "uptime_1d": 99.82578397212544,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -225,57 +177,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 98.53747714808044,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
-  },
-  {
-   "id": "inclusionai/ling-3.1-flash",
-   "name": "inclusionAI: Ling 3.1 Flash",
-   "description": "Ling 3.1 Flash is a hybrid reasoning mixture-of-experts model from inclusionAI, with 25B active parameters out of 560B total.",
-   "context_length": 262144,
-   "max_completion_tokens": 235929,
-   "input_modalities": [
-    "text"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "logprobs",
-    "max_tokens",
-    "presence_penalty",
-    "reasoning",
-    "repetition_penalty",
-    "seed",
-    "stop",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_logprobs",
-    "top_p"
-   ],
-   "created": 1790950024,
-   "expiration_date": null,
-   "knowledge_cutoff": null,
-   "is_free_variant": false,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": 41.1,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_30m": null,
+    "uptime_1d": 98.58657243816255,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -312,8 +215,7 @@
     "tool_choice",
     "tools",
     "top_k",
-    "top_logprobs",
-    "top_p"
+    "top_logprobs"
    ],
    "created": 1786470519,
    "expiration_date": null,
@@ -328,7 +230,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 97.63888888888889,
+    "uptime_1d": 98.75,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -372,8 +274,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 0.0,
-    "uptime_1d": 0.2777777777777778,
+    "uptime_30m": 46.666666666666664,
+    "uptime_1d": 2.2222222222222223,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -461,9 +363,9 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1133.0,
+      "elo": 1132.0,
       "win_rate": 39.0,
-      "rank": 73
+      "rank": 74
      },
      {
       "arena": "models",
@@ -476,8 +378,8 @@
       "arena": "models",
       "category": "codecategories",
       "elo": 1148.0,
-      "win_rate": 36.1,
-      "rank": 82
+      "win_rate": 36.0,
+      "rank": 83
      },
      {
       "arena": "models",
@@ -489,36 +391,36 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1143.0,
-      "win_rate": 36.3,
-      "rank": 75
-     },
-     {
-      "arena": "models",
-      "category": "svg",
-      "elo": 1069.0,
-      "win_rate": 32.5,
-      "rank": 69
-     },
-     {
-      "arena": "models",
-      "category": "uicomponent",
-      "elo": 1144.0,
+      "elo": 1142.0,
       "win_rate": 36.3,
       "rank": 77
      },
      {
       "arena": "models",
+      "category": "svg",
+      "elo": 1069.0,
+      "win_rate": 32.4,
+      "rank": 69
+     },
+     {
+      "arena": "models",
+      "category": "uicomponent",
+      "elo": 1142.0,
+      "win_rate": 36.2,
+      "rank": 79
+     },
+     {
+      "arena": "models",
       "category": "website",
-      "elo": 1145.0,
+      "elo": 1144.0,
       "win_rate": 35.0,
       "rank": 91
      }
     ]
    },
    "reliability": {
-    "uptime_30m": 90.0,
-    "uptime_1d": 91.94444444444444,
+    "uptime_30m": 80.0,
+    "uptime_1d": 76.94444444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -559,7 +461,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.51388888888889,
+    "uptime_1d": 99.65277777777779,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -600,8 +502,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 96.66666666666667,
-    "uptime_1d": 99.93055555555556,
+    "uptime_30m": 100.0,
+    "uptime_1d": 99.44444444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -837,9 +739,9 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1164.0,
+      "elo": 1163.0,
       "win_rate": 40.5,
-      "rank": 60
+      "rank": 62
      },
      {
       "arena": "models",
@@ -853,7 +755,7 @@
       "category": "codecategories",
       "elo": 1208.0,
       "win_rate": 42.3,
-      "rank": 55
+      "rank": 56
      },
      {
       "arena": "models",
@@ -865,9 +767,9 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1170.0,
+      "elo": 1169.0,
       "win_rate": 37.8,
-      "rank": 65
+      "rank": 66
      },
      {
       "arena": "models",
@@ -879,9 +781,9 @@
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1201.0,
-      "win_rate": 40.2,
-      "rank": 56
+      "elo": 1200.0,
+      "win_rate": 40.1,
+      "rank": 57
      },
      {
       "arena": "models",
