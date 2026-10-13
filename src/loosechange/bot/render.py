@@ -98,6 +98,8 @@ def model_lines(
         warn.append(t(lang, key, date=m.expiration_date.isoformat(), left=left))
     if m.is_router:
         warn.append(t(lang, "router"))
+    if m.harness_only:
+        warn.append(t(lang, "harness_only"))
     if NO_TOOLS_FLAG in flags:
         warn.append(t(lang, "no_tools"))
     if FALLBACK_FLAG in flags:
@@ -128,7 +130,12 @@ def model_card(m: Model, lang: str, today: date | None = None) -> str:
 
 
 def ranking_page(
-    result: RankResult, lang: str, page: int = 0, page_size: int = PAGE_SIZE
+    result: RankResult,
+    lang: str,
+    page: int = 0,
+    page_size: int = PAGE_SIZE,
+    hidden: int = 0,
+    target: str | None = None,
 ) -> tuple[str, int]:
     """Text of one page of a ranking and the total number of pages."""
     items = result.all
@@ -142,6 +149,8 @@ def ranking_page(
         priority=priority_title(lang, result.priority.value),
     )
     blocks = [head]
+    if hidden:
+        blocks.append(t(lang, "hidden_harness", n=hidden, target=t(lang, f"t_{target}")))
     if not items:
         blocks.append(t(lang, "no_models"))
     shown_unrated_header = False

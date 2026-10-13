@@ -110,6 +110,14 @@ loosechange add <id> --to deepseek [--dsh-profile desktop] [--key-file ~/or.txt]
 - `--key-file` → `OPENROUTER_API_KEY` в `$DSH_HOME/.env` (машинные env-дефолты харнесса), маска в выводе.
 - Smoke-проверка: `dsh --profile web --patch <записанный файл> --dump-config` во **временном** `DSH_HOME` → `default model -> openrouter/<id>`.
 - Проверено на копии профиля пользователя: dry-run не пишет; apply + повтор («nothing to change»); сквозной вызов `dsh headless` с записанным патчем и ключом **из `.env` копии** (без ключа в окружении) → модель `inkling-small:free` ответила «ok».
+**Проверка всего списка (`loosechange probe --key-file …`, 2026-10-14)** — по одному запросу `Reply with exactly one word: ok` на модель, как обычный клиент (без чужих заголовков), ключом владельца, $0:
+| Вердикт | Модели |
+|---|---|
+| ✅ `open` (10) | cohere/north-mini-code, dots-studio/dots-3-note-preview, liquid/lfm-2.5-2.6b, nvidia/nemotron-3-nano-omni-30b-a3b-reasoning, nvidia/nemotron-3-super-120b-a12b, nvidia/nemotron-3-ultra-550b-a55b, nvidia/nemotron-3.5-content-safety, nvidia/nemotron-3.5-lightning, poolside/laguna-s-2.1, poolside/laguna-xs-2.1 (все `:free`) |
+| 🔒 `harness_only` (2) | thinkingmachines/inkling-small:free, thinkingmachines/inkling:free |
+| неизвестно (2) | google/gemma-4-26b-a4b-it:free, google/gemma-4-31b-it:free — дважды `429` от Google AI Studio; вердикт не ставим |
+Результаты — в `data/access.json` (без ключа) и полем `access` в `data/models.json`; переживают обновления по таймерам. `429`/ошибки не стирают прежний вердикт. Роутер `openrouter/free` не проверяется (случайная модель). В боте: 🔒 в карточке, для VibeForge/«Другое» такие модели скрыты с пояснением «Скрыто N…», у них нет кнопок VibeForge/«Другое». Повторять проверку стоит при появлении новых моделей.
+
 Free-модели также часто отвечают `429 … temporarily rate-limited upstream` — это перегрузка у провайдера, не проблема ключа; помогает повтор позже или другая модель из списка.
 
 Лимиты на `:free` ограничены (требуют перепроверки по актуальной документации OR: запросы/мин и в сутки, различие с пополненным балансом); без ключа вызовы невозможны — бот напоминает получить ключ на openrouter.ai/keys.

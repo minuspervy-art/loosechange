@@ -65,6 +65,13 @@ class Model(BaseModel):
     benchmarks: Benchmarks = Field(default_factory=Benchmarks)
     reliability: Reliability | None = None
     first_seen: datetime | None = None
+    # from `loosechange probe` (data/access.json): "open" | "harness_only"; None = not checked
+    access: str | None = None
+    access_checked_at: datetime | None = None
+
+    @property
+    def harness_only(self) -> bool:
+        return self.access == "harness_only"
 
     @property
     def tools(self) -> bool:

@@ -1,0 +1,88 @@
+{
+ "results": {
+  "cohere/north-mini-code:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:00.286214Z"
+  },
+  "dots-studio/dots-3-note-preview:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:03.392861Z"
+  },
+  "google/gemma-4-26b-a4b-it:free": {
+   "outcome": "rate_limited",
+   "http": 429,
+   "message": "Provider returned error",
+   "checked_at": "2026-10-13T21:49:56.639502Z"
+  },
+  "google/gemma-4-31b-it:free": {
+   "outcome": "rate_limited",
+   "http": 429,
+   "message": "Provider returned error",
+   "checked_at": "2026-10-13T21:50:07.220432Z"
+  },
+  "liquid/lfm-2.5-2.6b:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:11.882335Z"
+  },
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:14.597303Z"
+  },
+  "nvidia/nemotron-3-super-120b-a12b:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:18.623501Z"
+  },
+  "nvidia/nemotron-3-ultra-550b-a55b:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:22.002584Z"
+  },
+  "nvidia/nemotron-3.5-content-safety:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:25.997114Z"
+  },
+  "nvidia/nemotron-3.5-lightning:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:29.130402Z"
+  },
+  "poolside/laguna-s-2.1:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:50:18.021943Z"
+  },
+  "poolside/laguna-xs-2.1:free": {
+   "outcome": "open",
+   "http": 200,
+   "message": "",
+   "checked_at": "2026-10-13T21:49:38.650822Z"
+  },
+  "thinkingmachines/inkling-small:free": {
+   "outcome": "harness_only",
+   "http": 403,
+   "message": "thinkingmachines/inkling-small:free is only available on agentic harnesses. Try plugging it into a coding agent or productivity app listed on https://openrouter.ai/apps",
+   "checked_at": "2026-10-13T21:49:42.772532Z"
+  },
+  "thinkingmachines/inkling:free": {
+   "outcome": "harness_only",
+   "http": 403,
+   "message": "thinkingmachines/inkling:free is only available on agentic harnesses. Try plugging it into a coding agent or productivity app listed on https://openrouter.ai/apps",
+   "checked_at": "2026-10-13T21:49:45.043277Z"
+  }
+ }
+}

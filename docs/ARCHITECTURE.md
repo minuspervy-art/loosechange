@@ -61,6 +61,7 @@ loosechange/
 │  │  ├─ schema.py          # pydantic: Snapshot, Model, Benchmarks, History
 │  │  ├─ collect.py         # OpenRouter → data/models.json (+ history)
 │  │  ├─ refresh.py         # обновление по таймерам истечения (список / uptime)
+│  │  ├─ probe.py           # проверка доступа: open / harness_only (data/access.json)
 │  │  ├─ profiles.py        # профили задач: веса и требования
 │  │  └─ rank.py            # чистое ранжирование
 │  ├─ bot/                  # Telegram (aiogram 3, long-polling)
@@ -79,7 +80,7 @@ loosechange/
 │  └─ cli.py                # loosechange list / show / add / collect
 ├─ tests/                   # зеркалит src: core/, bot/, integrations/, test_cli.py
 │  └─ fixtures/             # реальные срезы OpenRouter API
-├─ data/                    # снапшот models.json + history/ (коммитит Action)
+├─ data/                    # models.json + history/ (коммитит Action) + access.json (probe)
 ├─ docs/                    # решения: ARCHITECTURE, RANKING, DIALOG, INTEGRATIONS, SECURITY, ROADMAP
 │  ├─ guides/               # инструкции для пользователей (VibeForge)
 │  ├─ reports/              # генерируемые отчёты (самопроверка бота)

@@ -145,7 +145,7 @@ async def test_pick_full_dialog_and_snippet(env):
     assert "Агент" in result.text
     add_buttons = [b for b in buttons(result) if b.callback_data.startswith("a:")]
     assert add_buttons and all("Hermes" in b.text for b in add_buttons)
-    assert prefs.last_list[7] == ("agent", "quality")
+    assert prefs.last_list[7] == ("agent", "quality", "hermes")
 
     await feed(env, cb_update(add_buttons[0].callback_data))
     snippet = session.sent()[-1].text
@@ -552,3 +552,49 @@ async def test_top_offers_three_harnesses(env):
         "🔧 #1 → VibeForge",
         "🔧 #1 → DeepSeek",
     ]
+
+
+@pytest.fixture
+def env_access(tmp_path, raw_models):
+    """Same as env, but with probe verdicts: inkling models are harness-only."""
+    snap = build_snapshot(raw_models, now=NOW)
+    for m in snap.models:
+        if m.id.startswith("thinkingmachines/inkling"):
+            m.access = "harness_only"
+        elif m.id.startswith("nvidia/"):
+            m.access = "open"
+    _dump(tmp_path / "models.json", snap)
+    store = DataStore(path=tmp_path / "models.json")
+    dp = build_dispatcher(store, Prefs(), flood_interval=0)
+    session = RecordingSession()
+    return dp, Bot("42:TEST", session=session), session, store, Prefs()
+
+
+async def test_harness_only_hidden_for_vibeforge(env_access):
+    _, _, session, *_ = env_access
+    await feed(env_access, msg_update("/pick agent vibeforge"))
+    await feed(env_access, cb_update(PickCb(step="priority", value="quality").pack()))
+    text = session.sent(EditMessageText)[-1].text
+    assert "inkling" not in text
+    assert "Скрыто 2" in text and "VibeForge будет 403" in text
+
+
+async def test_harness_only_kept_and_marked_for_hermes(env_access):
+    _, _, session, *_ = env_access
+    await feed(env_access, msg_update("/pick agent hermes"))
+    await feed(env_access, cb_update(PickCb(step="priority", value="quality").pack()))
+    text = session.sent(EditMessageText)[-1].text
+    assert "inkling-small:free" in text and "🔒 только Hermes / DeepSeek Harness" in text
+    assert "Скрыто" not in text
+
+
+async def test_no_vibeforge_button_for_harness_only(env_access):
+    _, _, session, *_ = env_access
+    await feed(env_access, msg_update("/top agent"))
+    rows = session.sent()[-1].reply_markup.inline_keyboard
+    first = [b.text for b in rows[0]]  # #1 is inkling-small (harness-only)
+    assert first == ["🔧 #1 → Hermes", "🔧 #1 → DeepSeek"]
+    await feed(env_access, msg_update("/model thinkingmachines/inkling-small:free"))
+    labels = [b.text for b in buttons(session.sent()[-1])]
+    assert "🔧 VibeForge" not in labels and "🔧 Другое" not in labels
+    assert "🔧 Hermes" in labels and "🔧 DeepSeek Harness" in labels

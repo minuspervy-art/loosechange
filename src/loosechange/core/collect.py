@@ -265,6 +265,9 @@ def _persist(
     hist_path = data_dir / "history" / "changes.json"
     previous = load_snapshot(snap_path)
     snapshot = build_snapshot(raw, endpoints, previous, reuse_reliability=reuse_reliability)
+    from .probe import apply_access, load_report  # local: probe imports this module
+
+    apply_access(snapshot, load_report(data_dir / "access.json"))
     event = diff(previous, snapshot)
 
     history = load_history(hist_path)

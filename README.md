@@ -27,6 +27,11 @@ uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmach
 DeepSeek Harness: `… add <id> --to deepseek` — патч профиля `~/.dsh/profiles/desktop/cordis.patch.yml` (dry-run, бэкап, приложение подхватит без перезапуска; `--key-file` кладёт ключ в `~/.dsh/.env`).
 VibeForge: `… add <id> --to vibeforge` печатает инструкцию — автозаписи нет, см. [docs/guides/vibeforge-manual.md](docs/guides/vibeforge-manual.md). Любой другой OpenAI-совместимый клиент: `--to other`.
 
+Какие free-модели OpenRouter отдаёт только агентным харнессам (Hermes, DeepSeek Harness), а не обычным клиентам вроде VibeForge — проверяется вашим ключом, по запросу на модель, $0:
+```bash
+uvx --from git+https://github.com/<you>/loosechange loosechange probe --key-file ~/or-key.txt
+```
+
 Профили: `agent` (tool-calling, ≥128k), `coding`, `chat`, `reasoning`, `longctx` (≥256k), `design`, `fast_cheap` (пока недоступен — OpenRouter не отдаёт скорость публично). Формулы — [docs/RANKING.md](docs/RANKING.md).
 
 ### Бот локально

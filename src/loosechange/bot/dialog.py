@@ -156,6 +156,7 @@ def result_kb(
                     callback_data=AddCb(profile=prof, target=tg, key=model_key(s.model.id)).pack(),
                 )
                 for tg in targets
+                if not (s.model.harness_only and tg == "vibeforge")  # 403 there
             ]
         )
     nav = []
@@ -187,13 +188,15 @@ def result_kb(
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def card_kb(model_id: str, lang: str) -> InlineKeyboardMarkup:
+def card_kb(model_id: str, lang: str, harness_only: bool = False) -> InlineKeyboardMarkup:
+    """Add-buttons for a model; harness-only models get only Hermes / DeepSeek Harness."""
     btns = [
         InlineKeyboardButton(
             text=t(lang, "card_add", target=t(lang, f"t_{tg}")),
             callback_data=CardCb(key=model_key(model_id), target=tg).pack(),
         )
         for tg in TARGETS
+        if not (harness_only and tg in ("vibeforge", "other"))
     ]
     menu = InlineKeyboardButton(
         text=t(lang, "btn_menu"), callback_data=MenuCb(action="home").pack()

@@ -55,7 +55,7 @@ class Prefs:
 
     lang: dict[int, str] = field(default_factory=dict)
     last_model: dict[int, str] = field(default_factory=dict)
-    last_list: dict[int, tuple[str, str]] = field(default_factory=dict)
+    last_list: dict[int, tuple[str, str, str | None]] = field(default_factory=dict)
 
     def get_lang(self, user_id: int | None, fallback: str | None = None) -> str:
         if user_id in self.lang:
@@ -119,8 +119,23 @@ def _lang(prefs: Prefs, event: Message | CallbackQuery) -> str:
     return prefs.get_lang(u.id if u else None, u.language_code if u else None)
 
 
-def compute(snapshot: Snapshot, profile: str, priority: str) -> RankResult:
-    return rank(snapshot.models, get_profile(profile), Priority(priority), today=date.today())
+# Targets that call OpenRouter as a plain client: harness-only models answer 403 there
+# (verified for VibeForge's API engine, see docs/INTEGRATIONS.md).
+PLAIN_CLIENT_TARGETS = ("vibeforge", "other")
+
+
+def visible_models(snapshot: Snapshot, target: str | None) -> tuple[list[Model], int]:
+    if target not in PLAIN_CLIENT_TARGETS:
+        return snapshot.models, 0
+    shown = [m for m in snapshot.models if not m.harness_only]
+    return shown, len(snapshot.models) - len(shown)
+
+
+def compute(
+    snapshot: Snapshot, profile: str, priority: str, target: str | None = None
+) -> RankResult:
+    models, _ = visible_models(snapshot, target)
+    return rank(models, get_profile(profile), Priority(priority), today=date.today())
 
 
 def find_by_key(snapshot: Snapshot, key: str) -> Model | None:
@@ -153,15 +168,16 @@ async def send_ranking(
     if not snap:
         await message.answer(t(lang, "no_data"))
         return
-    result = compute(snap, profile, priority)
+    result = compute(snap, profile, priority, target)
     if not result.available:
         await message.answer(t(lang, "fast_unavailable"))
         profile = TOP_PROFILE
-        result = compute(snap, profile, priority)
-    text, pages = render.ranking_page(result, lang, 0)
+        result = compute(snap, profile, priority, target)
+    hidden = visible_models(snap, target)[1]
+    text, pages = render.ranking_page(result, lang, 0, hidden=hidden, target=target)
     text += render.stale_footer(snap, lang)
     kb = result_kb(result, lang, target, 0, pages, render.PAGE_SIZE)
-    prefs.last_list[user_id] = (profile, priority)
+    prefs.last_list[user_id] = (profile, priority, target)
     if result.all:
         prefs.last_model[user_id] = result.all[0].model.id
     await _show(message, text, kb, edit)
@@ -309,9 +325,12 @@ async def on_page(cb: CallbackQuery, callback_data: PageCb, prefs: Prefs, store:
     snap = await store.get()
     if not snap or not isinstance(cb.message, Message):
         return
-    result = compute(snap, callback_data.profile, callback_data.priority)
     target = None if callback_data.target == "-" else callback_data.target
-    text, pages = render.ranking_page(result, lang, callback_data.page)
+    result = compute(snap, callback_data.profile, callback_data.priority, target)
+    hidden = visible_models(snap, target)[1]
+    text, pages = render.ranking_page(
+        result, lang, callback_data.page, hidden=hidden, target=target
+    )
     text += render.stale_footer(snap, lang)
     page = min(callback_data.page, pages - 1)
     kb = result_kb(result, lang, target, page, pages, render.PAGE_SIZE)
@@ -378,8 +397,11 @@ async def on_menu(
 
 async def _send_snippet(message: Message, model: Model, target: str, profile: str, lang: str):
     snippet = integrations.render(target, model.id, profile)
+    text = render.snippet_message(snippet, model.id, lang)
+    if model.harness_only and target in PLAIN_CLIENT_TARGETS:
+        text = t(lang, "harness_warn", target=t(lang, f"t_{target}")) + "\n\n" + text
     await message.answer(
-        render.snippet_message(snippet, model.id, lang),
+        text,
         reply_markup=copy_kb(snippet, lang),
         disable_web_page_preview=True,
     )
@@ -429,8 +451,8 @@ async def cmd_model(
     found: tuple[int, Model] | None = None
     uid = message.from_user.id
     if arg.isdigit() and uid in prefs.last_list:
-        profile, priority = prefs.last_list[uid]
-        result = compute(snap, profile, priority)
+        profile, priority, target = prefs.last_list[uid]
+        result = compute(snap, profile, priority, target)
         scored = next((s for s in result.all if s.rank == int(arg)), None)
         if scored:
             found = find_model(snap, scored.model.id)
@@ -443,7 +465,7 @@ async def cmd_model(
     prefs.last_model[uid] = model.id
     await message.answer(
         render.model_card(model, lang),
-        reply_markup=card_kb(model.id, lang),
+        reply_markup=card_kb(model.id, lang, model.harness_only),
         disable_web_page_preview=True,
     )
 
@@ -456,7 +478,9 @@ async def on_card(cb: CallbackQuery, callback_data: CardCb, prefs: Prefs, store:
         return
     snap = await store.get()
     model = find_by_key(snap, callback_data.key) if snap else None
-    profile, priority = prefs.last_list.get(cb.from_user.id, ("agent", Priority.QUALITY.value))
+    profile, priority, _ = prefs.last_list.get(
+        cb.from_user.id, ("agent", Priority.QUALITY.value, None)
+    )
     if model is None:
         await _model_gone(cb.message, lang, profile, priority, callback_data.target)
         return
@@ -474,7 +498,8 @@ async def cmd_add(message: Message, prefs: Prefs, store: DataStore) -> None:
         return
     _, model = found
     await message.answer(
-        t(lang, "add_choose", id=escape(model.id)), reply_markup=card_kb(model.id, lang)
+        t(lang, "add_choose", id=escape(model.id)),
+        reply_markup=card_kb(model.id, lang, model.harness_only),
     )
 
 

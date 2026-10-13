@@ -72,6 +72,15 @@ STRINGS: dict[str, dict[str, str]] = {
             "Обновление по таймерам: список — каждые {list} мин, uptime — каждые {full} мин."
         ),
         "router": "🎲 роутер: случайная free-модель",
+        "harness_only": "🔒 только Hermes / DeepSeek Harness",
+        "hidden_harness": (
+            "<i>Скрыто {n}: OpenRouter отдаёт их только агентным харнессам "
+            "(Hermes, DeepSeek Harness) — в {target} будет 403.</i>"
+        ),
+        "harness_warn": (
+            "⚠️ В {target} эта модель вернёт 403: OpenRouter отдаёт её только "
+            "Hermes и DeepSeek Harness."
+        ),
         "no_tools": "без tools",
         "unrated": "без бенчмарков",
         "show_all": "Показать все ({n})",
@@ -173,6 +182,15 @@ STRINGS: dict[str, dict[str, str]] = {
         "about_fresh": "Model list refreshed {ago}.",
         "about_timers": "Refresh timers: model list every {list} min, uptime every {full} min.",
         "router": "🎲 router: random free model",
+        "harness_only": "🔒 Hermes / DeepSeek Harness only",
+        "hidden_harness": (
+            "<i>{n} hidden: OpenRouter serves them only to agentic harnesses "
+            "(Hermes, DeepSeek Harness) — {target} would get 403.</i>"
+        ),
+        "harness_warn": (
+            "⚠️ In {target} this model returns 403: OpenRouter serves it only to "
+            "Hermes and DeepSeek Harness."
+        ),
         "no_tools": "no tools",
         "unrated": "unrated",
         "show_all": "Show all ({n})",

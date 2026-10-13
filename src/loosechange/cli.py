@@ -116,7 +116,8 @@ def list_cmd(
     for s in items:
         score = f"{s.score:5.1f}" if s.rated else "  —  "
         b = s.model.benchmarks
-        flags = f"  [{', '.join(s.flags)}]" if s.flags else ""
+        marks = [*s.flags, *(["harness_only"] if s.model.harness_only else [])]
+        flags = f"  [{', '.join(marks)}]" if marks else ""
         typer.echo(
             f"{s.rank:>3}. {score}  {s.model.id:<52} "
             f"i={b.intelligence} c={b.coding} a={b.agentic} ctx={s.model.context_length}{flags}"
@@ -263,6 +264,50 @@ def _key_hint(adapter, config_path: Path) -> None:
             f"or to {env} (key: https://openrouter.ai/keys)",
             fg="yellow",
         )
+
+
+@app.command()
+def probe(
+    key_file: Annotated[
+        Path, typer.Option("--key-file", help="File with your OpenRouter key (never printed)")
+    ],
+    model: Annotated[
+        list[str] | None, typer.Option("--model", "-m", help="Probe only these ids")
+    ] = None,
+    data_dir: Annotated[Path, typer.Option("--data-dir")] = DEFAULT_DATA_DIR,
+    pause: Annotated[float, typer.Option(help="Seconds between requests")] = 1.0,
+) -> None:
+    """Ask each free model once, as a plain client, whether it answers (one request per
+    model, $0). Marks models OpenRouter serves only to agentic harnesses."""
+    from .core import probe as probe_mod
+
+    try:
+        key = read_key_file(key_file.expanduser())
+    except (ConfigConflict, OSError) as exc:
+        typer.secho(f"error: {exc}", fg="red", err=True)
+        raise typer.Exit(1) from None
+    icons = {
+        "open": "✅ open",
+        "harness_only": "🔒 harness only",
+        "rate_limited": "⏳ 429",
+        "error": "❔ error",
+    }
+
+    def show(model_id: str, r) -> None:
+        extra = f"  ({r.http}: {r.message[:90]})" if r.outcome.value == "error" else ""
+        typer.echo(f"{icons[r.outcome.value]:<16} {model_id}{extra}")
+
+    try:
+        report = probe_mod.run(data_dir, key, model or None, pause_s=pause, on_result=show)
+    except FileNotFoundError as exc:
+        typer.secho(f"error: {exc}", fg="red", err=True)
+        raise typer.Exit(1) from None
+    verdicts = [report.verdict(m)[0] for m in report.results]
+    typer.echo(
+        f"saved {data_dir / 'access.json'}: {verdicts.count('open')} open, "
+        f"{verdicts.count('harness_only')} harness-only, "
+        f"{len(verdicts) - verdicts.count('open') - verdicts.count('harness_only')} unknown"
+    )
 
 
 @app.command("collect")
