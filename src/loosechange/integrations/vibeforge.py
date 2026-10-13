@@ -24,14 +24,16 @@ def render(model_id: str, profile: str) -> Snippet:
         copy_text=model_id,
         notes={
             "ru": [
-                "VibeForge хранит провайдера и модель в настройках каждой сессии: "
-                "в новой сессии выберите провайдера OpenRouter и вставьте id модели.",
-                "Ключ OpenRouter задаётся в VibeForge; автозаписи нет — только вручную.",
+                "Настройки → Провайдеры → OpenRouter: ключ и id модели (в «Свои модели»). "
+                "Новая сессия «через API» → 🔑 → OpenRouter → модель.",
+                "На движке API VibeForge не считается харнессом: модели «только для "
+                "харнессов» (напр. inkling) дадут 403 — берите nemotron/gemma.",
             ],
             "en": [
-                "VibeForge keeps provider and model per session: in a new session pick "
-                "the OpenRouter provider and paste the model id.",
-                "The OpenRouter key is set inside VibeForge; there is no auto-write.",
+                "Settings → Providers → OpenRouter: key and model id (in custom models). "
+                "New session via API → 🔑 → OpenRouter → model.",
+                "On the API engine VibeForge is not an agentic harness: harness-only "
+                "models (e.g. inkling) return 403 — use nemotron/gemma.",
             ],
         },
     )
@@ -40,11 +42,11 @@ def render(model_id: str, profile: str) -> Snippet:
 def manual(model_id: str) -> str:
     return "\n".join(
         [
-            "VibeForge has no config file loosechange can safely edit — set it in the app:",
-            "  1. Open VibeForge and start a new session (or open session settings).",
-            "  2. Provider: OpenRouter   (for planner / worker / resolver as you need).",
+            "VibeForge (2.0.16) is set up in the app — loosechange does not write to it:",
+            "  1. Settings → Providers → OpenRouter: API key, and add the model to custom models.",
+            "  2. New session «via API» → 🔑 → OpenRouter (otherwise it stays Anthropic).",
             f"  3. Model:    {model_id}",
-            "  4. Make sure your OpenRouter API key is configured for VibeForge.",
+            "  4. Harness-only models (e.g. thinkingmachines/inkling*) return 403 in VibeForge.",
             f"Full guide: {MANUAL_URL}",
         ]
     )

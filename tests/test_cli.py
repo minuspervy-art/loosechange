@@ -93,7 +93,7 @@ def test_add_warns_on_non_free_model(data, tmp_path):
 def test_add_vibeforge_prints_manual(data):
     r = run("add", "thinkingmachines/inkling:free", "--to", "vibeforge", "--data", data)
     assert r.exit_code == 0
-    assert "Provider: OpenRouter" in r.output
+    assert "Providers → OpenRouter" in r.output and "403" in r.output
     assert "vibeforge-manual.md" in r.output
 
 

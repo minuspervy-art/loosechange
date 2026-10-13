@@ -52,7 +52,9 @@ loosechange add <id> --to hermes --key-file ~/or-key.txt [--replace-key] --apply
 - `app_settings` (key/value) содержит только `license.*` и `mcp.enabled` — **настроек провайдеров там нет**.
 - Список провайдеров зашит в бэкенд: строки `anthropic`, `openai`, `openrouter`, `local` рядом с полями `apiKeyEnv`, `defaultBaseUrl`, `defaultModel`, `baseUrlEnv`. Видимые имена переменных: `ANTHROPIC_API_KEY`, `ANTHROPIC_BASE_URL`, `OPENAI_API_KEY`, `KIMI_API_KEY`, `MOONSHOT_API_KEY`; строки `OPENROUTER_API_KEY` в бинаре нет (вероятно, собирается динамически или ключ вводится в UI) — **не подтверждено**.
 
-**Вывод: безопасная автозапись невозможна.**
+**Обновление 2.0.16 (2026-10-14).** Появилась страница «Настройки → Провайдеры» (Anthropic, OpenAI, **OpenRouter**, «Свой шлюз или локальный сервер», «Сеть/прокси»). Значения хранятся в `vibeforge.db`, таблица `app_settings`, под именами env-переменных: `OPENROUTER_API_KEY` (**ключ открытым текстом**, файл БД `0600`), `VIBEFORGE_OPENROUTER_MODEL` (модель по умолчанию), `VIBEFORGE_OPENROUTER_MODELS` (свои модели, строка через запятую), `VIBEFORGE_OPENROUTER_BASE_URL`, прокси — `VIBEFORGE_PROXY`. Провайдер сессии выбирается кнопкой 🔑 в строке новой сессии при движке «через API»; без этого сессия остаётся `provider=anthropic` и падает с ошибкой SDK Anthropic «Could not resolve authentication method» (проверено). Автоматизировать UI агентом нельзя (веб-интерфейс без accessibility); адаптер с записью в `app_settings` (только при закрытом приложении, транзакция + бэкап БД, только три ключа) возможен — ждёт решения владельца.
+
+**Вывод для 2.0.15: безопасная автозапись невозможна.**
 1. Нет файла/таблицы с пользовательскими провайдерами — писать некуда, кроме строк `sessions`, а это рабочее состояние уже существующих сессий пользователя.
 2. Бэкенд держит БД открытой (better-sqlite3); запись из-под работающего приложения рискует гонками, а схема меняется миграциями (30+ штук) без публичного контракта.
 3. HTTP-API бэкенда требует `backend-token`, который трогать запрещено.
@@ -72,7 +74,7 @@ loosechange add <id> --to hermes --key-file ~/or-key.txt [--replace-key] --apply
 | прямой запрос + поле `tools` | ❌ 403 — одно наличие tools ограничение не снимает | — |
 | Hermes v0.19.1 (`hermes -z … --provider openrouter`) | ✅ «ok» | — |
 | DeepSeek Harness 0.2.0-rc.2 (`dsh headless`) | ✅ «ok» | ✅ «ok» |
-| VibeForge 2.0.15 | **не проверено**: бэкенд сам в OpenRouter не ходит (в нём нет ни `openrouter.ai`, ни заголовков атрибуции), провайдер передаётся движку сессии (по умолчанию Antigravity CLI) — результат зависит от движка. Автоматическая проверка через UI невозможна (2026-10-14): веб-интерфейс VibeForge не отдаёт элементы в accessibility-дерево, клики агентом отклоняются, в меню приложения нет настроек; локальный API требует `backend-token` (трогать запрещено). Нужен ручной тест владельцем | — |
+| VibeForge 2.0.16, движок **API** + провайдер OpenRouter | ❌ **403** «only available on agentic harnesses» (2026-10-14, ручной тест владельца: сессия `engine=api, provider=openrouter`, модель из «Модели по умолчанию»). Значит, на движке API VibeForge харнессом для OpenRouter **не считается** — брать модели без этого ограничения (например, `nemotron-3-super-120b-a12b:free`). CLI-движки VibeForge (Claude Code, Codex CLI, …) с OpenRouter не проверялись | — |
 Как OpenRouter распознаёт харнесс, по коду однозначно не видно: у DeepSeek Harness нет `HTTP-Referer`/`X-Title` в исходниках, но он проходит. Не реверсили дальше намеренно (подбирать признаки для обхода ограничения не будем).
 
 ## DeepSeek Harness (`/Applications/DeepSeek Harness.app`, `com.deepseek.dsh`) — исследовано

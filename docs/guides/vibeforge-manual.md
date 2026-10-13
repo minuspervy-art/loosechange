@@ -1,34 +1,37 @@
-# VibeForge: как подключить бесплатную модель OpenRouter вручную
+# VibeForge: как подключить бесплатную модель OpenRouter
 
-VibeForge хранит провайдера и модель **в настройках каждой сессии**, глобального конфиг-файла нет, поэтому `loosechange` не пишет в VibeForge автоматически (почему — раздел VibeForge в [INTEGRATIONS.md](../INTEGRATIONS.md)).
+Проверено на VibeForge **2.0.16** (2026-10-14). Автоматической записи нет — настройка делается в интерфейсе (почему — раздел VibeForge в [INTEGRATIONS.md](../INTEGRATIONS.md)).
 
 ## 1. Выберите модель
-- В боте: `/pick` → «Агент с инструментами» → «VibeForge» → кнопка «🔧 #N → VibeForge»; или
-- в терминале: `uvx loosechange list --profile agent` (или `--profile coding`).
+- В боте: `/pick` → «Агент с инструментами» → «VibeForge» → кнопка «🔧 #N → VibeForge» → «📋 Скопировать id модели»; или
+- в терминале: `uvx loosechange list --profile agent`.
 
-Скопируйте id целиком, включая суффикс `:free` (например `thinkingmachines/inkling:free`). Без `:free` OpenRouter может направить запрос в **платный** вариант.
+Id копируйте целиком, с суффиксом `:free` — без него OpenRouter может направить запрос в **платный** вариант.
 
-## 2. Ключ OpenRouter
-Создайте ключ на https://openrouter.ai/keys. Где VibeForge его берёт, из бинаря однозначно не видно (строки `OPENROUTER_API_KEY` там нет, у других провайдеров ключи берутся из переменных окружения вида `ANTHROPIC_API_KEY`):
-- если в настройках провайдера OpenRouter в VibeForge есть поле ключа — вставьте туда;
-- иначе задайте переменную окружения `OPENROUTER_API_KEY` для приложения и перезапустите его, например:
-  ```bash
-  launchctl setenv OPENROUTER_API_KEY sk-or-...
-  ```
-  (действует до перезагрузки; приложение, запущенное из Dock, видит переменные `launchctl`, а не `~/.zshrc`).
+> ⚠️ На движке «через API» VibeForge **не** считается агентным харнессом для OpenRouter: модели, которые OpenRouter отдаёт только харнессам, отвечают `403 … only available on agentic harnesses` (проверено на `thinkingmachines/inkling-small:free`). Для VibeForge берите модели без этого ограничения — например, `nvidia/nemotron-3-super-120b-a12b:free`, `google/gemma-4-31b-it:free`. Те же inkling-модели работают в Hermes и DeepSeek Harness.
 
-Ключ никому не отправляйте — бот loosechange его не спрашивает.
+## 2. Настройки → Провайдеры → OpenRouter
+| Поле | Что вписать |
+|---|---|
+| API-ключ (`OPENROUTER_API_KEY`) | ключ с https://openrouter.ai/keys (VibeForge хранит его в своей базе открытым текстом) |
+| Base URL | пусто (= `https://openrouter.ai/api/v1`) |
+| Модель по умолчанию | id из шага 1 |
+| Свои модели | список id через запятую → «Добавить» — появятся в выборе модели новой сессии |
+
+Блоки «Свой шлюз или локальный сервер» (LM Studio, Ollama, LiteLLM…) и «Сеть» (прокси только для VibeForge) для OpenRouter не нужны; прокси указывайте, только если OpenRouter недоступен без VPN, и только реально работающий адрес.
+
+Нажмите **«Сохранить провайдеры»**.
 
 ## 3. Сессия
-1. Откройте VibeForge и создайте новую сессию (или откройте настройки существующей).
-2. **Provider** → `OpenRouter`. Если есть раздельные роли **Planner / Worker / Resolver** — для бесплатной модели разумно начать с Worker, оставив Planner на сильной модели.
-3. **Model** → вставьте id из шага 1.
-4. Запустите задачу. Если пришла ошибка 429 — это лимит free-моделей OpenRouter (запросы в минуту и в сутки); подождите или выберите другую модель из списка.
+1. «Создать» → «Новая сессия … через **API**» (меню движка: Claude Code / Grok / Codex / Kimi / Antigravity / API).
+2. Кнопка **🔑** в строке инструментов → **OpenRouter**. Обязательно: иначе провайдер останется Anthropic и сессия упадёт с «Could not resolve authentication method».
+3. Модель — из списка или вписать id → Enter (по умолчанию берётся «Модель по умолчанию»).
+4. Задача → «Поехали».
 
-## 4. Проверка
-- В логе сессии VibeForge должна быть видна модель `…:free`.
-- На https://openrouter.ai/activity появится запрос со стоимостью $0.
-
-## Ограничения
-- Шаги описаны по данным схемы БД (`sessions.provider`, `provider_planner/worker/resolver`, `model_*`) и строк приложения 2.0.15; названия пунктов UI могут отличаться — **инструкцию нужно подтвердить на живом UI** (агент UI не открывал).
-- Free-модели OpenRouter периодически исчезают (`/new` в боте показывает изменения за 7 дней) — тогда смените id в сессии.
+## 4. Ошибки
+| Сообщение | Причина |
+|---|---|
+| `Could not resolve authentication method. Expected one of apiKey, authToken…` | провайдер сессии — Anthropic без ключа: выберите OpenRouter кнопкой 🔑 |
+| `OpenRouter returned HTTP 403 … only available on agentic harnesses` | модель только для харнессов — возьмите другую (см. шаг 1) |
+| `429 … temporarily rate-limited upstream` | free-модель перегружена у провайдера — повторите позже или смените модель |
+| «Вход в модель не выполнен» внизу окна | относится к CLI-движкам, для «через API» не важно |
