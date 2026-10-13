@@ -26,8 +26,9 @@ from .core.collect import (
 from .core.profiles import PROFILES, Priority, get_profile
 from .core.rank import rank
 from .core.schema import Snapshot
-from .integrations import hermes, vibeforge
+from .integrations import deepseek_harness, hermes, vibeforge
 from .integrations.base import ApplyNotSupported
+from .integrations.files import ConfigConflict, read_key_file, write_with_backup
 
 app = typer.Typer(
     help="Free OpenRouter models ranked by benchmarks; add one to Hermes / VibeForge.",
@@ -138,25 +139,32 @@ def show(model_id: str, data: DataOpt = None) -> None:
 @app.command()
 def add(
     model_id: str,
-    to: Annotated[str, typer.Option("--to", help="hermes | vibeforge | other")],
+    to: Annotated[str, typer.Option("--to", help="hermes | vibeforge | deepseek | other")],
     profile: ProfileOpt = "agent",
     alias: Annotated[str | None, typer.Option(help="Hermes alias (default free-<profile>)")] = None,
     fallback: Annotated[
         bool, typer.Option("--fallback", help="Hermes: also append to fallback_providers")
     ] = False,
     config: Annotated[
-        Path | None, typer.Option(help="Hermes config.yaml (default $HERMES_HOME or ~/.hermes)")
+        Path | None,
+        typer.Option(
+            help="File to edit. Hermes: config.yaml (default $HERMES_HOME or ~/.hermes); "
+            "DeepSeek Harness: cordis.patch.yml (default $DSH_HOME/profiles/<dsh-profile>)"
+        ),
     ] = None,
+    dsh_profile: Annotated[
+        str, typer.Option("--dsh-profile", help="DeepSeek Harness profile (GUI app: desktop)")
+    ] = deepseek_harness.DEFAULT_PROFILE,
     dry_run: Annotated[
         bool, typer.Option("--dry-run/--apply", help="Show the diff (default) or write it")
     ] = True,
-    force: Annotated[bool, typer.Option(help="Replace an existing alias")] = False,
+    force: Annotated[bool, typer.Option(help="Replace an existing alias / default model")] = False,
     key_file: Annotated[
         Path | None,
         typer.Option(
             "--key-file",
-            help="Hermes: file with your OpenRouter key (sk-or-…; txt/.env/.rtf); "
-            "written to <hermes home>/.env, never printed",
+            help="File with your OpenRouter key (sk-or-…; txt/.env/.rtf); written to the "
+            "tool's .env (Hermes: ~/.hermes/.env, DeepSeek Harness: ~/.dsh/.env), never printed",
         ),
     ] = None,
     replace_key: Annotated[
@@ -167,7 +175,8 @@ def add(
     ] = True,
     data: DataOpt = None,
 ) -> None:
-    """Add a model to Hermes (writes config with backup) or print setup for VibeForge/other."""
+    """Add a model to Hermes or DeepSeek Harness (writes config with backup), or print
+    setup steps for VibeForge / any OpenAI-compatible client."""
     _check_profile(profile)
     if to not in integrations.TARGETS:
         raise typer.BadParameter(
@@ -193,13 +202,20 @@ def add(
             typer.echo(vibeforge.manual(model_id))
         return
 
+    adapter = hermes if to == "hermes" else deepseek_harness
     try:
-        plan = hermes.plan(model_id, profile, config, alias=alias, fallback=fallback, force=force)
+        if to == "hermes":
+            plan = hermes.plan(
+                model_id, profile, config, alias=alias, fallback=fallback, force=force
+            )
+        else:
+            path = config or deepseek_harness.patch_path(dsh_profile)
+            plan = deepseek_harness.plan(model_id, path, force=force)
         key_plan = None
         if key_file:
-            key = hermes.read_key_file(key_file.expanduser())
-            key_plan = hermes.plan_key(plan.path, key, replace=replace_key)
-    except (hermes.HermesConflict, OSError) as exc:
+            key = read_key_file(key_file.expanduser())
+            key_plan = adapter.plan_key(plan.path, key, replace=replace_key)
+    except (ConfigConflict, OSError) as exc:
         typer.secho(f"error: {exc}", fg="red", err=True)
         raise typer.Exit(1) from None
     for w in plan.warnings:
@@ -210,33 +226,41 @@ def add(
         typer.echo(key_plan.describe())  # masked: sk-or-v1-…abcd
     if not plan.changed and not (key_plan and key_plan.changed):
         typer.echo("nothing to change")
-        _key_hint(plan.path)
+        _key_hint(adapter, plan.path)
         return
     if dry_run:
         typer.echo("dry run: nothing written; re-run with --apply to write (backups are made)")
         return
-    if plan.changed:
-        backup = hermes.write(plan)
-        typer.echo(f"written {plan.path}" + (f" (backup: {backup})" if backup else ""))
-    if key_plan and key_plan.changed:
-        backup = hermes.write(key_plan)
-        typer.echo(f"written {key_plan.path}" + (f" (backup: {backup})" if backup else ""))
+    for item in (plan, key_plan):
+        if item is not None and item.changed:
+            backup = write_with_backup(item)
+            typer.echo(f"written {item.path}" + (f" (backup: {backup})" if backup else ""))
     if plan.changed:
         try:
-            out = hermes.smoke_check(plan)
+            out = adapter.smoke_check(plan)
         except Exception as exc:  # smoke check must never undo a successful write
             out = f"skipped ({exc})"
         if out is not None:
-            typer.echo(f"hermes config get model_aliases.{plan.alias}.model -> {out}")
-    typer.echo(f"use it: hermes -m {plan.alias}")
-    _key_hint(plan.path)
+            typer.echo(f"smoke check: {out}")
+    if to == "hermes":
+        typer.echo(f"use it: hermes -m {plan.alias}")
+    else:
+        typer.echo(
+            "DeepSeek Harness picks the change up without a restart (profile layer is hot-reloaded)"
+        )
+    _key_hint(adapter, plan.path)
 
 
-def _key_hint(config_path: Path) -> None:
-    if not hermes.has_openrouter_key(config_path):
+def _key_hint(adapter, config_path: Path) -> None:
+    if not adapter.has_openrouter_key(config_path):
+        env = (
+            config_path.parent / ".env"
+            if adapter is hermes
+            else deepseek_harness._home_of(config_path) / ".env"
+        )
         typer.secho(
-            "note: OPENROUTER_API_KEY is not set for Hermes — add it with --key-file <file> "
-            f"or to {config_path.parent / '.env'} (key: https://openrouter.ai/keys)",
+            "note: OPENROUTER_API_KEY is not set — add it with --key-file <file> "
+            f"or to {env} (key: https://openrouter.ai/keys)",
             fg="yellow",
         )
 

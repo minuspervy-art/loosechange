@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from . import hermes, vibeforge
+from . import deepseek_harness, hermes, vibeforge
 from .base import ApplyNotSupported, Snippet, alias_for, render_generic
 
-TARGETS = ("hermes", "vibeforge", "other")
+TARGETS = ("hermes", "vibeforge", "deepseek", "other")
 
 
 def render(target: str, model_id: str, profile: str) -> Snippet:
@@ -13,6 +13,8 @@ def render(target: str, model_id: str, profile: str) -> Snippet:
         return hermes.render(model_id, profile)
     if target == "vibeforge":
         return vibeforge.render(model_id, profile)
+    if target == "deepseek":
+        return deepseek_harness.render(model_id, profile)
     if target == "other":
         return render_generic(model_id, profile)
     raise ValueError(f"unknown target {target!r}; choose from {', '.join(TARGETS)}")

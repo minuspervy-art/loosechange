@@ -11,7 +11,7 @@ GitHub Action (cron 3ч)         ┌── bot (aiogram) ── Telegram
 - **Ranker** — чистые функции `rank(models, profile) -> list[Scored]` ([RANKING.md](RANKING.md)). Без сети, полностью тестируемо.
 - **Bot** — aiogram 3, long-polling (без вебхука и домена). Читает JSON с диска/из raw GitHub, кеш в памяти. Состояние диалога — in-memory FSM (потеря при рестарте допустима).
 - **CLI** — `pipx install loosechange` / `uvx loosechange`. Команды: `list --profile coding`, `add <model-id> --to hermes|vibeforge [--dry-run]`.
-- **Integrations** — адаптеры `integrations/hermes.py`, `integrations/vibeforge.py` с общим интерфейсом `render(model) -> Snippet` и `apply(model, dry_run)`.
+- **Integrations** — адаптеры `integrations/hermes.py`, `integrations/deepseek_harness.py`, `integrations/vibeforge.py` с общим интерфейсом `render(model) -> Snippet` и `apply(model, dry_run)`.
 
 ## Collector и схема `data/models.json` (этап 1, реализовано)
 Запуск: `loosechange collect` (или `uv run python -m loosechange.core.collect`). Схема — pydantic `Snapshot` в `src/loosechange/core/schema.py`, `schema_version: 1`:
@@ -72,7 +72,9 @@ loosechange/
 │  │  └─ store.py           # снапшот для бота (файл или URL) + таймеры
 │  ├─ integrations/         # куда добавить модель
 │  │  ├─ base.py            # Snippet, команда CLI
+│  │  ├─ files.py           # бэкап + атомарная запись, ключ OpenRouter в .env
 │  │  ├─ hermes.py          # ~/.hermes/config.yaml (+ .env по --key-file)
+│  │  ├─ deepseek_harness.py # ~/.dsh/profiles/<p>/cordis.patch.yml (+ ~/.dsh/.env)
 │  │  └─ vibeforge.py       # только инструкция
 │  └─ cli.py                # loosechange list / show / add / collect
 ├─ tests/                   # зеркалит src: core/, bot/, integrations/, test_cli.py

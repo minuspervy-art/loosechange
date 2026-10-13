@@ -72,7 +72,7 @@ loosechange add <id> --to hermes --key-file ~/or-key.txt [--replace-key] --apply
 | прямой запрос + поле `tools` | ❌ 403 — одно наличие tools ограничение не снимает | — |
 | Hermes v0.19.1 (`hermes -z … --provider openrouter`) | ✅ «ok» | — |
 | DeepSeek Harness 0.2.0-rc.2 (`dsh headless`) | ✅ «ok» | ✅ «ok» |
-| VibeForge 2.0.15 | не проверено: бэкенд сам в OpenRouter не ходит (в нём нет ни `openrouter.ai`, ни заголовков атрибуции), провайдер передаётся движку сессии (Claude Code / Codex CLI / …) — результат зависит от движка; проверка возможна только из UI | — |
+| VibeForge 2.0.15 | **не проверено**: бэкенд сам в OpenRouter не ходит (в нём нет ни `openrouter.ai`, ни заголовков атрибуции), провайдер передаётся движку сессии (по умолчанию Antigravity CLI) — результат зависит от движка. Автоматическая проверка через UI невозможна (2026-10-14): веб-интерфейс VibeForge не отдаёт элементы в accessibility-дерево, клики агентом отклоняются, в меню приложения нет настроек; локальный API требует `backend-token` (трогать запрещено). Нужен ручной тест владельцем | — |
 Как OpenRouter распознаёт харнесс, по коду однозначно не видно: у DeepSeek Harness нет `HTTP-Referer`/`X-Title` в исходниках, но он проходит. Не реверсили дальше намеренно (подбирать признаки для обхода ограничения не будем).
 
 ## DeepSeek Harness (`/Applications/DeepSeek Harness.app`, `com.deepseek.dsh`) — исследовано
@@ -95,7 +95,19 @@ Electron + CLI `Contents/Resources/runtime/cli/bin/dsh`; конфигураци�
 - id: session-title-llm   # иначе заголовки сессий идут в deepseek-official и требуют DEEPSEEK_API_KEY
   disabled: true
 ```
-Важно: в патчах `config` **заменяется целиком**, не сливается — перечисляйте все нужные поля. Автозапись в профили DSH loosechange пока не делает (кандидат в адаптер `integrations/deepseek_harness.py`: render оверлея + запись в `$DSH_HOME/profiles/<профиль>` с бэкапом).
+Важно: в патчах `config` **заменяется целиком**, не сливается — перечисляйте все нужные поля.
+
+**Реализовано (2026-10-14), `integrations/deepseek_harness.py`:**
+```
+loosechange add <id> --to deepseek [--dsh-profile desktop] [--key-file ~/or.txt] [--force] [--apply]
+```
+- Пишет в пользовательский слой профиля `$DSH_HOME/profiles/<профиль>/cordis.patch.yml` (по умолчанию `~/.dsh/profiles/desktop/` — профиль GUI-приложения; слой hot-reload, перезапуск не нужен). `desktop` нельзя собрать через CLI («managed exclusively by the Electron application»), но он состоит из тех же бандлов, что поставляемый `web` (`dsh-base` + `dsh-web-app`).
+- Так как `config` в патче заменяет конфиг плагина целиком, адаптер **сливает** изменения в существующие записи: в `llm-pi-ai.providers.openrouter.models` добавляет модель, другие провайдеры и уже заданные поля (например, свой `apiKeyEnv`) сохраняет; записи с `!!js` не трогает (если сам `config` — выражение, отказ). Другой default-модели — отказ без `--force` (`reasoningEffort` сохраняется).
+- Комментарии-заголовок файла сохраняются (ruamel round-trip), `[]` приложения превращается в блочный список. После правки — проверка: все чужие записи совпадают как данные, наша модель и default на месте.
+- Бэкап `cordis.patch.yml.bak-<время>`, атомарная запись, права сохраняются (новые файлы — `600`).
+- `--key-file` → `OPENROUTER_API_KEY` в `$DSH_HOME/.env` (машинные env-дефолты харнесса), маска в выводе.
+- Smoke-проверка: `dsh --profile web --patch <записанный файл> --dump-config` во **временном** `DSH_HOME` → `default model -> openrouter/<id>`.
+- Проверено на копии профиля пользователя: dry-run не пишет; apply + повтор («nothing to change»); сквозной вызов `dsh headless` с записанным патчем и ключом **из `.env` копии** (без ключа в окружении) → модель `inkling-small:free` ответила «ok».
 Free-модели также часто отвечают `429 … temporarily rate-limited upstream` — это перегрузка у провайдера, не проблема ключа; помогает повтор позже или другая модель из списка.
 
 Лимиты на `:free` ограничены (требуют перепроверки по актуальной документации OR: запросы/мин и в сутки, различие с пополненным балансом); без ключа вызовы невозможны — бот напоминает получить ключ на openrouter.ai/keys.

@@ -92,7 +92,7 @@ def target_kb(lang: str) -> InlineKeyboardMarkup:
         )
         for k in TARGETS
     ]
-    return InlineKeyboardMarkup(inline_keyboard=[btns])
+    return InlineKeyboardMarkup(inline_keyboard=_rows(btns, 2))
 
 
 def priority_kb(lang: str) -> InlineKeyboardMarkup:
@@ -147,12 +147,12 @@ def result_kb(
     rows: list[list[InlineKeyboardButton]] = []
     prof, prio = result.profile.key, result.priority.value
     chunk = result.all[page * page_size : (page + 1) * page_size]
-    targets = [target] if target else ["hermes", "vibeforge"]
+    targets = [target] if target else ["hermes", "vibeforge", "deepseek"]
     for s in chunk:
         rows.append(
             [
                 InlineKeyboardButton(
-                    text=t(lang, "add_btn", rank=s.rank, target=t(lang, f"t_{tg}")),
+                    text=t(lang, "add_btn", rank=s.rank, target=t(lang, f"ts_{tg}")),
                     callback_data=AddCb(profile=prof, target=tg, key=model_key(s.model.id)).pack(),
                 )
                 for tg in targets
@@ -198,7 +198,7 @@ def card_kb(model_id: str, lang: str) -> InlineKeyboardMarkup:
     menu = InlineKeyboardButton(
         text=t(lang, "btn_menu"), callback_data=MenuCb(action="home").pack()
     )
-    return InlineKeyboardMarkup(inline_keyboard=[btns, [menu]])
+    return InlineKeyboardMarkup(inline_keyboard=[*_rows(btns, 2), [menu]])
 
 
 COPY_TEXT_LIMIT = 256  # Telegram limit for CopyTextButton.text

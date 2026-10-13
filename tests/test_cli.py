@@ -168,3 +168,28 @@ def test_add_hints_key_file_when_missing(data, tmp_path, monkeypatch):
         "--apply",
     )
     assert r.exit_code == 0 and "--key-file" in r.output
+
+
+def test_add_deepseek_dry_run_then_apply(data, tmp_path, monkeypatch):
+    from loosechange.integrations import deepseek_harness
+
+    monkeypatch.setattr(deepseek_harness, "smoke_check", lambda p: "default model -> ok")
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.setenv("DSH_HOME", str(tmp_path / "dsh"))
+    key = "sk-or-v1-" + "ef" * 32
+    kf = tmp_path / "k.txt"
+    kf.write_text(key)
+    mid = "thinkingmachines/inkling:free"
+    base = ["add", mid, "--to", "deepseek", "--data", data, "--key-file", kf]
+    r = run(*base)
+    assert r.exit_code == 0, r.output
+    assert "+- id: agent-default-model" in r.output and key not in r.output
+    patch = tmp_path / "dsh" / "profiles" / "desktop" / "cordis.patch.yml"
+    assert not patch.exists()
+    r = run(*base, "--apply")
+    assert r.exit_code == 0, r.output
+    assert "smoke check: default model -> ok" in r.output and key not in r.output
+    assert mid in patch.read_text()
+    assert f"OPENROUTER_API_KEY={key}" in (tmp_path / "dsh" / ".env").read_text()
+    r = run(*base, "--apply", "--dsh-profile", "web")
+    assert (tmp_path / "dsh" / "profiles" / "web" / "cordis.patch.yml").exists()

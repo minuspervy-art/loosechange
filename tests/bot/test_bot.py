@@ -523,3 +523,32 @@ async def test_vibeforge_snippet_has_no_terminal_command(env):
     await feed(env, cb_update(vf.callback_data))
     text = session.sent()[-1].text
     assert "loosechange add" not in text and "Provider: OpenRouter" in text
+
+
+async def test_deepseek_target_in_dialog_and_snippet(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/pick"))
+    await feed(env, cb_update(PickCb(step="purpose", value="agent").pack()))
+    labels = [b.text for b in buttons(session.sent(EditMessageText)[-1])]
+    assert labels == ["Hermes", "VibeForge", "DeepSeek Harness", "Другое"]
+    await feed(env, cb_update(PickCb(step="target", value="deepseek").pack()))
+    await feed(env, cb_update(PickCb(step="priority", value="quality").pack()))
+    result = session.sent(EditMessageText)[-1]
+    add = [b for b in buttons(result) if b.callback_data.startswith("a:")]
+    assert add and all("DeepSeek" in b.text for b in add)
+    await feed(env, cb_update(add[0].callback_data))
+    snippet = session.sent()[-1]
+    assert "id: llm-pi-ai" in snippet.text and "agent-default-model" in snippet.text
+    copy = buttons(snippet)[0]
+    assert copy.copy_text.text.endswith("--to deepseek --profile agent --apply")
+
+
+async def test_top_offers_three_harnesses(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/top"))
+    first_row = session.sent()[-1].reply_markup.inline_keyboard[0]
+    assert [b.text for b in first_row] == [
+        "🔧 #1 → Hermes",
+        "🔧 #1 → VibeForge",
+        "🔧 #1 → DeepSeek",
+    ]
