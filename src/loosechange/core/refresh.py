@@ -76,7 +76,7 @@ class Refresher:
     full: Callable[[Path], object] = collect
     clock: Callable[[], datetime] = lambda: datetime.now(UTC)
     _lock: asyncio.Lock = field(default_factory=asyncio.Lock)
-    _full_task: asyncio.Task | None = None
+    _task: asyncio.Task | None = None
 
     async def run(self, kind: Due) -> bool:
         if kind is Due.NONE:
@@ -91,37 +91,18 @@ class Refresher:
                 log.warning("data refresh (%s) failed: %s", kind.value, exc)
                 return False
 
-    async def ensure_fresh(self, snapshot: Snapshot | None, timeout: float = 8.0) -> bool:
-        """Called before answering a user. Returns True if the data on disk changed.
-
-        Expired list -> refresh and wait for it (bounded by `timeout`, then answer from
-        cache). Expired uptime only -> refresh in the background, answer right away."""
+    def kick(self, snapshot: Snapshot | None) -> Due:
+        """Called before answering a user: never waits. If a timer has expired, the
+        refresh starts in the background and this answer is served from cache; the
+        next request reads the new file. (Waiting here made the bot slow whenever the
+        network to OpenRouter was slow.)"""
         kind = due(snapshot, self.policy, self.clock())
-        if kind is Due.NONE:
-            return False
-        if kind is Due.FULL:
-            task = self.start_full_in_background()
-            if snapshot is not None and not self._list_expired(snapshot):
-                return False
-            awaitable = asyncio.shield(task)
-        else:
-            if self._lock.locked():
-                return False
-            awaitable = self.run(kind)
-        try:
-            return bool(await asyncio.wait_for(awaitable, timeout=timeout))
-        except TimeoutError:
-            log.warning("data refresh (%s) is slow; answering from cache", kind.value)
-            return False
-
-    def start_full_in_background(self) -> asyncio.Task:
-        if self._full_task is None or self._full_task.done():
-            self._full_task = asyncio.create_task(self.run(Due.FULL))
-        return self._full_task
-
-    def _list_expired(self, snapshot: Snapshot) -> bool:
-        ttl = self.policy.list_ttl
-        return bool(ttl) and self.clock() - snapshot.generated_at >= ttl
+        if kind is Due.NONE or self._lock.locked():
+            return Due.NONE
+        if self._task is None or self._task.done():
+            self._task = asyncio.create_task(self.run(kind))
+            return kind
+        return Due.NONE
 
     async def loop(self, load: Callable[[], Snapshot | None], tick: float = 60.0) -> None:
         """Background timer: keeps data fresh even when nobody talks to the bot."""

@@ -1,6 +1,6 @@
 # Самопроверка бота
 
-Сгенерировано `scripts/bot_selfcheck.py` 2026-10-13 11:07 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
+Сгенерировано `scripts/bot_selfcheck.py` 2026-10-13 11:45 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
 
 **user:** `/start`
 **bot (send):**
@@ -68,10 +68,6 @@ google/gemma-4-26b-a4b-it:free
 
 **user:** нажимает кнопку `p:priority:quality`
 **bot (edit):**
-```
-3/3 · Что важнее? 🏆 Максимум качества
-```
-**bot (send):**
 ```
 Топ: 🤖 Агент с инструментами · приоритет: 🏆 Максимум качества
 

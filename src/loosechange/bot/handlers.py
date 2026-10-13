@@ -136,7 +136,10 @@ async def send_ranking(
     profile: str,
     priority: str,
     target: str | None,
+    edit: bool = False,
 ) -> None:
+    """`edit=True` turns the bot's own question message into the result: one Telegram
+    call instead of two, which matters on slow networks."""
     snap = await store.get()
     if not snap:
         await message.answer(t(lang, "no_data"))
@@ -152,6 +155,12 @@ async def send_ranking(
     prefs.last_list[user_id] = (profile, priority)
     if result.all:
         prefs.last_model[user_id] = result.all[0].model.id
+    if edit:
+        try:
+            await message.edit_text(text, reply_markup=kb, disable_web_page_preview=True)
+            return
+        except TelegramBadRequest:
+            pass  # message too old / deleted: fall back to a new message
     await message.answer(text, reply_markup=kb, disable_web_page_preview=True)
 
 
@@ -257,9 +266,8 @@ async def on_pick(
         if not purpose:
             await msg.edit_text(t(lang, "stale_btn"))
             return
-        await msg.edit_text(f"{t(lang, 'q_priority')} {t(lang, f'pr_{value}')}")
         await send_ranking(
-            msg, store, prefs, lang, cb.from_user.id, purpose, value, data.get("target")
+            msg, store, prefs, lang, cb.from_user.id, purpose, value, data.get("target"), edit=True
         )
 
 
@@ -279,8 +287,8 @@ async def on_freeform(message: Message, prefs: Prefs, state: FSMContext) -> None
 @on("callback_query", PageCb.filter())
 async def on_page(cb: CallbackQuery, callback_data: PageCb, prefs: Prefs, store: DataStore) -> None:
     lang = _lang(prefs, cb)
+    await cb.answer()  # first: Telegram expires unanswered queries
     snap = await store.get()
-    await cb.answer()
     if not snap or not isinstance(cb.message, Message):
         return
     result = compute(snap, callback_data.profile, callback_data.priority)

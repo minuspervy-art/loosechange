@@ -1,4 +1,3 @@
-import asyncio
 import json
 from datetime import UTC, datetime, timedelta
 
@@ -100,44 +99,53 @@ def make(tmp_path, raw_models, list_age, full_age):
     return r, calls, s
 
 
-async def test_ensure_fresh_quick_is_awaited(tmp_path, raw_models):
+async def test_kick_never_waits_and_refreshes_in_background(tmp_path, raw_models):
     r, calls, s = make(tmp_path, raw_models, list_age=20, full_age=30)
-    assert await r.ensure_fresh(s) is True
+    assert r.kick(s) is Due.QUICK
+    assert calls.kinds == []  # nothing ran synchronously: the answer is not delayed
+    assert r.kick(s) is Due.NONE  # no second refresh while one is pending
+    await r._task
     assert calls.kinds == ["quick"]
-    assert load_snapshot(tmp_path / "models.json").generated_at == T0
-    assert await r.ensure_fresh(load_snapshot(tmp_path / "models.json")) is False  # fresh now
+    fresh = load_snapshot(tmp_path / "models.json")
+    assert fresh.generated_at == T0
+    assert r.kick(fresh) is Due.NONE
 
 
-async def test_ensure_fresh_full_runs_in_background_when_list_is_fresh(tmp_path, raw_models):
-    r, calls, s = make(tmp_path, raw_models, list_age=5, full_age=90)
-    assert await r.ensure_fresh(s) is False  # answer immediately from cache
-    await r._full_task
+async def test_kick_full_when_uptime_expired(tmp_path, raw_models):
+    r, calls, s = make(tmp_path, raw_models, list_age=20, full_age=90)
+    assert r.kick(s) is Due.FULL  # one full refresh covers the list too
+    await r._task
     assert calls.kinds == ["full"]
 
 
-async def test_ensure_fresh_full_awaited_when_list_expired(tmp_path, raw_models):
-    r, calls, s = make(tmp_path, raw_models, list_age=20, full_age=90)
-    assert await r.ensure_fresh(s) is True
-    assert calls.kinds == ["full"]  # one full refresh, not full + quick
-
-
-async def test_slow_refresh_times_out_and_failure_is_swallowed(tmp_path, raw_models):
+async def test_failed_refresh_is_logged_not_raised(tmp_path, raw_models):
     r, calls, s = make(tmp_path, raw_models, list_age=20, full_age=30)
-
-    def slow(_):
-        import time
-
-        time.sleep(0.3)
-
-    r.quick = slow
-    assert await r.ensure_fresh(s, timeout=0.05) is False
-    await asyncio.sleep(0.4)
 
     def boom(_):
         raise httpx.ConnectError("offline")
 
     r.quick = boom
-    assert await r.ensure_fresh(s) is False  # logged, cache kept
+    r.kick(s)
+    assert await r._task is False  # cache kept, bot keeps answering
+
+
+async def test_slow_network_does_not_delay_store_get(tmp_path, raw_models):
+    import time
+
+    from loosechange.bot.store import DataStore
+
+    r, calls, s = make(tmp_path, raw_models, list_age=20, full_age=30)
+
+    def slow(_):
+        time.sleep(0.5)
+
+    r.quick = slow
+    store = DataStore(path=tmp_path / "models.json", refresher=r)
+    started = time.monotonic()
+    snap = await store.get()
+    assert time.monotonic() - started < 0.2
+    assert snap is not None
+    await r._task
 
 
 async def test_store_uses_refresher(tmp_path, raw_models):
@@ -145,6 +153,9 @@ async def test_store_uses_refresher(tmp_path, raw_models):
 
     r, calls, s = make(tmp_path, raw_models, list_age=20, full_age=30)
     store = DataStore(path=tmp_path / "models.json", refresher=r)
-    snap = await store.get()
+    first = await store.get()  # served from cache, refresh started
+    assert first.generated_at == s.generated_at
+    await r._task
+    second = await store.get()  # the next request sees the refreshed file
     assert calls.kinds == ["quick"]
-    assert snap.generated_at == T0  # the refreshed file was re-read
+    assert second.generated_at == T0

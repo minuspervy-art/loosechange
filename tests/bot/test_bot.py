@@ -134,8 +134,14 @@ async def test_pick_full_dialog_and_snippet(env):
     assert "Куда" in session.texts()[-1]
     await feed(env, cb_update(PickCb(step="target", value="hermes").pack()))
     assert "важнее" in session.texts()[-1]
+    calls_before = len(session.calls)
     await feed(env, cb_update(PickCb(step="priority", value="quality").pack()))
-    result = session.sent()[-1]
+    # the question message itself becomes the result: answer + edit, no extra message
+    assert [type(c).__name__ for c in session.calls[calls_before:]] == [
+        "AnswerCallbackQuery",
+        "EditMessageText",
+    ]
+    result = session.sent(EditMessageText)[-1]
     assert "Агент" in result.text
     add_buttons = [b for b in buttons(result) if b.callback_data.startswith("a:")]
     assert add_buttons and all("Hermes" in b.text for b in add_buttons)
@@ -154,7 +160,7 @@ async def test_pick_preselected_skips_questions(env):
     await feed(env, msg_update("/pick coding vibeforge"))
     assert "важнее" in session.texts()[-1]
     await feed(env, cb_update(PickCb(step="priority", value="stability").pack()))
-    result = session.sent()[-1]
+    result = session.sent(EditMessageText)[-1]
     assert "Код" in result.text
     assert all("VibeForge" in b.text for b in buttons(result) if b.callback_data.startswith("a:"))
 
@@ -342,7 +348,8 @@ async def test_snippet_has_one_tap_copy_button(env):
     _, _, session, *_ = env
     await feed(env, msg_update("/pick agent hermes"))
     await feed(env, cb_update(PickCb(step="priority", value="quality").pack()))
-    add = next(b for b in buttons(session.sent()[-1]) if b.callback_data.startswith("a:"))
+    result = session.sent(EditMessageText)[-1]
+    add = next(b for b in buttons(result) if b.callback_data.startswith("a:"))
     await feed(env, cb_update(add.callback_data))
     snippet = session.sent()[-1]
     [copy] = buttons(snippet)

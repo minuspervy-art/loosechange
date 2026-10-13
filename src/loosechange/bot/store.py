@@ -40,9 +40,9 @@ class DataStore:
             if self.url:
                 await self._refresh_url()
             elif self.path:
-                self._refresh_file()
-                if self.refresher and await self.refresher.ensure_fresh(self.snapshot):
-                    self._refresh_file()
+                self._refresh_file()  # picks up whatever a finished refresh wrote
+                if self.refresher:
+                    self.refresher.kick(self.snapshot)  # non-blocking
         except Exception as exc:  # keep serving the last good snapshot
             log.warning("snapshot refresh failed: %s", exc)
         return self.snapshot
