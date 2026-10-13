@@ -38,9 +38,17 @@ def alias_for(profile: str) -> str:
     return f"free-{profile.replace('_', '-')}"
 
 
+# The bot's command is an explicit choice of this model, so it also replaces the
+# current pick of that harness (alias / default model). Backups are made as usual.
+CHOOSE_FLAGS = {"hermes": "--force", "deepseek": "--force", "vibeforge": "--make-default"}
+
+
 def cli_command(model_id: str, target: str, profile: str, apply: bool = False) -> str:
     cmd = f"{cli_prefix()} add {shlex.quote(model_id)} --to {target} --profile {profile}"
-    return f"{cmd} --apply" if apply else cmd
+    if apply:
+        flag = CHOOSE_FLAGS.get(target)
+        cmd = f"{cmd} {flag} --apply" if flag else f"{cmd} --apply"
+    return cmd
 
 
 def render_generic(model_id: str, profile: str) -> Snippet:

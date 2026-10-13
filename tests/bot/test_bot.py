@@ -426,7 +426,7 @@ async def test_snippet_has_one_tap_copy_button(env):
     [copy, menu] = buttons(snippet)
     assert menu.text == "🏠 Меню"
     assert copy.text == "📋 Скопировать команду"
-    assert copy.copy_text.text.endswith("--to hermes --profile agent --apply")
+    assert copy.copy_text.text.endswith("--to hermes --profile agent --force --apply")
     assert copy.copy_text.text in snippet.text  # the same command is shown in the message
 
 
@@ -438,7 +438,7 @@ async def test_vibeforge_copy_button_copies_command(env):
     snippet = session.sent()[-1]
     [copy, _menu] = buttons(snippet)
     assert copy.text == "📋 Скопировать команду"
-    assert copy.copy_text.text.endswith("--to vibeforge --profile agent --apply")
+    assert copy.copy_text.text.endswith("--to vibeforge --profile agent --make-default --apply")
     assert "закройте VibeForge" in snippet.text
 
 
@@ -533,7 +533,7 @@ async def test_deepseek_target_in_dialog_and_snippet(env):
     snippet = session.sent()[-1]
     assert "id: llm-pi-ai" in snippet.text and "agent-default-model" in snippet.text
     copy = buttons(snippet)[0]
-    assert copy.copy_text.text.endswith("--to deepseek --profile agent --apply")
+    assert copy.copy_text.text.endswith("--to deepseek --profile agent --force --apply")
 
 
 async def test_top_offers_three_harnesses(env):

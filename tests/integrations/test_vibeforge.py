@@ -49,7 +49,7 @@ def rows(path):
 def test_render_has_apply_command():
     s = integrations.render("vibeforge", MID, "agent")
     assert s.target == "vibeforge" and MID in s.body
-    assert s.command.endswith("--to vibeforge --profile agent --apply")
+    assert s.command.endswith("--to vibeforge --profile agent --make-default --apply")
     assert s.copy_text == s.command
     assert "⌘Q" in s.notes["ru"][0]
 

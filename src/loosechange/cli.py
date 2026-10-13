@@ -47,14 +47,29 @@ DataOpt = Annotated[
 ProfileOpt = Annotated[str, typer.Option("--profile", "-p", help=f"One of: {', '.join(PROFILES)}")]
 
 
+def data_candidates() -> list[Path]:
+    """Where a local snapshot may live, most specific first. The bot's copied command
+    runs from any directory, so ./data alone is not enough: without the project's
+    snapshot the harness-only verdicts (access) would be missing."""
+    env = os.environ.get("LOOSECHANGE_DATA", "").strip()
+    repo = Path(__file__).resolve().parents[2] / "data" / "models.json"  # source checkout
+    support = Path.home() / "Library" / "Application Support" / "loosechange" / "data"
+    return [
+        DEFAULT_DATA_DIR / "models.json",
+        *([Path(env).expanduser()] if env else []),
+        repo,
+        support / "models.json",
+    ]
+
+
 def load_models(data: Path | None) -> Snapshot:
-    path = data or DEFAULT_DATA_DIR / "models.json"
-    if path.exists():
-        snap = load_snapshot(path)
-        if snap:
-            return snap
-    elif data:
+    if data is not None and not data.exists():
         raise typer.BadParameter(f"{data} does not exist", param_hint="--data")
+    for path in [data] if data else data_candidates():
+        if path.exists():
+            snap = load_snapshot(path)
+            if snap:
+                return snap
     url = os.environ.get("LOOSECHANGE_DATA_URL")
     with httpx.Client(timeout=30, headers={"User-Agent": USER_AGENT}) as client:
         if url:
@@ -69,7 +84,14 @@ def load_models(data: Path | None) -> Snapshot:
                 eps = fetch_endpoints(client, r["id"])
                 if eps is not None:
                     endpoints[r["id"]] = eps
-    return build_snapshot(raw, endpoints)
+    snap = build_snapshot(raw, endpoints)
+    from .core.probe import apply_access, load_report
+
+    for path in data_candidates():  # keep harness-only verdicts from any local probe
+        report = path.parent / "access.json"
+        if report.exists():
+            return apply_access(snap, load_report(report))
+    return snap
 
 
 def _check_profile(profile: str) -> str:

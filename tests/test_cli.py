@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
@@ -272,3 +273,27 @@ def test_sync_restart_refuses_busy_and_restarts_idle(data, tmp_path, monkeypatch
     assert r.exit_code == 0, r.output
     assert calls2 == ["quit", "launch"] and "VibeForge reopened" in r.output
     assert len(rows(db2)["VIBEFORGE_OPENROUTER_MODELS"].split(", ")) == 4
+
+
+def test_load_models_finds_project_data_from_any_directory(tmp_path, monkeypatch):
+    """The bot's copied command runs from ~: it must still see the access verdicts."""
+    from loosechange import cli
+
+    monkeypatch.chdir(tmp_path)  # no ./data here
+    monkeypatch.delenv("LOOSECHANGE_DATA", raising=False)
+    snap = cli.load_models(None)
+    repo_snapshot = Path(cli.__file__).resolve().parents[2] / "data" / "models.json"
+    assert repo_snapshot.exists()
+    assert snap.generated_at == cli.load_snapshot(repo_snapshot).generated_at
+
+
+def test_add_vibeforge_command_from_bot_makes_default(data, tmp_path):
+    from tests.integrations.test_vibeforge import make_db, rows
+
+    db = make_db(tmp_path, {"VIBEFORGE_OPENROUTER_MODEL": "poolside/laguna-xs-2.1:free"})
+    mid = "nvidia/nemotron-3-super-120b-a12b:free"
+    r = run(
+        "add", mid, "--to", "vibeforge", "--data", data, "--config", db, "--make-default", "--apply"
+    )
+    assert r.exit_code == 0, r.output
+    assert rows(db)["VIBEFORGE_OPENROUTER_MODEL"] == mid

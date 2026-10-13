@@ -42,7 +42,7 @@ def test_render_snippet_and_target_registration():
     assert s.target == "deepseek" and s.language == "yaml"
     assert "id: llm-pi-ai" in s.body and "id: agent-default-model" in s.body
     assert f'model: "{MID}"' in s.body
-    assert s.command.endswith("--to deepseek --profile agent --apply")
+    assert s.command.endswith("--to deepseek --profile agent --force --apply")
     assert s.copy_text == s.command
     assert "deepseek" in integrations.TARGETS
 
