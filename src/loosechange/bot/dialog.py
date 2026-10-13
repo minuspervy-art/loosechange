@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 
 from aiogram.filters.callback_data import CallbackData
@@ -32,22 +33,37 @@ class PageCb(CallbackData, prefix="g"):
     page: int
 
 
+def model_key(model_id: str) -> str:
+    """Short stable reference to a model for callback data (64-byte limit). Buttons
+    point at the model itself, so the timed data refresh never makes them stale."""
+    return hashlib.sha1(model_id.encode()).hexdigest()[:10]
+
+
 class AddCb(CallbackData, prefix="a"):
-    """Snippet for the model at `rank` of ranking(profile, priority) — stateless."""
+    """Snippet for model `key` (see model_key) to `target`; profile names the alias."""
 
     profile: str
-    priority: str
-    rank: int
     target: str
-    ver: int  # DataStore.version; a newer snapshot may reorder ranks
+    key: str
 
 
 class CardCb(CallbackData, prefix="c"):
-    """Snippet for a model shown by /model; idx points into the snapshot list."""
+    """Snippet for a model shown by /model or /add."""
 
-    idx: int
+    key: str
     target: str
-    ver: int
+
+
+class RefreshCb(CallbackData, prefix="r"):
+    """Re-rank with the current data (the «🔄 Обновить» button)."""
+
+    profile: str
+    priority: str
+    target: str  # "-" when unknown
+
+
+class MenuCb(CallbackData, prefix="m"):
+    action: str  # home | pick | top | new
 
 
 class LangCb(CallbackData, prefix="l"):
@@ -96,6 +112,29 @@ def lang_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[btns])
 
 
+def nav_row(
+    lang: str, profile: str, priority: str, target: str | None
+) -> list[InlineKeyboardButton]:
+    """Bottom row: back to the main menu | re-run the same pick with fresh data."""
+    return [
+        InlineKeyboardButton(text=t(lang, "btn_menu"), callback_data=MenuCb(action="home").pack()),
+        InlineKeyboardButton(
+            text=t(lang, "btn_refresh"),
+            callback_data=RefreshCb(
+                profile=profile, priority=priority, target=target or "-"
+            ).pack(),
+        ),
+    ]
+
+
+def menu_kb(lang: str) -> InlineKeyboardMarkup:
+    btns = [
+        InlineKeyboardButton(text=t(lang, f"menu_{a}"), callback_data=MenuCb(action=a).pack())
+        for a in ("pick", "top", "new")
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=[btns])
+
+
 def result_kb(
     result: RankResult,
     lang: str,
@@ -103,9 +142,8 @@ def result_kb(
     page: int,
     pages: int,
     page_size: int,
-    ver: int,
 ) -> InlineKeyboardMarkup:
-    """Add-buttons for the models on this page + pagination."""
+    """Add-buttons for the models on this page + pagination + menu/refresh row."""
     rows: list[list[InlineKeyboardButton]] = []
     prof, prio = result.profile.key, result.priority.value
     chunk = result.all[page * page_size : (page + 1) * page_size]
@@ -115,9 +153,7 @@ def result_kb(
             [
                 InlineKeyboardButton(
                     text=t(lang, "add_btn", rank=s.rank, target=t(lang, f"t_{tg}")),
-                    callback_data=AddCb(
-                        profile=prof, priority=prio, rank=s.rank, target=tg, ver=ver
-                    ).pack(),
+                    callback_data=AddCb(profile=prof, target=tg, key=model_key(s.model.id)).pack(),
                 )
                 for tg in targets
             ]
@@ -147,31 +183,38 @@ def result_kb(
         )
     if nav:
         rows.append(nav)
+    rows.append(nav_row(lang, prof, prio, target))
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def card_kb(idx: int, lang: str, ver: int) -> InlineKeyboardMarkup:
+def card_kb(model_id: str, lang: str) -> InlineKeyboardMarkup:
     btns = [
         InlineKeyboardButton(
             text=t(lang, "card_add", target=t(lang, f"t_{tg}")),
-            callback_data=CardCb(idx=idx, target=tg, ver=ver).pack(),
+            callback_data=CardCb(key=model_key(model_id), target=tg).pack(),
         )
         for tg in TARGETS
     ]
-    return InlineKeyboardMarkup(inline_keyboard=[btns])
+    menu = InlineKeyboardButton(
+        text=t(lang, "btn_menu"), callback_data=MenuCb(action="home").pack()
+    )
+    return InlineKeyboardMarkup(inline_keyboard=[btns, [menu]])
 
 
 COPY_TEXT_LIMIT = 256  # Telegram limit for CopyTextButton.text
 
 
-def copy_kb(snippet: Snippet, lang: str) -> InlineKeyboardMarkup | None:
-    """One tap puts the ready command (or the model id) on the clipboard."""
+def copy_kb(snippet: Snippet, lang: str) -> InlineKeyboardMarkup:
+    """One tap puts the ready command (or the model id) on the clipboard; + menu."""
+    rows = []
     text = snippet.copy_text
-    if not text or len(text) > COPY_TEXT_LIMIT:
-        return None
-    label = t(lang, "copy_cmd" if text == snippet.command else "copy_id")
-    btn = InlineKeyboardButton(text=label, copy_text=CopyTextButton(text=text))
-    return InlineKeyboardMarkup(inline_keyboard=[[btn]])
+    if text and len(text) <= COPY_TEXT_LIMIT:
+        label = t(lang, "copy_cmd" if text == snippet.command else "copy_id")
+        rows.append([InlineKeyboardButton(text=label, copy_text=CopyTextButton(text=text))])
+    rows.append(
+        [InlineKeyboardButton(text=t(lang, "btn_menu"), callback_data=MenuCb(action="home").pack())]
+    )
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 # ---------------------------------------------------------------- free text -> profile

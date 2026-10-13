@@ -9,7 +9,7 @@ from aiogram.client.session.base import BaseSession
 from aiogram.methods import AnswerCallbackQuery, EditMessageText, SendMessage
 from aiogram.types import CallbackQuery, Chat, Message, Update, User
 
-from loosechange.bot.dialog import AddCb, CardCb, PickCb, guess_profile
+from loosechange.bot.dialog import MenuCb, PickCb, RefreshCb, guess_profile
 from loosechange.bot.handlers import Prefs
 from loosechange.bot.main import RedactFilter, build_dispatcher, load_dotenv
 from loosechange.bot.render import fmt_ctx, split_message
@@ -214,16 +214,87 @@ async def test_add_without_selection(env):
     assert "Сначала" in session.sent()[-1].text
 
 
-async def test_stale_button_is_rejected(env):
+async def test_add_buttons_survive_data_refresh(env, raw_models):
     _, _, session, store, _ = env
-    await feed(env, msg_update("/top"))  # loads the snapshot
-    data = AddCb(profile="chat", priority="quality", rank=1, target="hermes", ver=store.version + 1)
-    await feed(env, cb_update(data.pack()))
-    answer = session.sent(AnswerCallbackQuery)[-1]
-    assert answer.show_alert and "Устарело" in answer.text
-    data = CardCb(idx=10_000, target="hermes", ver=store.version)
-    await feed(env, cb_update(data.pack()))
-    assert session.sent(AnswerCallbackQuery)[-1].show_alert
+    await feed(env, msg_update("/top"))
+    add = next(b for b in buttons(session.sent()[-1]) if b.callback_data.startswith("a:"))
+    # the timed refresh rewrites the snapshot (new generated_at) — the button still works
+    _dump(store.path, build_snapshot(raw_models, now=NOW + timedelta(minutes=15)))
+    await feed(env, cb_update(add.callback_data))
+    assert "model_aliases:" in session.sent()[-1].text
+
+
+async def test_gone_model_offers_menu_and_refresh(env, raw_models):
+    _, _, session, store, _ = env
+    await feed(env, msg_update("/pick chat hermes"))
+    await feed(env, cb_update(PickCb(step="priority", value="stability").pack()))
+    result = session.sent(EditMessageText)[-1]
+    add = next(b for b in buttons(result) if b.callback_data.startswith("a:"))
+    top_id = "inclusionai/ling-3.1-flash"
+    assert top_id in result.text
+    # the #1 model stops being free between showing the list and the tap
+    _dump(store.path, build_snapshot([m for m in raw_models if m["id"] != top_id], now=NOW))
+    await feed(env, cb_update(add.callback_data))
+    gone = session.sent()[-1]
+    assert "больше нет среди бесплатных" in gone.text
+    [menu, refresh] = buttons(gone)
+    assert menu.text == "🏠 Меню" and refresh.text == "🔄 Обновить"
+    assert (
+        refresh.callback_data
+        == RefreshCb(profile="chat", priority="stability", target="hermes").pack()
+    )
+    # «Обновить» re-ranks the same pick in place, without the gone model
+    await feed(env, cb_update(refresh.callback_data))
+    refreshed = session.sent(EditMessageText)[-1]
+    assert "Чат" in refreshed.text and top_id not in refreshed.text
+    assert session.sent(AnswerCallbackQuery)[-1].text == "Обновлено по свежим данным"
+
+
+async def test_result_has_menu_and_refresh_row(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/top"))
+    rows = session.sent()[-1].reply_markup.inline_keyboard
+    assert [b.text for b in rows[-1]] == ["🏠 Меню", "🔄 Обновить"]
+    for row in rows:
+        for b in row:
+            assert len(b.callback_data.encode()) <= 64
+
+
+async def test_menu_actions(env):
+    _, _, session, *_ = env
+    await feed(env, cb_update(MenuCb(action="home").pack()))
+    home = session.sent(EditMessageText)[-1]
+    assert "/pick" in home.text
+    assert [b.text for b in buttons(home)] == ["🎯 Подобрать", "🏆 Топ", "🆕 Что нового"]
+    await feed(env, cb_update(MenuCb(action="pick").pack()))
+    assert "Для чего" in session.sent(EditMessageText)[-1].text
+    await feed(env, cb_update(MenuCb(action="top").pack()))
+    assert "Топ" in session.sent(EditMessageText)[-1].text
+    await feed(env, cb_update(MenuCb(action="new").pack()))
+    assert "За 7 дней" in session.sent(EditMessageText)[-1].text
+
+
+async def test_refresh_unchanged_does_not_duplicate(env):
+    from aiogram.exceptions import TelegramBadRequest
+
+    _, bot, session, *_ = env
+
+    async def not_modified(bot_, method, timeout=None):
+        session.calls.append(method)
+        if isinstance(method, EditMessageText):
+            raise TelegramBadRequest(method=method, message="Bad Request: message is not modified")
+        return True
+
+    session.make_request = not_modified
+    data = RefreshCb(profile="chat", priority="quality", target="-").pack()
+    await feed(env, cb_update(data))
+    assert not session.sent(SendMessage)  # no duplicate message when nothing changed
+
+
+async def test_lost_dialog_state_restarts_pick(env):
+    _, _, session, *_ = env
+    await feed(env, cb_update(PickCb(step="priority", value="quality").pack()))
+    assert "Для чего" in session.sent(EditMessageText)[-1].text
 
 
 async def test_new_and_about_and_lang(env):
@@ -352,7 +423,8 @@ async def test_snippet_has_one_tap_copy_button(env):
     add = next(b for b in buttons(result) if b.callback_data.startswith("a:"))
     await feed(env, cb_update(add.callback_data))
     snippet = session.sent()[-1]
-    [copy] = buttons(snippet)
+    [copy, menu] = buttons(snippet)
+    assert menu.text == "🏠 Меню"
     assert copy.text == "📋 Скопировать команду"
     assert copy.copy_text.text.endswith("--to hermes --profile agent --apply")
     assert copy.copy_text.text in snippet.text  # the same command is shown in the message
@@ -363,7 +435,7 @@ async def test_vibeforge_copy_button_copies_model_id(env):
     await feed(env, msg_update("/model thinkingmachines/inkling:free"))
     vf = next(b for b in buttons(session.sent()[-1]) if "VibeForge" in b.text)
     await feed(env, cb_update(vf.callback_data))
-    [copy] = buttons(session.sent()[-1])
+    [copy, _menu] = buttons(session.sent()[-1])
     assert copy.text == "📋 Скопировать id модели"
     assert copy.copy_text.text == "thinkingmachines/inkling:free"
 
@@ -373,7 +445,8 @@ def test_copy_kb_respects_telegram_limit():
     from loosechange.integrations import Snippet
 
     s = Snippet(target="hermes", language="text", body="", command="x" * 300, copy_text="x" * 300)
-    assert copy_kb(s, "ru") is None
+    kb = copy_kb(s, "ru")
+    assert [b.text for row in kb.inline_keyboard for b in row] == ["🏠 Меню"]  # no copy button
 
 
 def test_expiry_countdown():

@@ -28,13 +28,6 @@ class DataStore:
     _mtime: int = 0
     _fetched: float = 0.0
 
-    @property
-    def version(self) -> int:
-        """Short id of the loaded snapshot, embedded in callback data to detect stale buttons."""
-        if not self.snapshot:
-            return 0
-        return int(self.snapshot.generated_at.timestamp()) % 100_000
-
     async def get(self) -> Snapshot | None:
         try:
             if self.url:

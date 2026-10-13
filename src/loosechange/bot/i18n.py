@@ -81,6 +81,16 @@ STRINGS: dict[str, dict[str, str]] = {
         "snippet_header": "<b>{target}</b> · <code>{id}</code>",
         "snippet_cli": "Или локально одной командой:",
         "copy_cmd": "📋 Скопировать команду",
+        "btn_menu": "🏠 Меню",
+        "btn_refresh": "🔄 Обновить",
+        "menu_pick": "🎯 Подобрать",
+        "menu_top": "🏆 Топ",
+        "menu_new": "🆕 Что нового",
+        "refreshed": "Обновлено по свежим данным",
+        "model_gone": (
+            "Этой модели больше нет среди бесплатных — список обновился. "
+            "Нажмите «🔄 Обновить», чтобы пересобрать подборку, или вернитесь в меню."
+        ),
         "copy_id": "📋 Скопировать id модели",
         "need_key": (
             "Нужен ключ OpenRouter: https://openrouter.ai/keys — храните его только у себя."
@@ -93,7 +103,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "lang_set": "Язык: русский.",
         "flood": "Не так быстро 🙂",
         "no_data": "Данные ещё не загружены, попробуйте через минуту.",
-        "stale_btn": "Устарело — запустите /pick заново.",
     },
     "en": {
         "start": (
@@ -168,6 +177,16 @@ STRINGS: dict[str, dict[str, str]] = {
         "snippet_header": "<b>{target}</b> · <code>{id}</code>",
         "snippet_cli": "Or locally with one command:",
         "copy_cmd": "📋 Copy command",
+        "btn_menu": "🏠 Menu",
+        "btn_refresh": "🔄 Refresh",
+        "menu_pick": "🎯 Find a model",
+        "menu_top": "🏆 Top",
+        "menu_new": "🆕 What's new",
+        "refreshed": "Refreshed with current data",
+        "model_gone": (
+            "This model is no longer free — the list has changed. "
+            "Tap “🔄 Refresh” to rebuild the pick, or go back to the menu."
+        ),
         "copy_id": "📋 Copy model id",
         "need_key": "You need an OpenRouter key: https://openrouter.ai/keys — keep it local.",
         "new_header": "<b>Last 7 days</b>",
@@ -178,7 +197,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "lang_set": "Language: English.",
         "flood": "Slow down 🙂",
         "no_data": "Data is not loaded yet, try again in a minute.",
-        "stale_btn": "Outdated — run /pick again.",
     },
 }
 

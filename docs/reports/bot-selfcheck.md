@@ -1,6 +1,6 @@
 # Самопроверка бота
 
-Сгенерировано `scripts/bot_selfcheck.py` 2026-10-13 11:45 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
+Сгенерировано `scripts/bot_selfcheck.py` 2026-10-13 11:57 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
 
 **user:** `/start`
 **bot (send):**
@@ -15,6 +15,7 @@
 /lang — English
 /about — о проекте
 ```
+кнопки: [🎯 Подобрать] | [🏆 Топ] | [🆕 Что нового]
 
 **user:** `/top`
 **bot (send):**
@@ -43,7 +44,7 @@ google/gemma-4-26b-a4b-it:free
 
 Стр. 1/4
 ```
-кнопки: [🔧 #1 → Hermes] | [🔧 #1 → VibeForge] / [🔧 #2 → Hermes] | [🔧 #2 → VibeForge] / [🔧 #3 → Hermes] | [🔧 #3 → VibeForge] / [🔧 #4 → Hermes] | [🔧 #4 → VibeForge] / [🔧 #5 → Hermes] | [🔧 #5 → VibeForge] / [Показать все (17)]
+кнопки: [🔧 #1 → Hermes] | [🔧 #1 → VibeForge] / [🔧 #2 → Hermes] | [🔧 #2 → VibeForge] / [🔧 #3 → Hermes] | [🔧 #3 → VibeForge] / [🔧 #4 → Hermes] | [🔧 #4 → VibeForge] / [🔧 #5 → Hermes] | [🔧 #5 → VibeForge] / [Показать все (17)] / [🏠 Меню] | [🔄 Обновить]
 
 **user:** `/pick`
 **bot (send):**
@@ -93,7 +94,7 @@ google/gemma-4-26b-a4b-it:free
 
 Стр. 1/3
 ```
-кнопки: [🔧 #1 → Hermes] / [🔧 #2 → Hermes] / [🔧 #3 → Hermes] / [🔧 #4 → Hermes] / [🔧 #5 → Hermes] / [Показать все (15)]
+кнопки: [🔧 #1 → Hermes] / [🔧 #2 → Hermes] / [🔧 #3 → Hermes] / [🔧 #4 → Hermes] / [🔧 #5 → Hermes] / [Показать все (15)] / [🏠 Меню] | [🔄 Обновить]
 
 **user:** нажимает «🔧 #1 → Hermes»
 **bot (send):**
@@ -113,7 +114,7 @@ uvx loosechange add thinkingmachines/inkling-small:free --to hermes --profile ag
 • Free-модели OpenRouter имеют лимиты запросов в минуту и в сутки.
 • Нужен ключ OpenRouter: https://openrouter.ai/keys — храните его только у себя.
 ```
-кнопки: [📋 Скопировать команду]
+кнопки: [📋 Скопировать команду] / [🏠 Меню]
 
 **user:** `/model thinkingmachines/inkling:free`
 **bot (send):**
@@ -124,7 +125,7 @@ thinkingmachines/inkling:free
 Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total. It is designed for general-purpose reasoning, coding, agentic and tool-use systems,...
 openrouter.ai/thinkingmachines/inkling:free
 ```
-кнопки: [🔧 Hermes] | [🔧 VibeForge] | [🔧 Другое]
+кнопки: [🔧 Hermes] | [🔧 VibeForge] | [🔧 Другое] / [🏠 Меню]
 
 **user:** `/new`
 **bot (send):**
@@ -132,4 +133,5 @@ openrouter.ai/thinkingmachines/inkling:free
 За 7 дней
 Изменений в списке бесплатных моделей не было.
 ```
+кнопки: [🎯 Подобрать] | [🏆 Топ] | [🆕 Что нового]
 
