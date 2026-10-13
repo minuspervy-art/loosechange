@@ -2,7 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 import httpx
 
-from loosechange.collect import (
+from loosechange.core.collect import (
     aggregate_endpoints,
     build_snapshot,
     collect,
@@ -13,7 +13,7 @@ from loosechange.collect import (
     load_snapshot,
     normalize,
 )
-from loosechange.models import Snapshot
+from loosechange.core.schema import Snapshot
 
 T0 = datetime(2026, 10, 13, 12, tzinfo=UTC)
 

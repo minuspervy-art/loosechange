@@ -2,10 +2,9 @@ from datetime import date
 
 import pytest
 
-from loosechange.collect import build_snapshot
-from loosechange.models import Benchmarks, DesignArenaEntry, Model, Reliability
-from loosechange.profiles import PROFILES, Priority, get_profile
-from loosechange.rank import (
+from loosechange.core.collect import build_snapshot
+from loosechange.core.profiles import PROFILES, Priority, get_profile
+from loosechange.core.rank import (
     EXPIRING_FLAG,
     FALLBACK_FLAG,
     LOW_UPTIME_FLAG,
@@ -14,6 +13,7 @@ from loosechange.rank import (
     normalize_max,
     rank,
 )
+from loosechange.core.schema import Benchmarks, DesignArenaEntry, Model, Reliability
 
 TODAY = date(2026, 10, 13)
 TOOLS = ["max_tokens", "tools"]

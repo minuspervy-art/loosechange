@@ -4,7 +4,7 @@ import pytest
 from typer.testing import CliRunner
 
 from loosechange.cli import app
-from loosechange.collect import _dump, build_snapshot
+from loosechange.core.collect import _dump, build_snapshot
 from loosechange.integrations import hermes
 
 runner = CliRunner()
@@ -106,7 +106,7 @@ def test_add_other_and_bad_target(data):
 def test_collect_cmd(tmp_path, monkeypatch, or_transport):
     import httpx
 
-    import loosechange.collect as c
+    import loosechange.core.collect as c
 
     real_client = httpx.Client
     monkeypatch.setattr(c.httpx, "Client", lambda **kw: real_client(transport=or_transport))

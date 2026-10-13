@@ -14,8 +14,8 @@ from loosechange.bot.handlers import Prefs
 from loosechange.bot.main import RedactFilter, build_dispatcher, load_dotenv
 from loosechange.bot.render import fmt_ctx, split_message
 from loosechange.bot.store import DataStore
-from loosechange.collect import _dump, build_snapshot
-from loosechange.models import History, HistoryEvent
+from loosechange.core.collect import _dump, build_snapshot
+from loosechange.core.schema import History, HistoryEvent
 
 _ids = count(1)
 

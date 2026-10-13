@@ -17,9 +17,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, TelegramObject
 
 from .. import integrations
-from ..models import Model, Snapshot
-from ..profiles import Priority, get_profile
-from ..rank import RankResult, rank
+from ..core.profiles import Priority, get_profile
+from ..core.rank import RankResult, rank
+from ..core.schema import Model, Snapshot
 from . import render
 from .dialog import (
     AddCb,

@@ -7,14 +7,14 @@ GitHub Action (cron 3ч)         ┌── bot (aiogram) ── Telegram
   (OR API + enrichers)          ├── CLI loosechange (add/list/pick)
                                 └── site/ (GitHub Pages, v2)
 ```
-- **Collector** — Python-модуль `loosechange.collect`: тянет OpenRouter `/models`, фильтрует `:free`, нормализует, мерджит бенчмарки, пишет `data/models.json` + `data/history/` (дифф: новые/исчезнувшие модели).
+- **Collector** — Python-модуль `loosechange.core.collect`: тянет OpenRouter `/models`, фильтрует `:free`, нормализует, мерджит бенчмарки, пишет `data/models.json` + `data/history/` (дифф: новые/исчезнувшие модели).
 - **Ranker** — чистые функции `rank(models, profile) -> list[Scored]` ([RANKING.md](RANKING.md)). Без сети, полностью тестируемо.
 - **Bot** — aiogram 3, long-polling (без вебхука и домена). Читает JSON с диска/из raw GitHub, кеш в памяти. Состояние диалога — in-memory FSM (потеря при рестарте допустима).
 - **CLI** — `pipx install loosechange` / `uvx loosechange`. Команды: `list --profile coding`, `add <model-id> --to hermes|vibeforge [--dry-run]`.
 - **Integrations** — адаптеры `integrations/hermes.py`, `integrations/vibeforge.py` с общим интерфейсом `render(model) -> Snippet` и `apply(model, dry_run)`.
 
 ## Collector и схема `data/models.json` (этап 1, реализовано)
-Запуск: `uv run python -m loosechange.collect` (или `loosechange collect`). Схема — pydantic `Snapshot` в `src/loosechange/models.py`, `schema_version: 1`:
+Запуск: `loosechange collect` (или `uv run python -m loosechange.core.collect`). Схема — pydantic `Snapshot` в `src/loosechange/core/schema.py`, `schema_version: 1`:
 - `generated_at`, `source`, `total_models` (все модели OR), `models[]`, `excluded[]` (бесплатные, но не текстовые — с причиной).
 - `models[]`: `id`, `name`, `description` (≤300 симв.), `context_length`, `max_completion_tokens`, модальности, `supported_parameters`, `expiration_date`, `is_free_variant` (`:free`), `is_router` (`openrouter/*`), `benchmarks` (`intelligence`/`coding`/`agentic` как есть из OR, `null` если нет; `design_arena[]` целиком), `reliability` (лучший провайдер из `/endpoints`: `uptime_30m`, `uptime_1d`, `latency_30m`, `throughput_30m`, `providers`), `first_seen`.
 - `data/history/changes.json` — события `{ts, added[], removed[]}` между снапшотами, хранится 90 дней (для `/new`).
@@ -41,14 +41,36 @@ GitHub Action (cron 3ч)         ┌── bot (aiogram) ── Telegram
 ## Структура репо
 ```
 loosechange/
-├─ src/loosechange/{collect,rank,profiles,models,cli}.py
-├─ src/loosechange/bot/{main,handlers,dialog,render}.py
-├─ src/loosechange/integrations/{hermes,vibeforge}.py
-├─ data/models.json            # снапшот (коммитится Action'ом)
-├─ tests/                      # pytest, фикстуры = реальные срезы OR API
-├─ .github/workflows/{collect.yml,ci.yml}
-├─ Dockerfile, pyproject.toml, docs/
+├─ src/loosechange/
+│  ├─ core/                 # данные: без Telegram и без чужих конфигов
+│  │  ├─ schema.py          # pydantic: Snapshot, Model, Benchmarks, History
+│  │  ├─ collect.py         # OpenRouter → data/models.json (+ history)
+│  │  ├─ profiles.py        # профили задач: веса и требования
+│  │  └─ rank.py            # чистое ранжирование
+│  ├─ bot/                  # Telegram (aiogram 3, long-polling)
+│  │  ├─ main.py            # запуск, .env, логирование, фоновые задачи
+│  │  ├─ handlers.py        # команды, коллбэки, антифлуд
+│  │  ├─ dialog.py          # кнопки, callback-data, правила свободного текста
+│  │  ├─ render.py          # HTML-карточки, пагинация
+│  │  ├─ i18n.py            # строки RU/EN
+│  │  └─ store.py           # снапшот для бота (файл или URL)
+│  ├─ integrations/         # куда добавить модель
+│  │  ├─ base.py            # Snippet, команда CLI
+│  │  ├─ hermes.py          # ~/.hermes/config.yaml (+ .env по --key-file)
+│  │  └─ vibeforge.py       # только инструкция
+│  └─ cli.py                # loosechange list / show / add / collect
+├─ tests/                   # зеркалит src: core/, bot/, integrations/, test_cli.py
+│  └─ fixtures/             # реальные срезы OpenRouter API
+├─ data/                    # снапшот models.json + history/ (коммитит Action)
+├─ docs/                    # решения: ARCHITECTURE, RANKING, DIALOG, INTEGRATIONS, SECURITY, ROADMAP
+│  ├─ guides/               # инструкции для пользователей (VibeForge)
+│  ├─ reports/              # генерируемые отчёты (самопроверка бота)
+│  └─ agent/                # промт автономной сборки
+├─ scripts/                 # служебные скрипты (bot_selfcheck.py)
+├─ .github/workflows/       # ci.yml, collect.yml
+└─ Dockerfile, pyproject.toml, uv.lock
 ```
+Перестройка 2026-10-13: ядро данных вынесено в `core/`, `models.py` → `core/schema.py` (чтобы не путать pydantic-модели с LLM-моделями), тесты разложены по пакетам, документы — по назначению.
 Стек: Python 3.12, httpx, pydantic v2, aiogram 3, typer, pytest, ruff, uv.
 
 ## Mini App / web — когда

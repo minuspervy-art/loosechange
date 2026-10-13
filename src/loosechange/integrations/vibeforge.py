@@ -4,14 +4,14 @@ VibeForge (macOS, v2.0.15 researched) has no user-editable provider config: the
 provider and model are columns of each session row in its SQLite DB and the
 provider list (anthropic / openai / openrouter / local) is compiled into the app.
 Writing session rows of a running app is not safe, so we print instructions.
-Details: docs/INTEGRATIONS.md, docs/vibeforge-manual.md.
+Details: docs/INTEGRATIONS.md, docs/guides/vibeforge-manual.md.
 """
 
 from __future__ import annotations
 
 from .base import ApplyNotSupported, Snippet, cli_command
 
-MANUAL_URL = "docs/vibeforge-manual.md"
+MANUAL_URL = "docs/guides/vibeforge-manual.md"
 
 
 def render(model_id: str, profile: str) -> Snippet:

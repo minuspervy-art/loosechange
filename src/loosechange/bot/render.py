@@ -5,9 +5,16 @@ from __future__ import annotations
 from datetime import UTC, date, datetime, timedelta
 from html import escape
 
+from ..core.rank import (
+    EXPIRING_FLAG,
+    FALLBACK_FLAG,
+    LOW_UPTIME_FLAG,
+    NO_TOOLS_FLAG,
+    RankResult,
+    Scored,
+)
+from ..core.schema import History, Model, Snapshot
 from ..integrations import Snippet
-from ..models import History, Model, Snapshot
-from ..rank import EXPIRING_FLAG, FALLBACK_FLAG, LOW_UPTIME_FLAG, NO_TOOLS_FLAG, RankResult, Scored
 from .i18n import t
 
 TG_LIMIT = 4096
@@ -83,7 +90,7 @@ def scored_card(s: Scored, lang: str) -> str:
 
 
 def model_card(m: Model, lang: str, today: date | None = None) -> str:
-    from ..rank import expires_soon
+    from ..core.rank import expires_soon
 
     flags = [EXPIRING_FLAG] if expires_soon(m, today or date.today()) else []
     up = m.reliability.uptime_30m if m.reliability else None

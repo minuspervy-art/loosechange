@@ -12,7 +12,7 @@ import httpx
 import typer
 
 from . import integrations
-from .collect import (
+from .core.collect import (
     DEFAULT_DATA_DIR,
     USER_AGENT,
     build_snapshot,
@@ -23,11 +23,11 @@ from .collect import (
     is_free,
     load_snapshot,
 )
+from .core.profiles import PROFILES, Priority, get_profile
+from .core.rank import rank
+from .core.schema import Snapshot
 from .integrations import hermes, vibeforge
 from .integrations.base import ApplyNotSupported
-from .models import Snapshot
-from .profiles import PROFILES, Priority, get_profile
-from .rank import rank
 
 app = typer.Typer(
     help="Free OpenRouter models ranked by benchmarks; add one to Hermes / VibeForge.",

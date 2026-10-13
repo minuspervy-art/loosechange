@@ -57,7 +57,7 @@ loosechange add <id> --to hermes --key-file ~/or-key.txt [--replace-key] --apply
 2. Бэкенд держит БД открытой (better-sqlite3); запись из-под работающего приложения рискует гонками, а схема меняется миграциями (30+ штук) без публичного контракта.
 3. HTTP-API бэкенда требует `backend-token`, который трогать запрещено.
 
-Поэтому адаптер `integrations/vibeforge.py` — **render-only**: `loosechange add <id> --to vibeforge` печатает пошаговую инструкцию, бот отдаёт «Provider: OpenRouter / Model: <id>». Инструкция: [vibeforge-manual.md](vibeforge-manual.md). Пересмотреть, если VibeForge опубликует конфиг-файл или CLI для провайдеров.
+Поэтому адаптер `integrations/vibeforge.py` — **render-only**: `loosechange add <id> --to vibeforge` печатает пошаговую инструкцию, бот отдаёт «Provider: OpenRouter / Model: <id>». Инструкция: [guides/vibeforge-manual.md](guides/vibeforge-manual.md). Пересмотреть, если VibeForge опубликует конфиг-файл или CLI для провайдеров.
 
 ## Универсальный fallback
 Для любого OpenAI-совместимого клиента: `base_url=https://openrouter.ai/api/v1`, `model=<id>`, `api_key=$OPENROUTER_API_KEY`.

@@ -17,7 +17,7 @@ from urllib.parse import quote
 
 import httpx
 
-from .models import (
+from .schema import (
     Benchmarks,
     DesignArenaEntry,
     Excluded,

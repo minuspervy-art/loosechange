@@ -8,9 +8,9 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CopyTextButton, InlineKeyboardButton, InlineKeyboardMarkup
 
+from ..core.profiles import PROFILES, Priority
+from ..core.rank import RankResult
 from ..integrations import TARGETS, Snippet
-from ..profiles import PROFILES, Priority
-from ..rank import RankResult
 from .i18n import LANGS, t
 
 PURPOSES = ("agent", "coding", "chat", "reasoning", "longctx", "fast_cheap", "design")

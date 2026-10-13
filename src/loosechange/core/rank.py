@@ -7,7 +7,6 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from datetime import date
 
-from .models import Model
 from .profiles import (
     EXPIRY_WARN_DAYS,
     LOW_UPTIME,
@@ -17,6 +16,7 @@ from .profiles import (
     Priority,
     Profile,
 )
+from .schema import Model
 
 COMPONENTS = ("intelligence", "coding", "agentic", "design", "ctx", "speed")
 

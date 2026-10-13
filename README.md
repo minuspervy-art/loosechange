@@ -24,7 +24,7 @@ uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmach
 uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmachines/inkling:free --to hermes --apply
 ```
 Потом `hermes -m free-agent` (нужен `OPENROUTER_API_KEY` в `~/.hermes/.env`, ключ — https://openrouter.ai/keys). Ключ можно сразу взять из файла: `--key-file ~/or-key.txt` — он запишется в `~/.hermes/.env` с бэкапом и нигде не напечатается (другой уже записанный ключ заменяется только с `--replace-key`). Флаги: `--profile coding|chat|reasoning|longctx|design`, `--alias`, `--fallback` (добавить в цепочку fallback), `--force`, `--config`.
-VibeForge: `… add <id> --to vibeforge` печатает инструкцию — автозаписи нет, см. [docs/vibeforge-manual.md](docs/vibeforge-manual.md). Любой другой OpenAI-совместимый клиент: `--to other`.
+VibeForge: `… add <id> --to vibeforge` печатает инструкцию — автозаписи нет, см. [docs/guides/vibeforge-manual.md](docs/guides/vibeforge-manual.md). Любой другой OpenAI-совместимый клиент: `--to other`.
 
 Профили: `agent` (tool-calling, ≥128k), `coding`, `chat`, `reasoning`, `longctx` (≥256k), `design`, `fast_cheap` (пока недоступен — OpenRouter не отдаёт скорость публично). Формулы — [docs/RANKING.md](docs/RANKING.md).
 
@@ -64,7 +64,7 @@ uv run pytest -q
 ```bash
 uv run ruff check . && uv run ruff format --check .
 ```
-Самопроверка диалога бота без Telegram: `uv run python scripts/bot_selfcheck.py` → [docs/bot-selfcheck.md](docs/bot-selfcheck.md).
+Самопроверка диалога бота без Telegram: `uv run python scripts/bot_selfcheck.py` → [docs/reports/bot-selfcheck.md](docs/reports/bot-selfcheck.md).
 
 ## Почему не Mini App
 Бот + inline-кнопки закрывают весь сценарий (вопросы → список → сниппет). Mini App потребовал бы хостинг и фронтенд ради таблицы. Таблицу-лидерборд даём как **статическую страницу на GitHub Pages** из того же JSON (v2, ноль серверов). Подробно: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -78,10 +78,10 @@ uv run ruff check . && uv run ruff format --check .
 | [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | как добавить модель в Hermes и VibeForge |
 | [docs/SECURITY.md](docs/SECURITY.md) | токены, лимиты, что не логируем |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | этапы и критерии готовности |
-| [docs/vibeforge-manual.md](docs/vibeforge-manual.md) | ручное подключение модели в VibeForge |
-| [docs/bot-selfcheck.md](docs/bot-selfcheck.md) | транскрипт самопроверки бота |
+| [docs/guides/vibeforge-manual.md](docs/guides/vibeforge-manual.md) | ручное подключение модели в VibeForge |
+| [docs/reports/bot-selfcheck.md](docs/reports/bot-selfcheck.md) | транскрипт самопроверки бота |
 | [CLAUDE.md](CLAUDE.md) | правила для агента, разрабатывающего проект |
-| [PROMPT_FOR_NEW_SESSION.md](PROMPT_FOR_NEW_SESSION.md) | промт для автономной сборки |
+| [docs/agent/PROMPT_FOR_NEW_SESSION.md](docs/agent/PROMPT_FOR_NEW_SESSION.md) | промт для автономной сборки |
 
 ## Факты, проверенные 2026-10-13
 - `GET https://openrouter.ai/api/v1/models` публичный, содержит `pricing`, `context_length`, `supported_parameters` и **встроенные бенчмарки** (`benchmarks.artificial_analysis`: intelligence/coding/agentic index; `benchmarks.design_arena`). Отдельный парсинг сторонних сайтов на старте не нужен.

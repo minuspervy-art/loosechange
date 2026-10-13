@@ -1,6 +1,6 @@
 # VibeForge: как подключить бесплатную модель OpenRouter вручную
 
-VibeForge хранит провайдера и модель **в настройках каждой сессии**, глобального конфиг-файла нет, поэтому `loosechange` не пишет в VibeForge автоматически (почему — раздел VibeForge в [INTEGRATIONS.md](INTEGRATIONS.md)).
+VibeForge хранит провайдера и модель **в настройках каждой сессии**, глобального конфиг-файла нет, поэтому `loosechange` не пишет в VibeForge автоматически (почему — раздел VibeForge в [INTEGRATIONS.md](../INTEGRATIONS.md)).
 
 ## 1. Выберите модель
 - В боте: `/pick` → «Агент с инструментами» → «VibeForge» → кнопка «🔧 #N → VibeForge»; или

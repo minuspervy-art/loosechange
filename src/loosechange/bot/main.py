@@ -20,7 +20,7 @@ from aiogram.exceptions import TelegramUnauthorizedError
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 
-from ..collect import collect
+from ..core.collect import collect
 from .handlers import AntiFlood, Prefs, build_router
 from .store import DataStore
 

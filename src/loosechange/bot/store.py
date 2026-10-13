@@ -9,8 +9,8 @@ from pathlib import Path
 
 import httpx
 
-from ..collect import load_history, load_snapshot
-from ..models import History, Snapshot
+from ..core.collect import load_history, load_snapshot
+from ..core.schema import History, Snapshot
 
 log = logging.getLogger(__name__)
 

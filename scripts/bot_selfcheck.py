@@ -1,5 +1,5 @@
 """Replay a scripted conversation through the real dispatcher (Telegram API mocked)
-and write the bot's answers to docs/bot-selfcheck.md.
+and write the bot's answers to docs/reports/bot-selfcheck.md.
 
     uv run python scripts/bot_selfcheck.py
 """
@@ -145,7 +145,7 @@ async def main() -> None:
             if getattr(m, "reply_markup", None):
                 last_kb = m.reply_markup
         out.append("")
-    target = ROOT / "docs" / "bot-selfcheck.md"
+    target = ROOT / "docs" / "reports" / "bot-selfcheck.md"
     target.write_text("\n".join(out) + "\n")
     print(f"wrote {target.relative_to(ROOT)} ({len(rec.out)} API calls)", file=sys.stderr)
 
