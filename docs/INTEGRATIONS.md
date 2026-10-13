@@ -30,8 +30,23 @@ loosechange add <id> --to hermes --apply                                        
 Почему не round-trip dump ruamel: Hermes сохраняет конфиг PyYAML'ом со сворачиванием длинных строк на 80 колонках, и любой повторный dump (ruamel тоже) переворачивает десятки несвязанных строк (`agent.personalities` и т. п.). Текстовая вставка даёт диф только из наших строк; ruamel используется для разбора и верификации.
 Повторный запуск идемпотентен («nothing to change»).
 
-## VibeForge (macOS-приложение `/Applications/VibeForge.app`)
-Конфиг-формат **неизвестен** — задача первого этапа reverse-engineering: изучить `~/Library/Application Support/com.vibeforge.app/data/` (там `vibeforge.db` — SQLite, `skills/`, `hooks-disabled`), `~/.vibeforge/`, ресурсы .app, UI настроек провайдеров. Не трогать `license-key` и `backend-token`. Если провайдеры хранятся в SQLite — писать только через транзакцию с бэкапом БД и только при закрытом приложении; иначе fallback — пошаговая инструкция со скриншотами/полями UI (`docs/vibeforge-manual.md`). Результат исследования фиксируется в этом файле.
+## VibeForge (macOS-приложение `/Applications/VibeForge.app`) — исследовано (этап 5)
+Исследование 2026-10-13, VibeForge 2.0.15, **только чтение**: БД копировалась в scratch и читалась копия; `license-key` и `backend-token` не открывались (значения `app_settings` с key/token в имени не выводились).
+
+**Что нашли**
+- Приложение — Tauri-оболочка (`Contents/MacOS/app`) + локальный Node-бэкенд `Contents/Resources/resources/backend/` (`index.cjs` грузит `app.jsc` — V8-байткод через bytenode; `server-bundle.cjs` обфусцирован). Это коммерческий закрытый билд; глубокий реверс не делали — только поиск видимых строк.
+- Данные: `~/Library/Application Support/com.vibeforge.app/data/`: `vibeforge.db` (SQLite, drizzle-миграции в ресурсах приложения), `backend-port`, `backend-token`, `cli-update.json`, `guards/worktree-guard.mjs`, `hooks-disabled/`, `skills/`, `uploads/`, `worktrees/`, `workspace-ports.json`; `~/.vibeforge/license-key`.
+- Таблицы БД: `sessions`, `agents`, `tasks`, `queue_items`, `logs`, `app_settings`, `installed_skills`, `skill_usages`, `file_changes`, `files`, `agent_errors`, `autopilot_runs`, `session_turns`, `tester_credentials`, `__drizzle_migrations`.
+- **Провайдер и модель — поля каждой сессии**, а не глобальный конфиг: `sessions.provider` (default `'anthropic'`), `provider_planner/worker/resolver`, `model_planner/worker/resolver`, `engine` (`claude-code` по умолчанию; встречаются `codex-cli`, `kimi-cli`, `antigravity-cli`, `gemini-cli`), `effort_*`. `agents.model` — модель конкретного агента.
+- `app_settings` (key/value) содержит только `license.*` и `mcp.enabled` — **настроек провайдеров там нет**.
+- Список провайдеров зашит в бэкенд: строки `anthropic`, `openai`, `openrouter`, `local` рядом с полями `apiKeyEnv`, `defaultBaseUrl`, `defaultModel`, `baseUrlEnv`. Видимые имена переменных: `ANTHROPIC_API_KEY`, `ANTHROPIC_BASE_URL`, `OPENAI_API_KEY`, `KIMI_API_KEY`, `MOONSHOT_API_KEY`; строки `OPENROUTER_API_KEY` в бинаре нет (вероятно, собирается динамически или ключ вводится в UI) — **не подтверждено**.
+
+**Вывод: безопасная автозапись невозможна.**
+1. Нет файла/таблицы с пользовательскими провайдерами — писать некуда, кроме строк `sessions`, а это рабочее состояние уже существующих сессий пользователя.
+2. Бэкенд держит БД открытой (better-sqlite3); запись из-под работающего приложения рискует гонками, а схема меняется миграциями (30+ штук) без публичного контракта.
+3. HTTP-API бэкенда требует `backend-token`, который трогать запрещено.
+
+Поэтому адаптер `integrations/vibeforge.py` — **render-only**: `loosechange add <id> --to vibeforge` печатает пошаговую инструкцию, бот отдаёт «Provider: OpenRouter / Model: <id>». Инструкция: [vibeforge-manual.md](vibeforge-manual.md). Пересмотреть, если VibeForge опубликует конфиг-файл или CLI для провайдеров.
 
 ## Универсальный fallback
 Для любого OpenAI-совместимого клиента: `base_url=https://openrouter.ai/api/v1`, `model=<id>`, `api_key=$OPENROUTER_API_KEY`.

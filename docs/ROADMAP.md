@@ -7,6 +7,6 @@
 | 2 | Ranker + профили | тесты на каждый профиль, null-бенчмарки → unrated — ✅ |
 | 3 | Бот: /top, /pick, /model | прогон в реальном Telegram с токеном из `.env`; скриншоты в docs/ — ⚠️ бот запущен вживую (long-polling, команды зарегистрированы), диалог проверен самопроверкой [bot-selfcheck.md](bot-selfcheck.md); ручной прогон из Telegram-клиента и скриншоты — за владельцем |
 | 4 | Интеграция Hermes | `loosechange add … --to hermes --dry-run` показывает диф; apply проходит на копии конфига — ✅ 2026-10-13 |
-| 5 | Интеграция VibeForge | исследование → адаптер или manual-инструкция |
+| 5 | Интеграция VibeForge | исследование → адаптер или manual-инструкция — ✅ автозапись небезопасна → render-only + [vibeforge-manual.md](vibeforge-manual.md) (шаги UI подтвердить вручную) |
 | 6 | GitHub Action + Dockerfile + README quickstart | cron обновляет JSON, `docker run` поднимает бота |
 | 7 (v2) | Статичная страница/Mini App, enrichers (LMArena, Aider), LLM-классификатор задач | по желанию |
