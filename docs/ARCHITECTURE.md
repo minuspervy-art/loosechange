@@ -53,3 +53,8 @@ loosechange/
 
 ## Mini App / web — когда
 Только если появится потребность в интерактивной таблице с фильтрами. Тогда `site/` — статика (Vite/Vanilla) поверх `models.json`, открываемая и как сайт, и как Telegram Mini App (кнопка меню бота). Бэкенд не нужен.
+
+## Деплой (этап 6)
+- **Docker**: `python:3.12-slim`, `uv sync --locked --no-dev --extra bot` (версии из `uv.lock`), непривилегированный пользователь, без открытых портов. По умолчанию бот сам обновляет вложенный снапшот каждые 3 ч; с `LOOSECHANGE_DATA_URL` читает JSON из репозитория.
+- **GitHub Actions**: `collect.yml` (cron `17 */3 * * *` + ручной запуск, `contents: write`, коммит только при изменении `data/`; из-за `generated_at`/uptime это почти каждый запуск — история = `git log data/`), `ci.yml` (ruff, ruff format --check, pytest).
+- Зависимость `aiogram` вынесена в extra `bot`, чтобы CLI (`uvx loosechange`) ставился легче.

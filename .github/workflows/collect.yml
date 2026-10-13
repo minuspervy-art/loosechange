@@ -1,0 +1,36 @@
+name: collect
+
+# Refreshes data/models.json from the public OpenRouter API and commits it.
+# Needs only the built-in GITHUB_TOKEN (no bot secrets in CI, see docs/SECURITY.md).
+on:
+  schedule:
+    - cron: "17 */3 * * *"  # every 3 hours
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked --no-dev
+      - run: uv run --no-dev loosechange collect
+      - name: Commit snapshot
+        run: |
+          if git diff --quiet -- data; then
+            echo "snapshot unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git commit -m "data: refresh free models snapshot"
+          git push
