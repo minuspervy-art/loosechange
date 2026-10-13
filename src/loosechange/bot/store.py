@@ -10,6 +10,7 @@ from pathlib import Path
 import httpx
 
 from ..core.collect import load_history, load_snapshot
+from ..core.refresh import Refresher
 from ..core.schema import History, Snapshot
 
 log = logging.getLogger(__name__)
@@ -21,9 +22,10 @@ class DataStore:
     # e.g. https://raw.githubusercontent.com/<you>/loosechange/main/data/models.json
     url: str | None = None
     refresh_s: int = 600
+    refresher: Refresher | None = None  # timed refresh of the local file (path mode)
     snapshot: Snapshot | None = None
     history: History = field(default_factory=History)
-    _mtime: float = 0.0
+    _mtime: int = 0
     _fetched: float = 0.0
 
     @property
@@ -39,6 +41,8 @@ class DataStore:
                 await self._refresh_url()
             elif self.path:
                 self._refresh_file()
+                if self.refresher and await self.refresher.ensure_fresh(self.snapshot):
+                    self._refresh_file()
         except Exception as exc:  # keep serving the last good snapshot
             log.warning("snapshot refresh failed: %s", exc)
         return self.snapshot
@@ -47,7 +51,7 @@ class DataStore:
         assert self.path is not None
         if not self.path.exists():
             return
-        mtime = self.path.stat().st_mtime
+        mtime = self.path.stat().st_mtime_ns
         if mtime == self._mtime and self.snapshot:
             return
         snap = load_snapshot(self.path)

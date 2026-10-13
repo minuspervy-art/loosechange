@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from collections.abc import Iterable
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -127,10 +128,14 @@ def build_snapshot(
     endpoints: dict[str, list[dict]] | None = None,
     previous: Snapshot | None = None,
     now: datetime | None = None,
+    reuse_reliability: bool = False,
 ) -> Snapshot:
+    """`endpoints` given -> fresh uptime (reliability_at = now). With `reuse_reliability`
+    (quick list-only refresh) known models keep the previous uptime and timestamp."""
     now = now or datetime.now(UTC)
     endpoints = endpoints or {}
-    prev_seen = {m.id: m.first_seen for m in previous.models} if previous else {}
+    prev = {m.id: m for m in previous.models} if previous else {}
+    prev_seen = {i: m.first_seen for i, m in prev.items()}
     models: list[Model] = []
     excluded: list[Excluded] = []
     for raw in raw_models:
@@ -143,11 +148,21 @@ def build_snapshot(
         m = normalize(raw)
         if m.id in endpoints:
             m.reliability = aggregate_endpoints(endpoints[m.id])
+        elif reuse_reliability and m.id in prev:
+            m.reliability = prev[m.id].reliability
         m.first_seen = prev_seen.get(m.id) or now
         models.append(m)
     models.sort(key=lambda m: m.id)
+    if reuse_reliability:
+        reliability_at = previous.reliability_at if previous else None
+    else:
+        reliability_at = now if endpoints else None
     return Snapshot(
-        generated_at=now, total_models=len(raw_models), models=models, excluded=excluded
+        generated_at=now,
+        reliability_at=reliability_at,
+        total_models=len(raw_models),
+        models=models,
+        excluded=excluded,
     )
 
 
@@ -197,9 +212,12 @@ def load_history(path: Path) -> History:
 
 
 def _dump(path: Path, obj) -> None:
+    """Atomic write: the bot may be reading the file at the same moment."""
     path.parent.mkdir(parents=True, exist_ok=True)
     data = obj.model_dump(mode="json", exclude_none=False)
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
+    tmp = path.with_name(f".{path.name}.tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
+    os.replace(tmp, path)
 
 
 def collect(
@@ -207,6 +225,7 @@ def collect(
     client: httpx.Client | None = None,
     with_endpoints: bool = True,
 ) -> tuple[Snapshot, HistoryEvent | None]:
+    """Full refresh: model list + per-model /endpoints (uptime). ~1 + N requests."""
     own = client is None
     client = client or httpx.Client(timeout=30, headers={"User-Agent": USER_AGENT})
     try:
@@ -221,11 +240,31 @@ def collect(
     finally:
         if own:
             client.close()
+    return _persist(data_dir, raw, endpoints, reuse_reliability=not with_endpoints)
 
+
+def quick_collect(
+    data_dir: Path = DEFAULT_DATA_DIR, client: httpx.Client | None = None
+) -> tuple[Snapshot, HistoryEvent | None]:
+    """List-only refresh (1 request): catches added/removed free models fast and keeps
+    the last known uptime for models that are still there."""
+    own = client is None
+    client = client or httpx.Client(timeout=15, headers={"User-Agent": USER_AGENT})
+    try:
+        raw = fetch_models(client)
+    finally:
+        if own:
+            client.close()
+    return _persist(data_dir, raw, {}, reuse_reliability=True)
+
+
+def _persist(
+    data_dir: Path, raw: list[dict], endpoints: dict[str, list[dict]], reuse_reliability: bool
+) -> tuple[Snapshot, HistoryEvent | None]:
     snap_path = data_dir / "models.json"
     hist_path = data_dir / "history" / "changes.json"
     previous = load_snapshot(snap_path)
-    snapshot = build_snapshot(raw, endpoints, previous)
+    snapshot = build_snapshot(raw, endpoints, previous, reuse_reliability=reuse_reliability)
     event = diff(previous, snapshot)
 
     history = load_history(hist_path)

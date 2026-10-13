@@ -42,7 +42,7 @@ uv run loosechange collect
 ```bash
 uv run loosechange-bot
 ```
-Long-polling: домен, вебхук и открытые порты не нужны.
+Long-polling: домен, вебхук и открытые порты не нужны. Бот сам обновляет `data/models.json` по таймерам (список — 15 мин, uptime — 60 мин).
 
 ### Бот в Docker
 ```bash
@@ -51,7 +51,7 @@ docker build -t loosechange .
 ```bash
 docker run -d --restart unless-stopped --env-file .env --name loosechange loosechange
 ```
-В образе есть снапшот `data/models.json`; бот сам обновляет его каждые 3 ч (`LOOSECHANGE_SELF_COLLECT_HOURS`). Если репозиторий опубликован и Action обновляет JSON — задайте `LOOSECHANGE_DATA_URL=https://raw.githubusercontent.com/<you>/loosechange/main/data/models.json`.
+В образе есть снапшот `data/models.json`; бот сам держит его свежим по таймерам истечения: список бесплатных моделей — каждые 15 мин, uptime — раз в час (`LOOSECHANGE_REFRESH_MINUTES`, `LOOSECHANGE_FULL_REFRESH_MINUTES`; подробности — docs/ARCHITECTURE.md → «Обновление данных»). Если репозиторий опубликован и Action обновляет JSON — задайте `LOOSECHANGE_DATA_URL=https://raw.githubusercontent.com/<you>/loosechange/main/data/models.json`.
 
 ### Данные по расписанию (GitHub Actions)
 - `.github/workflows/collect.yml` — каждые 3 ч `loosechange collect` и коммит `data/` (только `GITHUB_TOKEN`, секреты бота в CI не нужны). Запуск вручную — `workflow_dispatch`.

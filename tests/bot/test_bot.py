@@ -367,3 +367,79 @@ def test_copy_kb_respects_telegram_limit():
 
     s = Snippet(target="hermes", language="text", body="", command="x" * 300, copy_text="x" * 300)
     assert copy_kb(s, "ru") is None
+
+
+def test_expiry_countdown():
+    from datetime import date
+
+    from loosechange.bot.render import ago, time_left
+
+    today = date(2026, 10, 13)
+    assert time_left("ru", date(2026, 10, 31), today) == "через 18 дн."
+    assert time_left("ru", date(2026, 10, 14), today) == "завтра"
+    assert time_left("ru", today, today) == "сегодня"
+    assert time_left("en", date(2026, 10, 1), today) == "date passed"
+    assert ago("ru", NOW - timedelta(minutes=7), NOW) == "7 мин назад"
+    assert ago("en", NOW - timedelta(hours=3), NOW) == "3 h ago"
+
+
+def test_card_shows_countdown(raw_models):
+    from datetime import date
+
+    from loosechange.bot.render import model_card
+
+    snap = build_snapshot(raw_models, now=NOW)
+    m = snap.get("poolside/laguna-s-2.1:free")
+    assert m.expiration_date == date(2026, 10, 31)
+    card = model_card(m, "ru", today=date(2026, 10, 13))
+    assert "бесплатно до 2026-10-31 (через 18 дн.)" in card
+    card = model_card(m, "ru", today=date(2026, 10, 28))
+    assert "скоро исчезнет: 2026-10-31 (через 3 дн.)" in card
+
+
+async def test_about_shows_refresh_timers(raw_models, tmp_path):
+    from loosechange.core.refresh import Refresher, RefreshPolicy
+
+    _dump(tmp_path / "models.json", build_snapshot(raw_models, now=NOW))
+    store = DataStore(
+        path=tmp_path / "models.json",
+        refresher=Refresher(
+            tmp_path, RefreshPolicy.from_minutes(15, 60), quick=lambda d: None, full=lambda d: None
+        ),
+    )
+    dp = build_dispatcher(store, Prefs(), flood_interval=0)
+    session = RecordingSession()
+    await dp.feed_update(Bot("42:TEST", session=session), msg_update("/about"))
+    text = session.sent()[-1].text
+    assert "каждые 15 мин" in text and "каждые 60 мин" in text
+    assert "мин назад" in text
+
+
+def test_refresh_policy_from_env(monkeypatch):
+    from datetime import timedelta as td
+
+    from loosechange.bot.main import refresh_policy_from_env
+
+    for k in (
+        "LOOSECHANGE_REFRESH_MINUTES",
+        "LOOSECHANGE_FULL_REFRESH_MINUTES",
+        "LOOSECHANGE_SELF_COLLECT_HOURS",
+    ):
+        monkeypatch.delenv(k, raising=False)
+    p = refresh_policy_from_env()
+    assert (p.list_ttl, p.full_ttl) == (td(minutes=15), td(minutes=60))
+    monkeypatch.setenv("LOOSECHANGE_SELF_COLLECT_HOURS", "3")
+    assert refresh_policy_from_env().full_ttl == td(hours=3)
+    monkeypatch.setenv("LOOSECHANGE_REFRESH_MINUTES", "10")
+    monkeypatch.setenv("LOOSECHANGE_FULL_REFRESH_MINUTES", "oops")
+    p = refresh_policy_from_env()
+    assert p.list_ttl == td(minutes=10) and p.full_ttl == td(hours=3)
+
+
+async def test_vibeforge_snippet_has_no_terminal_command(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/model thinkingmachines/inkling-small:free"))
+    vf = next(b for b in buttons(session.sent()[-1]) if "VibeForge" in b.text)
+    await feed(env, cb_update(vf.callback_data))
+    text = session.sent()[-1].text
+    assert "loosechange add" not in text and "Provider: OpenRouter" in text

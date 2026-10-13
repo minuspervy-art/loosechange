@@ -1,8 +1,9 @@
 """Bot entry point: long-polling, no webhook/domain needed.
 
-Env (see .env.example): TELEGRAM_BOT_TOKEN (required), LOOSECHANGE_DATA (path,
-default data/models.json), LOOSECHANGE_DATA_URL (raw GitHub URL, overrides the
-path), LOOSECHANGE_SELF_COLLECT_HOURS (run the collector inside the bot).
+Env (see .env.example and docs/ARCHITECTURE.md): TELEGRAM_BOT_TOKEN (required),
+LOOSECHANGE_DATA (path, default data/models.json), LOOSECHANGE_DATA_URL (raw GitHub
+URL, overrides the path), LOOSECHANGE_REFRESH_MINUTES / LOOSECHANGE_FULL_REFRESH_MINUTES
+(expiry timers of the model list / uptime; 0 disables).
 """
 
 from __future__ import annotations
@@ -20,7 +21,8 @@ from aiogram.exceptions import TelegramUnauthorizedError
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 
-from ..core.collect import collect
+from ..core.collect import load_snapshot
+from ..core.refresh import Refresher, RefreshPolicy
 from .handlers import AntiFlood, Prefs, build_router
 from .store import DataStore
 
@@ -83,14 +85,23 @@ def setup_logging(token: str) -> None:
         handler.addFilter(RedactFilter(token))
 
 
-async def self_collect_loop(data_path: Path, hours: float) -> None:
-    while True:
+def refresh_policy_from_env() -> RefreshPolicy:
+    def minutes(name: str, default: float) -> float:
+        raw = os.environ.get(name, "").strip()
         try:
-            snap, _ = await asyncio.to_thread(collect, data_path.parent)
-            log.info("collected %d free models", len(snap.models))
-        except Exception as exc:
-            log.warning("self-collect failed: %s", exc)
-        await asyncio.sleep(hours * 3600)
+            return float(raw) if raw else default
+        except ValueError:
+            log.warning("%s=%r is not a number; using %s", name, raw, default)
+            return default
+
+    full_default = 60.0
+    legacy_hours = os.environ.get("LOOSECHANGE_SELF_COLLECT_HOURS", "").strip()
+    if legacy_hours:  # backward compatibility with the first release
+        full_default = minutes("LOOSECHANGE_SELF_COLLECT_HOURS", 1.0) * 60
+    return RefreshPolicy.from_minutes(
+        minutes("LOOSECHANGE_REFRESH_MINUTES", 15.0),
+        minutes("LOOSECHANGE_FULL_REFRESH_MINUTES", full_default),
+    )
 
 
 def build_dispatcher(
@@ -116,7 +127,12 @@ async def run() -> None:
 
     data_path = Path(os.environ.get("LOOSECHANGE_DATA", "data/models.json"))
     url = os.environ.get("LOOSECHANGE_DATA_URL") or None
-    store = DataStore(path=data_path, url=url)
+    refresher = None
+    if not url:
+        policy = refresh_policy_from_env()
+        if policy.enabled:
+            refresher = Refresher(data_path.parent, policy)
+    store = DataStore(path=data_path, url=url, refresher=refresher)
     dp = build_dispatcher(store)
 
     bot = Bot(token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -136,9 +152,14 @@ async def run() -> None:
             )
         await bot.delete_webhook(drop_pending_updates=False)
 
-        hours = float(os.environ.get("LOOSECHANGE_SELF_COLLECT_HOURS", "0") or 0)
-        if hours > 0 and not url:
-            tasks.append(asyncio.create_task(self_collect_loop(data_path, hours)))
+        if refresher:
+            p = refresher.policy
+            log.info(
+                "data refresh timers: list every %s, uptime every %s",
+                p.list_ttl or "off",
+                p.full_ttl or "off",
+            )
+            tasks.append(asyncio.create_task(refresher.loop(lambda: load_snapshot(data_path))))
         log.info("starting long-polling as @%s", me.username)
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:

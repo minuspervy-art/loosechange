@@ -9,7 +9,7 @@ Details: docs/INTEGRATIONS.md, docs/guides/vibeforge-manual.md.
 
 from __future__ import annotations
 
-from .base import ApplyNotSupported, Snippet, cli_command
+from .base import ApplyNotSupported, Snippet
 
 MANUAL_URL = "docs/guides/vibeforge-manual.md"
 
@@ -20,7 +20,7 @@ def render(model_id: str, profile: str) -> Snippet:
         target="vibeforge",
         language="text",
         body=body,
-        command=cli_command(model_id, "vibeforge", profile),
+        # no terminal command: there is nothing to apply locally, the id goes into the UI
         copy_text=model_id,
         notes={
             "ru": [

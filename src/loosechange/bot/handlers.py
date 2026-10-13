@@ -166,12 +166,22 @@ async def cmd_start(message: Message, prefs: Prefs, state: FSMContext) -> None:
 
 @on("message", Command("about"))
 async def cmd_about(message: Message, prefs: Prefs, store: DataStore) -> None:
+    lang = _lang(prefs, message)
     snap = await store.get()
     count = len(snap.models) if snap else 0
     ts = snap.generated_at.strftime("%Y-%m-%d %H:%M UTC") if snap else "—"
-    await message.answer(
-        t(_lang(prefs, message), "about", count=count, ts=ts), disable_web_page_preview=True
-    )
+    text = t(lang, "about", count=count, ts=ts)
+    if snap:
+        text += "\n" + t(lang, "about_fresh", ago=render.ago(lang, snap.generated_at))
+    if store.refresher:
+        p = store.refresher.policy
+        text += "\n" + t(
+            lang,
+            "about_timers",
+            list=f"{p.list_ttl.total_seconds() / 60:g}",
+            full=f"{p.full_ttl.total_seconds() / 60:g}",
+        )
+    await message.answer(text, disable_web_page_preview=True)
 
 
 @on("message", Command("lang"))

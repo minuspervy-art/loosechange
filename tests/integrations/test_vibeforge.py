@@ -11,7 +11,8 @@ def test_render_is_instructions_only():
     s = integrations.render("vibeforge", MID, "agent")
     assert s.target == "vibeforge"
     assert "Provider: OpenRouter" in s.body and MID in s.body
-    assert s.command.endswith("--to vibeforge --profile agent")
+    assert s.command is None  # nothing to run in a terminal for VibeForge
+    assert s.copy_text == MID
     assert s.notes["ru"] and s.notes["en"]
 
 

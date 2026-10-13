@@ -86,7 +86,8 @@ class Excluded(BaseModel):
 
 class Snapshot(BaseModel):
     schema_version: int = SCHEMA_VERSION
-    generated_at: datetime
+    generated_at: datetime  # when the model list was fetched
+    reliability_at: datetime | None = None  # when uptime (/endpoints) was last fetched
     source: str = "https://openrouter.ai/api/v1/models"
     total_models: int = 0
     models: list[Model] = Field(default_factory=list)

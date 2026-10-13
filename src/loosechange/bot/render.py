@@ -51,7 +51,30 @@ def stale_footer(snapshot: Snapshot, lang: str, now: datetime | None = None) -> 
     return ""
 
 
-def model_lines(m: Model, lang: str, flags: list[str] | None = None) -> list[str]:
+def time_left(lang: str, until: date, today: date | None = None) -> str:
+    """Expiry countdown: «сегодня», «завтра», «через 18 дн.»."""
+    days = (until - (today or date.today())).days
+    if days < 0:
+        return t(lang, "left_past")
+    if days == 0:
+        return t(lang, "left_today")
+    if days == 1:
+        return t(lang, "left_tomorrow")
+    return t(lang, "left_days", n=days)
+
+
+def ago(lang: str, then: datetime, now: datetime | None = None) -> str:
+    minutes = max(0, int(((now or datetime.now(UTC)) - then).total_seconds() // 60))
+    if minutes < 60:
+        return t(lang, "ago_min", n=minutes)
+    if minutes < 48 * 60:
+        return t(lang, "ago_h", n=minutes // 60)
+    return t(lang, "ago_d", n=minutes // 1440)
+
+
+def model_lines(
+    m: Model, lang: str, flags: list[str] | None = None, today: date | None = None
+) -> list[str]:
     """Body of a card without the title line."""
     flags = flags or []
     b = m.benchmarks
@@ -71,7 +94,8 @@ def model_lines(m: Model, lang: str, flags: list[str] | None = None) -> list[str
         warn.append(t(lang, "low_uptime", uptime=up))
     if m.expiration_date:
         key = "expires_soon" if EXPIRING_FLAG in flags else "expires"
-        warn.append(t(lang, key, date=m.expiration_date.isoformat()))
+        left = time_left(lang, m.expiration_date, today)
+        warn.append(t(lang, key, date=m.expiration_date.isoformat(), left=left))
     if m.is_router:
         warn.append(t(lang, "router"))
     if NO_TOOLS_FLAG in flags:
@@ -96,7 +120,7 @@ def model_card(m: Model, lang: str, today: date | None = None) -> str:
     up = m.reliability.uptime_30m if m.reliability else None
     if up is not None and up < 90:
         flags.append(LOW_UPTIME_FLAG)
-    parts = [f"<b>{escape(m.name)}</b>", *model_lines(m, lang, flags)]
+    parts = [f"<b>{escape(m.name)}</b>", *model_lines(m, lang, flags, today)]
     if m.description:
         parts.append(f"<i>{escape(m.description)}</i>")
     parts.append(f'<a href="{escape(m.url)}">openrouter.ai/{escape(m.id)}</a>')
@@ -178,8 +202,8 @@ def new_message(
     if not added and not removed:
         lines.append(t(lang, "new_none"))
     soon = [
-        f"{m.id} ({m.expiration_date})"
-        for m in snapshot.models
+        f"{m.id} — {time_left(lang, m.expiration_date, now.date())}"
+        for m in sorted(snapshot.models, key=lambda m: m.expiration_date or date.max)
         if m.expiration_date and (m.expiration_date - now.date()).days <= 7
     ]
     if soon:

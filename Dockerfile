@@ -8,7 +8,8 @@ ENV PYTHONUNBUFFERED=1 \
     UV_LINK_MODE=copy \
     PATH="/app/.venv/bin:$PATH" \
     LOOSECHANGE_DATA=/app/data/models.json \
-    LOOSECHANGE_SELF_COLLECT_HOURS=3
+    LOOSECHANGE_REFRESH_MINUTES=15 \
+    LOOSECHANGE_FULL_REFRESH_MINUTES=60
 
 RUN pip install --no-cache-dir uv==0.11.32 \
     && useradd --create-home --uid 10001 app
@@ -21,7 +22,7 @@ COPY data ./data
 RUN chown -R app:app /app/data
 
 USER app
-# Data source: the bundled snapshot, refreshed in-process every
-# LOOSECHANGE_SELF_COLLECT_HOURS; or set LOOSECHANGE_DATA_URL to the raw GitHub
+# Data source: the bundled snapshot, refreshed in-process by expiry timers
+# (model list / uptime, see docs/ARCHITECTURE.md); or set LOOSECHANGE_DATA_URL to the raw GitHub
 # URL of data/models.json kept fresh by .github/workflows/collect.yml.
 CMD ["loosechange-bot"]

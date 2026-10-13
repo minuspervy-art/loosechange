@@ -29,9 +29,24 @@ GitHub Action (cron 3ч)         ┌── bot (aiogram) ── Telegram
 | `TELEGRAM_BOT_TOKEN` | обязательно |
 | `LOOSECHANGE_DATA` | путь к снапшоту, по умолчанию `data/models.json` (перечитывается при изменении mtime) |
 | `LOOSECHANGE_DATA_URL` | raw-URL снапшота в GitHub; если задан — бот читает его раз в 10 мин, путь игнорируется |
-| `LOOSECHANGE_SELF_COLLECT_HOURS` | если > 0 и URL не задан — бот сам запускает коллектор с этим интервалом (для Docker без GitHub Action) |
+| `LOOSECHANGE_REFRESH_MINUTES` | TTL списка моделей, по умолчанию `15`; `0` — выкл. (см. «Обновление данных») |
+| `LOOSECHANGE_FULL_REFRESH_MINUTES` | TTL uptime (полный сбор с `/endpoints`), по умолчанию `60`; `0` — выкл. |
+| `LOOSECHANGE_SELF_COLLECT_HOURS` | устаревшее (первый релиз): если задано — задаёт TTL uptime в часах |
 | `LOOSECHANGE_CLI` | префикс команды в сниппетах и кнопке «Скопировать команду», по умолчанию `uvx loosechange`; локально удобно `uv run --project <путь к репо> loosechange` |
 Токен дополнительно вырезается из любых строк логов (`RedactFilter`), логгер httpx приглушён до WARNING.
+
+## Обновление данных (таймеры истечения)
+Free-модели OpenRouter появляются и исчезают за дни, поэтому бот держит локальный снапшот свежим сам (`core/refresh.py`, если не задан `LOOSECHANGE_DATA_URL`). Два таймера считаются от меток внутри снапшота, поэтому переживают рестарт и сон ноутбука:
+| Таймер | По умолчанию | Что делает | Цена |
+|---|---|---|---|
+| список (`generated_at` + TTL) | 15 мин | `quick_collect`: только `GET /models` — ловит новые/исчезнувшие модели; uptime известных моделей переносится из прошлого снапшота | 1 запрос, ~1 с |
+| uptime (`reliability_at` + TTL) | 60 мин | `collect`: `/models` + `/endpoints` каждой free-модели | ~18 запросов, 5–15 с |
+- **Перед ответом пользователю** (`DataStore.get`): истёк список — бот обновляет его и ждёт до 8 с (дольше — отвечает из кэша); истёк только uptime — полный сбор уходит в фон, ответ сразу. Параллельно двух обновлений не бывает (lock).
+- **Фоновый таймер** раз в минуту проверяет сроки, так что данные свежие и без пользователей (и `/new` видит изменения вовремя).
+- Ошибка сети → предупреждение в лог, бот работает на последнем снапшоте; если данным > 12 ч, в ответах появляется «данные от …».
+- Запись снапшота атомарная (temp + `os.replace`).
+- В карточках — обратный отсчёт до `expiration_date`: «бесплатно до 2026-10-31 (через 18 дн.)», за 7 дней — «скоро исчезнет»; `/about` показывает, когда обновлён список, и таймеры.
+- GitHub Action (`collect.yml`, раз в 3 ч) остаётся для публичного `data/models.json`; бот с `LOOSECHANGE_DATA_URL` перечитывает его раз в 10 мин.
 
 ## Почему так
 - Бот не может изменить локальный конфиг пользователя → всегда отдаёт (а) YAML/JSON-сниппет, (б) однострочник `uvx loosechange add …`.
@@ -45,6 +60,7 @@ loosechange/
 │  ├─ core/                 # данные: без Telegram и без чужих конфигов
 │  │  ├─ schema.py          # pydantic: Snapshot, Model, Benchmarks, History
 │  │  ├─ collect.py         # OpenRouter → data/models.json (+ history)
+│  │  ├─ refresh.py         # обновление по таймерам истечения (список / uptime)
 │  │  ├─ profiles.py        # профили задач: веса и требования
 │  │  └─ rank.py            # чистое ранжирование
 │  ├─ bot/                  # Telegram (aiogram 3, long-polling)
@@ -53,7 +69,7 @@ loosechange/
 │  │  ├─ dialog.py          # кнопки, callback-data, правила свободного текста
 │  │  ├─ render.py          # HTML-карточки, пагинация
 │  │  ├─ i18n.py            # строки RU/EN
-│  │  └─ store.py           # снапшот для бота (файл или URL)
+│  │  └─ store.py           # снапшот для бота (файл или URL) + таймеры
 │  ├─ integrations/         # куда добавить модель
 │  │  ├─ base.py            # Snippet, команда CLI
 │  │  ├─ hermes.py          # ~/.hermes/config.yaml (+ .env по --key-file)
@@ -77,6 +93,6 @@ loosechange/
 Только если появится потребность в интерактивной таблице с фильтрами. Тогда `site/` — статика (Vite/Vanilla) поверх `models.json`, открываемая и как сайт, и как Telegram Mini App (кнопка меню бота). Бэкенд не нужен.
 
 ## Деплой (этап 6)
-- **Docker**: `python:3.12-slim`, `uv sync --locked --no-dev --extra bot` (версии из `uv.lock`), непривилегированный пользователь, без открытых портов. По умолчанию бот сам обновляет вложенный снапшот каждые 3 ч; с `LOOSECHANGE_DATA_URL` читает JSON из репозитория.
+- **Docker**: `python:3.12-slim`, `uv sync --locked --no-dev --extra bot` (версии из `uv.lock`), непривилегированный пользователь, без открытых портов. По умолчанию бот сам обновляет вложенный снапшот по таймерам (список — 15 мин, uptime — 60 мин); с `LOOSECHANGE_DATA_URL` читает JSON из репозитория.
 - **GitHub Actions**: `collect.yml` (cron `17 */3 * * *` + ручной запуск, `contents: write`, коммит только при изменении `data/`; из-за `generated_at`/uptime это почти каждый запуск — история = `git log data/`), `ci.yml` (ruff, ruff format --check, pytest).
 - Зависимость `aiogram` вынесена в extra `bot`, чтобы CLI (`uvx loosechange`) ставился легче.
