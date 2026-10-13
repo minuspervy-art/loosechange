@@ -8,9 +8,16 @@ from dataclasses import dataclass, field
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_KEY_ENV = "OPENROUTER_API_KEY"
-# How users run the CLI; override until the package is on PyPI, e.g.
-# LOOSECHANGE_CLI="uvx --from git+https://github.com/<you>/loosechange loosechange"
-CLI = os.environ.get("LOOSECHANGE_CLI", "uvx loosechange")
+DEFAULT_CLI = "uvx loosechange"
+
+
+def cli_prefix() -> str:
+    """How users run the CLI. Read lazily: the bot loads .env after imports.
+
+    Override until the package is on PyPI, e.g.
+    LOOSECHANGE_CLI="uvx --from git+https://github.com/<you>/loosechange loosechange"
+    """
+    return os.environ.get("LOOSECHANGE_CLI", "").strip() or DEFAULT_CLI
 
 
 @dataclass
@@ -19,6 +26,7 @@ class Snippet:
     language: str  # code-block language: yaml / text
     body: str
     command: str | None = None  # one-liner that applies it locally
+    copy_text: str | None = None  # what the bot's one-tap "copy" button puts on the clipboard
     notes: dict[str, list[str]] = field(default_factory=dict)  # lang -> lines
 
 
@@ -30,8 +38,9 @@ def alias_for(profile: str) -> str:
     return f"free-{profile.replace('_', '-')}"
 
 
-def cli_command(model_id: str, target: str, profile: str) -> str:
-    return f"{CLI} add {shlex.quote(model_id)} --to {target} --profile {profile}"
+def cli_command(model_id: str, target: str, profile: str, apply: bool = False) -> str:
+    cmd = f"{cli_prefix()} add {shlex.quote(model_id)} --to {target} --profile {profile}"
+    return f"{cmd} --apply" if apply else cmd
 
 
 def render_generic(model_id: str, profile: str) -> Snippet:
@@ -42,6 +51,7 @@ def render_generic(model_id: str, profile: str) -> Snippet:
         target="other",
         language="text",
         body=body,
+        copy_text=model_id,
         notes={
             "ru": ["Любой OpenAI-совместимый клиент: укажите эти три параметра."],
             "en": ["Any OpenAI-compatible client: set these three values."],

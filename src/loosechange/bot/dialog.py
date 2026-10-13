@@ -6,9 +6,9 @@ import re
 
 from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import CopyTextButton, InlineKeyboardButton, InlineKeyboardMarkup
 
-from ..integrations import TARGETS
+from ..integrations import TARGETS, Snippet
 from ..profiles import PROFILES, Priority
 from ..rank import RankResult
 from .i18n import LANGS, t
@@ -159,6 +159,19 @@ def card_kb(idx: int, lang: str, ver: int) -> InlineKeyboardMarkup:
         for tg in TARGETS
     ]
     return InlineKeyboardMarkup(inline_keyboard=[btns])
+
+
+COPY_TEXT_LIMIT = 256  # Telegram limit for CopyTextButton.text
+
+
+def copy_kb(snippet: Snippet, lang: str) -> InlineKeyboardMarkup | None:
+    """One tap puts the ready command (or the model id) on the clipboard."""
+    text = snippet.copy_text
+    if not text or len(text) > COPY_TEXT_LIMIT:
+        return None
+    label = t(lang, "copy_cmd" if text == snippet.command else "copy_id")
+    btn = InlineKeyboardButton(text=label, copy_text=CopyTextButton(text=text))
+    return InlineKeyboardMarkup(inline_keyboard=[[btn]])
 
 
 # ---------------------------------------------------------------- free text -> profile

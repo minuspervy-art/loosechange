@@ -32,6 +32,7 @@ def alias_entry(model_id: str) -> dict[str, str]:
 
 def render(model_id: str, profile: str) -> Snippet:
     alias = alias_for(profile)
+    command = cli_command(model_id, "hermes", profile, apply=True)
     body = (
         "model_aliases:\n"
         f"  {alias}:\n"
@@ -43,13 +44,16 @@ def render(model_id: str, profile: str) -> Snippet:
         target="hermes",
         language="yaml",
         body=body,
-        command=cli_command(model_id, "hermes", profile),
+        command=command,
+        copy_text=command,
         notes={
             "ru": [
+                "Команда делает бэкап config.yaml; без --apply — только покажет изменения.",
                 f"Ключ: {OPENROUTER_KEY_ENV} в ~/.hermes/.env. Запуск: hermes -m {alias}",
                 "Free-модели OpenRouter имеют лимиты запросов в минуту и в сутки.",
             ],
             "en": [
+                "The command backs up config.yaml; without --apply it only shows the diff.",
                 f"Key: {OPENROUTER_KEY_ENV} in ~/.hermes/.env. Run: hermes -m {alias}",
                 "OpenRouter free models are rate-limited per minute and per day.",
             ],
@@ -293,6 +297,20 @@ def write(p: Plan, now: datetime | None = None) -> Path | None:
         Path(tmp).unlink(missing_ok=True)
         raise
     return backup
+
+
+def has_openrouter_key(config_path: Path) -> bool:
+    """Is OPENROUTER_API_KEY set for Hermes (env or <hermes home>/.env)? Never prints it."""
+    if os.environ.get(OPENROUTER_KEY_ENV, "").strip():
+        return True
+    env_file = config_path.parent / ".env"
+    if not env_file.exists():
+        return False
+    for line in env_file.read_text(errors="replace").splitlines():
+        key, sep, value = line.strip().removeprefix("export ").partition("=")
+        if sep and key.strip() == OPENROUTER_KEY_ENV and value.strip().strip("'\""):
+            return True
+    return False
 
 
 def smoke_check(p: Plan, timeout: int = 60) -> str | None:

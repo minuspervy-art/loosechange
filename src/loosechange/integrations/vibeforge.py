@@ -21,6 +21,7 @@ def render(model_id: str, profile: str) -> Snippet:
         language="text",
         body=body,
         command=cli_command(model_id, "vibeforge", profile),
+        copy_text=model_id,
         notes={
             "ru": [
                 "VibeForge хранит провайдера и модель в настройках каждой сессии: "

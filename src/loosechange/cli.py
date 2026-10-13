@@ -204,7 +204,13 @@ def add(
         out = f"skipped ({exc})"
     if out is not None:
         typer.echo(f"hermes config get model_aliases.{plan.alias}.model -> {out}")
-    typer.echo(f"use it: hermes -m {plan.alias}   (needs OPENROUTER_API_KEY in ~/.hermes/.env)")
+    typer.echo(f"use it: hermes -m {plan.alias}")
+    if not hermes.has_openrouter_key(plan.path):
+        typer.secho(
+            "note: OPENROUTER_API_KEY is not set for Hermes — add it to "
+            f"{plan.path.parent / '.env'} (key: https://openrouter.ai/keys)",
+            fg="yellow",
+        )
 
 
 @app.command("collect")

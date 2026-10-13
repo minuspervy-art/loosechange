@@ -30,7 +30,7 @@ GitHub Action (cron 3ч)         ┌── bot (aiogram) ── Telegram
 | `LOOSECHANGE_DATA` | путь к снапшоту, по умолчанию `data/models.json` (перечитывается при изменении mtime) |
 | `LOOSECHANGE_DATA_URL` | raw-URL снапшота в GitHub; если задан — бот читает его раз в 10 мин, путь игнорируется |
 | `LOOSECHANGE_SELF_COLLECT_HOURS` | если > 0 и URL не задан — бот сам запускает коллектор с этим интервалом (для Docker без GitHub Action) |
-| `LOOSECHANGE_CLI` | как показывать однострочник CLI, по умолчанию `uvx loosechange` |
+| `LOOSECHANGE_CLI` | префикс команды в сниппетах и кнопке «Скопировать команду», по умолчанию `uvx loosechange`; локально удобно `uv run --project <путь к репо> loosechange` |
 Токен дополнительно вырезается из любых строк логов (`RedactFilter`), логгер httpx приглушён до WARNING.
 
 ## Почему так

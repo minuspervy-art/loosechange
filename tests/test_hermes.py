@@ -171,3 +171,22 @@ def test_default_config_path(monkeypatch, tmp_path):
 def test_smoke_check_without_hermes(monkeypatch, cfg):
     monkeypatch.setattr(hermes.shutil, "which", lambda _: None)
     assert hermes.smoke_check(hermes.plan(MID, "agent", cfg)) is None
+
+
+def test_has_openrouter_key(tmp_path, monkeypatch):
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    cfg = tmp_path / "config.yaml"
+    assert not hermes.has_openrouter_key(cfg)
+    env = tmp_path / ".env"
+    env.write_text("OTHER=1\nOPENROUTER_API_KEY=\n")
+    assert not hermes.has_openrouter_key(cfg)  # empty value does not count
+    env.write_text('export OPENROUTER_API_KEY="sk-or-test"\n')
+    assert hermes.has_openrouter_key(cfg)
+    env.unlink()
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-test")
+    assert hermes.has_openrouter_key(cfg)
+
+
+def test_render_command_applies():
+    s = hermes.render(MID, "agent")
+    assert s.command.endswith("--apply") and s.copy_text == s.command

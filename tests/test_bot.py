@@ -336,3 +336,34 @@ async def test_unauthorized_token_gives_clear_error(monkeypatch, tmp_path):
     with pytest.raises(SystemExit, match="Unauthorized"):
         await bm.run()
     assert closed  # aiohttp session is closed even on failure
+
+
+async def test_snippet_has_one_tap_copy_button(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/pick agent hermes"))
+    await feed(env, cb_update(PickCb(step="priority", value="quality").pack()))
+    add = next(b for b in buttons(session.sent()[-1]) if b.callback_data.startswith("a:"))
+    await feed(env, cb_update(add.callback_data))
+    snippet = session.sent()[-1]
+    [copy] = buttons(snippet)
+    assert copy.text == "📋 Скопировать команду"
+    assert copy.copy_text.text.endswith("--to hermes --profile agent --apply")
+    assert copy.copy_text.text in snippet.text  # the same command is shown in the message
+
+
+async def test_vibeforge_copy_button_copies_model_id(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/model thinkingmachines/inkling:free"))
+    vf = next(b for b in buttons(session.sent()[-1]) if "VibeForge" in b.text)
+    await feed(env, cb_update(vf.callback_data))
+    [copy] = buttons(session.sent()[-1])
+    assert copy.text == "📋 Скопировать id модели"
+    assert copy.copy_text.text == "thinkingmachines/inkling:free"
+
+
+def test_copy_kb_respects_telegram_limit():
+    from loosechange.bot.dialog import copy_kb
+    from loosechange.integrations import Snippet
+
+    s = Snippet(target="hermes", language="text", body="", command="x" * 300, copy_text="x" * 300)
+    assert copy_kb(s, "ru") is None

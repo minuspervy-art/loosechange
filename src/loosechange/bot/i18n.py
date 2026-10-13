@@ -69,6 +69,8 @@ STRINGS: dict[str, dict[str, str]] = {
         "add_choose": "Куда добавить <code>{id}</code>?",
         "snippet_header": "<b>{target}</b> · <code>{id}</code>",
         "snippet_cli": "Или локально одной командой:",
+        "copy_cmd": "📋 Скопировать команду",
+        "copy_id": "📋 Скопировать id модели",
         "need_key": (
             "Нужен ключ OpenRouter: https://openrouter.ai/keys — храните его только у себя."
         ),
@@ -145,6 +147,8 @@ STRINGS: dict[str, dict[str, str]] = {
         "add_choose": "Where to add <code>{id}</code>?",
         "snippet_header": "<b>{target}</b> · <code>{id}</code>",
         "snippet_cli": "Or locally with one command:",
+        "copy_cmd": "📋 Copy command",
+        "copy_id": "📋 Copy model id",
         "need_key": "You need an OpenRouter key: https://openrouter.ai/keys — keep it local.",
         "new_header": "<b>Last 7 days</b>",
         "new_added": "➕ Added: {ids}",

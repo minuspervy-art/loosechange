@@ -29,6 +29,7 @@ from .dialog import (
     Pick,
     PickCb,
     card_kb,
+    copy_kb,
     guess_profile,
     lang_kb,
     preselected_profile,
@@ -285,7 +286,9 @@ async def on_page(cb: CallbackQuery, callback_data: PageCb, prefs: Prefs, store:
 async def _send_snippet(message: Message, model: Model, target: str, profile: str, lang: str):
     snippet = integrations.render(target, model.id, profile)
     await message.answer(
-        render.snippet_message(snippet, model.id, lang), disable_web_page_preview=True
+        render.snippet_message(snippet, model.id, lang),
+        reply_markup=copy_kb(snippet, lang),
+        disable_web_page_preview=True,
     )
 
 

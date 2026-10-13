@@ -33,3 +33,11 @@ def test_render_unknown_target():
 def test_cli_command_is_shell_quoted():
     s = integrations.render("hermes", "weird id;rm -rf", "agent")
     assert "'weird id;rm -rf'" in s.command
+
+
+def test_cli_prefix_is_read_lazily(monkeypatch):
+    monkeypatch.setenv("LOOSECHANGE_CLI", "uv run --project /x loosechange")
+    s = integrations.render("hermes", MID, "agent")
+    assert s.command.startswith("uv run --project /x loosechange add ")
+    monkeypatch.delenv("LOOSECHANGE_CLI")
+    assert integrations.render("hermes", MID, "agent").command.startswith("uvx loosechange add ")
