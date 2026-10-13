@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import sqlite3
 from datetime import date
 from pathlib import Path
 from typing import Annotated
@@ -27,7 +28,6 @@ from .core.profiles import PROFILES, Priority, get_profile
 from .core.rank import rank
 from .core.schema import Snapshot
 from .integrations import deepseek_harness, hermes, vibeforge
-from .integrations.base import ApplyNotSupported
 from .integrations.files import ConfigConflict, read_key_file, write_with_backup
 
 app = typer.Typer(
@@ -159,7 +159,14 @@ def add(
     dry_run: Annotated[
         bool, typer.Option("--dry-run/--apply", help="Show the diff (default) or write it")
     ] = True,
-    force: Annotated[bool, typer.Option(help="Replace an existing alias / default model")] = False,
+    force: Annotated[
+        bool,
+        typer.Option(help="Replace an existing alias / default model; VibeForge: allow 🔒 models"),
+    ] = False,
+    make_default: Annotated[
+        bool,
+        typer.Option("--make-default", help="VibeForge: also make it the default OpenRouter model"),
+    ] = False,
     key_file: Annotated[
         Path | None,
         typer.Option(
@@ -183,24 +190,20 @@ def add(
         raise typer.BadParameter(
             f"choose from {', '.join(integrations.TARGETS)}", param_hint="--to"
         )
-    if check:
-        snap = load_models(data)
-        if not snap.get(model_id):
-            typer.secho(
-                f"warning: {model_id} is not in the free model list (data from "
-                f"{snap.generated_at:%Y-%m-%d %H:%M}Z); it may cost money or not exist",
-                fg="yellow",
-                err=True,
-            )
+    snap = load_models(data) if check else None
+    if snap is not None and not snap.get(model_id):
+        typer.secho(
+            f"warning: {model_id} is not in the free model list (data from "
+            f"{snap.generated_at:%Y-%m-%d %H:%M}Z); it may cost money or not exist",
+            fg="yellow",
+            err=True,
+        )
 
     if to == "other":
         typer.echo(integrations.render("other", model_id, profile).body)
         return
     if to == "vibeforge":
-        try:
-            vibeforge.apply(model_id, profile, dry_run=dry_run)
-        except ApplyNotSupported:
-            typer.echo(vibeforge.manual(model_id))
+        _add_vibeforge(model_id, snap, config, make_default, key_file, replace_key, force, dry_run)
         return
 
     adapter = hermes if to == "hermes" else deepseek_harness
@@ -250,6 +253,57 @@ def add(
             "DeepSeek Harness picks the change up without a restart (profile layer is hot-reloaded)"
         )
     _key_hint(adapter, plan.path)
+
+
+def _add_vibeforge(
+    model_id: str,
+    snap: Snapshot | None,
+    db: Path | None,
+    make_default: bool,
+    key_file: Path | None,
+    replace_key: bool,
+    force: bool,
+    dry_run: bool,
+) -> None:
+    model = snap.get(model_id) if snap else None
+    if model is not None and model.harness_only and not force:
+        typer.secho(
+            f"error: {model_id} is served by OpenRouter only to agentic harnesses — "
+            "VibeForge's API engine gets 403 (verified). Use Hermes / DeepSeek Harness, "
+            "pick another model, or pass --force.",
+            fg="red",
+            err=True,
+        )
+        raise typer.Exit(1)
+    try:
+        key = read_key_file(key_file.expanduser()) if key_file else None
+        plan = vibeforge.plan(
+            model_id, db, make_default=make_default, key=key, replace_key=replace_key
+        )
+    except (ConfigConflict, OSError, sqlite3.Error) as exc:
+        typer.secho(f"error: {exc}", fg="red", err=True)
+        typer.echo(vibeforge.manual(model_id))
+        raise typer.Exit(1) from None
+    for w in plan.warnings:
+        typer.secho(f"note: {w}", fg="yellow", err=True)
+    if not plan.changed:
+        typer.echo("nothing to change")
+        return
+    typer.echo(plan.describe())  # the key only masked
+    if dry_run:
+        typer.echo(
+            "dry run: nothing written; quit VibeForge (⌘Q) and re-run with --apply "
+            "(the DB is backed up first)"
+        )
+        return
+    try:
+        backup = vibeforge.write(plan)
+    except (ConfigConflict, sqlite3.Error) as exc:
+        typer.secho(f"error: {exc}", fg="red", err=True)
+        raise typer.Exit(1) from None
+    typer.echo(f"written {plan.path} (backup: {backup})")
+    typer.echo(f"smoke check: {vibeforge.smoke_check(plan)}")
+    typer.echo("start VibeForge: new session «via API» → 🔑 → OpenRouter → pick the model")
 
 
 def _key_hint(adapter, config_path: Path) -> None:

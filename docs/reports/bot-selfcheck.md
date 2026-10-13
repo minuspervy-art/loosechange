@@ -1,6 +1,6 @@
 # Самопроверка бота
 
-Сгенерировано `scripts/bot_selfcheck.py` 2026-10-13 21:52 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
+Сгенерировано `scripts/bot_selfcheck.py` 2026-10-13 21:55 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
 
 **user:** `/start`
 **bot (send):**
@@ -25,10 +25,12 @@
 1. Thinking Machines: Inkling Small (free) — ⭐ 100
 thinkingmachines/inkling-small:free
 🧠 25.7 · 💻 52.9 · 🤖 23.5 · 📏 1M · 🛠 · 💭
+🔒 только Hermes / DeepSeek Harness
 
 2. Thinking Machines: Inkling (free) — ⭐ 97.3
 thinkingmachines/inkling:free
 🧠 25 · 💻 52.1 · 🤖 22.5 · 🎨 1167 · 📏 1M · 🛠 · 💭
+🔒 только Hermes / DeepSeek Harness
 
 3. NVIDIA: Nemotron 3 Ultra (free) — ⭐ 79.1
 nvidia/nemotron-3-ultra-550b-a55b:free
@@ -45,7 +47,7 @@ google/gemma-4-31b-it:free
 
 Стр. 1/3
 ```
-кнопки: [🔧 #1 → Hermes] | [🔧 #1 → VibeForge] | [🔧 #1 → DeepSeek] / [🔧 #2 → Hermes] | [🔧 #2 → VibeForge] | [🔧 #2 → DeepSeek] / [🔧 #3 → Hermes] | [🔧 #3 → VibeForge] | [🔧 #3 → DeepSeek] / [🔧 #4 → Hermes] | [🔧 #4 → VibeForge] | [🔧 #4 → DeepSeek] / [🔧 #5 → Hermes] | [🔧 #5 → VibeForge] | [🔧 #5 → DeepSeek] / [Показать все (15)] / [🏠 Меню] | [🔄 Обновить]
+кнопки: [🔧 #1 → Hermes] | [🔧 #1 → DeepSeek] / [🔧 #2 → Hermes] | [🔧 #2 → DeepSeek] / [🔧 #3 → Hermes] | [🔧 #3 → VibeForge] | [🔧 #3 → DeepSeek] / [🔧 #4 → Hermes] | [🔧 #4 → VibeForge] | [🔧 #4 → DeepSeek] / [🔧 #5 → Hermes] | [🔧 #5 → VibeForge] | [🔧 #5 → DeepSeek] / [Показать все (15)] / [🏠 Меню] | [🔄 Обновить]
 
 **user:** `/pick`
 **bot (send):**
@@ -76,10 +78,12 @@ google/gemma-4-31b-it:free
 1. Thinking Machines: Inkling Small (free) — ⭐ 100
 thinkingmachines/inkling-small:free
 🧠 25.7 · 💻 52.9 · 🤖 23.5 · 📏 1M · 🛠 · 💭
+🔒 только Hermes / DeepSeek Harness
 
 2. Thinking Machines: Inkling (free) — ⭐ 96.9
 thinkingmachines/inkling:free
 🧠 25 · 💻 52.1 · 🤖 22.5 · 🎨 1167 · 📏 1M · 🛠 · 💭
+🔒 только Hermes / DeepSeek Harness
 
 3. NVIDIA: Nemotron 3 Ultra (free) — ⭐ 78.5
 nvidia/nemotron-3-ultra-550b-a55b:free
@@ -124,10 +128,11 @@ uvx loosechange add thinkingmachines/inkling-small:free --to hermes --profile ag
 Thinking Machines: Inkling (free)
 thinkingmachines/inkling:free
 🧠 25 · 💻 52.1 · 🤖 22.5 · 🎨 1167 · 📏 1M · 🛠 · 💭
+🔒 только Hermes / DeepSeek Harness
 Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total. It is designed for general-purpose reasoning, coding, agentic and tool-use systems,...
 openrouter.ai/thinkingmachines/inkling:free
 ```
-кнопки: [🔧 Hermes] | [🔧 VibeForge] / [🔧 DeepSeek Harness] | [🔧 Другое] / [🏠 Меню]
+кнопки: [🔧 Hermes] | [🔧 DeepSeek Harness] / [🏠 Меню]
 
 **user:** `/new`
 **bot (send):**

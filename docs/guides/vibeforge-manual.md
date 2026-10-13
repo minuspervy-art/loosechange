@@ -10,7 +10,14 @@ Id копируйте целиком, с суффиксом `:free` — без �
 
 > ⚠️ На движке «через API» VibeForge **не** считается агентным харнессом для OpenRouter: модели, которые OpenRouter отдаёт только харнессам, отвечают `403 … only available on agentic harnesses` (проверено на `thinkingmachines/inkling-small:free`). Для VibeForge берите модели без этого ограничения — например, `nvidia/nemotron-3-super-120b-a12b:free`, `google/gemma-4-31b-it:free`. Те же inkling-модели работают в Hermes и DeepSeek Harness.
 
-## 2. Настройки → Провайдеры → OpenRouter
+## 2a. Одной командой (VibeForge закрыт)
+Закройте VibeForge (⌘Q), затем:
+```bash
+uvx loosechange add nvidia/nemotron-3-super-120b-a12b:free --to vibeforge --key-file ~/or-key.txt --apply
+```
+Модель добавится в «Свои модели» OpenRouter (и станет моделью по умолчанию, если её не было; иначе — `--make-default`), ключ — в настройки (если ключа ещё нет). Перед записью делается бэкап базы. Без `--apply` — только показ изменений. Модели 🔒 «только для харнессов» команда не добавит (в VibeForge они дают 403).
+
+## 2b. Вручную: Настройки → Провайдеры → OpenRouter
 | Поле | Что вписать |
 |---|---|
 | API-ключ (`OPENROUTER_API_KEY`) | ключ с https://openrouter.ai/keys (VibeForge хранит его в своей базе открытым текстом) |

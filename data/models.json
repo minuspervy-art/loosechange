@@ -49,7 +49,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:00.286214Z"
   },
   {
    "id": "dots-studio/dots-3-note-preview:free",
@@ -93,7 +95,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:03.392861Z"
   },
   {
    "id": "google/gemma-4-26b-a4b-it:free",
@@ -138,7 +142,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": null,
+   "access_checked_at": null
   },
   {
    "id": "google/gemma-4-31b-it:free",
@@ -183,7 +189,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": null,
+   "access_checked_at": null
   },
   {
    "id": "liquid/lfm-2.5-2.6b:free",
@@ -235,7 +243,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:11.882335Z"
   },
   {
    "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
@@ -280,7 +290,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:14.597303Z"
   },
   {
    "id": "nvidia/nemotron-3-super-120b-a12b:free",
@@ -325,7 +337,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:18.623501Z"
   },
   {
    "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
@@ -425,7 +439,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:22.002584Z"
   },
   {
    "id": "nvidia/nemotron-3.5-content-safety:free",
@@ -466,7 +482,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:25.997114Z"
   },
   {
    "id": "nvidia/nemotron-3.5-lightning:free",
@@ -508,7 +526,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:29.130402Z"
   },
   {
    "id": "openrouter/free",
@@ -563,7 +583,9 @@
     "throughput_30m": null,
     "providers": 0
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": null,
+   "access_checked_at": null
   },
   {
    "id": "poolside/laguna-s-2.1:free",
@@ -603,7 +625,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:50:18.021943Z"
   },
   {
    "id": "poolside/laguna-xs-2.1:free",
@@ -643,7 +667,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "open",
+   "access_checked_at": "2026-10-13T21:49:38.650822Z"
   },
   {
    "id": "thinkingmachines/inkling-small:free",
@@ -690,7 +716,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "harness_only",
+   "access_checked_at": "2026-10-13T21:49:42.772532Z"
   },
   {
    "id": "thinkingmachines/inkling:free",
@@ -801,7 +829,9 @@
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-10-13T08:38:51.638578Z"
+   "first_seen": "2026-10-13T08:38:51.638578Z",
+   "access": "harness_only",
+   "access_checked_at": "2026-10-13T21:49:45.043277Z"
   }
  ],
  "excluded": [

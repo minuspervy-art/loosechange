@@ -90,11 +90,28 @@ def test_add_warns_on_non_free_model(data, tmp_path):
     assert "not in the free model list" in r.output
 
 
-def test_add_vibeforge_prints_manual(data):
-    r = run("add", "thinkingmachines/inkling:free", "--to", "vibeforge", "--data", data)
-    assert r.exit_code == 0
-    assert "Providers → OpenRouter" in r.output and "403" in r.output
-    assert "vibeforge-manual.md" in r.output
+def test_add_vibeforge_refuses_harness_only_and_writes_db(data, tmp_path):
+    import json as _json
+
+    from tests.integrations.test_vibeforge import make_db
+
+    db = make_db(tmp_path)
+    snap = _json.loads(data.read_text())
+    for m in snap["models"]:
+        if m["id"].startswith("thinkingmachines/inkling"):
+            m["access"] = "harness_only"
+    data.write_text(_json.dumps(snap))
+    r = run(
+        "add", "thinkingmachines/inkling:free", "--to", "vibeforge", "--data", data, "--config", db
+    )
+    assert r.exit_code == 1 and "403" in r.output
+    mid = "nvidia/nemotron-3-super-120b-a12b:free"
+    r = run("add", mid, "--to", "vibeforge", "--data", data, "--config", db)
+    assert r.exit_code == 0, r.output
+    assert "dry run" in r.output and "VIBEFORGE_OPENROUTER_MODELS" in r.output
+    r = run("add", mid, "--to", "vibeforge", "--data", data, "--config", db, "--apply")
+    assert r.exit_code == 0, r.output
+    assert "backup" in r.output and "smoke check: custom models: 2" in r.output
 
 
 def test_add_other_and_bad_target(data):

@@ -52,7 +52,18 @@ loosechange add <id> --to hermes --key-file ~/or-key.txt [--replace-key] --apply
 - `app_settings` (key/value) содержит только `license.*` и `mcp.enabled` — **настроек провайдеров там нет**.
 - Список провайдеров зашит в бэкенд: строки `anthropic`, `openai`, `openrouter`, `local` рядом с полями `apiKeyEnv`, `defaultBaseUrl`, `defaultModel`, `baseUrlEnv`. Видимые имена переменных: `ANTHROPIC_API_KEY`, `ANTHROPIC_BASE_URL`, `OPENAI_API_KEY`, `KIMI_API_KEY`, `MOONSHOT_API_KEY`; строки `OPENROUTER_API_KEY` в бинаре нет (вероятно, собирается динамически или ключ вводится в UI) — **не подтверждено**.
 
-**Обновление 2.0.16 (2026-10-14).** Появилась страница «Настройки → Провайдеры» (Anthropic, OpenAI, **OpenRouter**, «Свой шлюз или локальный сервер», «Сеть/прокси»). Значения хранятся в `vibeforge.db`, таблица `app_settings`, под именами env-переменных: `OPENROUTER_API_KEY` (**ключ открытым текстом**, файл БД `0600`), `VIBEFORGE_OPENROUTER_MODEL` (модель по умолчанию), `VIBEFORGE_OPENROUTER_MODELS` (свои модели, строка через запятую), `VIBEFORGE_OPENROUTER_BASE_URL`, прокси — `VIBEFORGE_PROXY`. Провайдер сессии выбирается кнопкой 🔑 в строке новой сессии при движке «через API»; без этого сессия остаётся `provider=anthropic` и падает с ошибкой SDK Anthropic «Could not resolve authentication method» (проверено). Автоматизировать UI агентом нельзя (веб-интерфейс без accessibility); адаптер с записью в `app_settings` (только при закрытом приложении, транзакция + бэкап БД, только три ключа) возможен — ждёт решения владельца.
+**Обновление 2.0.16 (2026-10-14).** Появилась страница «Настройки → Провайдеры» (Anthropic, OpenAI, **OpenRouter**, «Свой шлюз или локальный сервер», «Сеть/прокси»). Значения хранятся в `vibeforge.db`, таблица `app_settings`, под именами env-переменных: `OPENROUTER_API_KEY` (**ключ открытым текстом**, файл БД `0600`), `VIBEFORGE_OPENROUTER_MODEL` (модель по умолчанию), `VIBEFORGE_OPENROUTER_MODELS` (свои модели, строка через запятую), `VIBEFORGE_OPENROUTER_BASE_URL`, прокси — `VIBEFORGE_PROXY`. Провайдер сессии выбирается кнопкой 🔑 в строке новой сессии при движке «через API»; без этого сессия остаётся `provider=anthropic` и падает с ошибкой SDK Anthropic «Could not resolve authentication method» (проверено). Автоматизировать UI агентом нельзя (веб-интерфейс без accessibility).
+
+**Адаптер (реализован 2026-10-14, `integrations/vibeforge.py`):**
+```
+loosechange add <id> --to vibeforge [--make-default] [--key-file ~/or.txt [--replace-key]] [--config <db>] [--apply]
+```
+- Пишет **только** строки `app_settings`: `VIBEFORGE_OPENROUTER_MODELS` (добавляет id, порядок и остальные модели сохраняются), `VIBEFORGE_OPENROUTER_MODEL` (только если пусто или `--make-default`), `OPENROUTER_API_KEY` (только с `--key-file`; другой ключ — отказ без `--replace-key`). `license.*`, сессии и прочие таблицы не трогаются.
+- **Только при закрытом VibeForge** (`pgrep -f /VibeForge.app/Contents/` — и окно `app`, и бэкенд `node index.cjs`): иначе отказ «quit it (⌘Q)». Приложение держит настройки в памяти и перезаписало бы нашу правку.
+- Перед записью — целостный бэкап через SQLite backup API (`vibeforge.db.bak-<время>`, `600`, включает WAL), затем одна транзакция `BEGIN IMMEDIATE`, чтение назад для проверки.
+- Модели 🔒 `harness_only` (из `loosechange probe`) — отказ без `--force`: на движке API они дают 403 (проверено).
+- Проверено на целостной копии реальной БД (`sqlite3 .backup`, только чтение живой БД): dry-run, apply, повтор, ключ «already set»; реальная БД не изменилась (сверка по `updated_at`).
+- Бот: сниппет VibeForge — кнопка «📋 Скопировать команду» (`… --to vibeforge --apply`) с предупреждением закрыть VibeForge.
 
 **Вывод для 2.0.15: безопасная автозапись невозможна.**
 1. Нет файла/таблицы с пользовательскими провайдерами — писать некуда, кроме строк `sessions`, а это рабочее состояние уже существующих сессий пользователя.

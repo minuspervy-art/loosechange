@@ -430,14 +430,16 @@ async def test_snippet_has_one_tap_copy_button(env):
     assert copy.copy_text.text in snippet.text  # the same command is shown in the message
 
 
-async def test_vibeforge_copy_button_copies_model_id(env):
+async def test_vibeforge_copy_button_copies_command(env):
     _, _, session, *_ = env
-    await feed(env, msg_update("/model thinkingmachines/inkling:free"))
+    await feed(env, msg_update("/model nvidia/nemotron-3-super-120b-a12b:free"))
     vf = next(b for b in buttons(session.sent()[-1]) if "VibeForge" in b.text)
     await feed(env, cb_update(vf.callback_data))
-    [copy, _menu] = buttons(session.sent()[-1])
-    assert copy.text == "📋 Скопировать id модели"
-    assert copy.copy_text.text == "thinkingmachines/inkling:free"
+    snippet = session.sent()[-1]
+    [copy, _menu] = buttons(snippet)
+    assert copy.text == "📋 Скопировать команду"
+    assert copy.copy_text.text.endswith("--to vibeforge --profile agent --apply")
+    assert "закройте VibeForge" in snippet.text
 
 
 def test_copy_kb_respects_telegram_limit():
@@ -514,15 +516,6 @@ def test_refresh_policy_from_env(monkeypatch):
     monkeypatch.setenv("LOOSECHANGE_FULL_REFRESH_MINUTES", "oops")
     p = refresh_policy_from_env()
     assert p.list_ttl == td(minutes=10) and p.full_ttl == td(hours=3)
-
-
-async def test_vibeforge_snippet_has_no_terminal_command(env):
-    _, _, session, *_ = env
-    await feed(env, msg_update("/model thinkingmachines/inkling-small:free"))
-    vf = next(b for b in buttons(session.sent()[-1]) if "VibeForge" in b.text)
-    await feed(env, cb_update(vf.callback_data))
-    text = session.sent()[-1].text
-    assert "loosechange add" not in text and "Provider: OpenRouter" in text
 
 
 async def test_deepseek_target_in_dialog_and_snippet(env):
