@@ -1,6 +1,6 @@
 # Самопроверка бота
 
-Сгенерировано `scripts/bot_selfcheck.py` 2026-10-13 10:06 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
+Сгенерировано `scripts/bot_selfcheck.py` 2026-10-13 10:11 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
 
 **user:** `/start`
 **bot (send):**
@@ -112,7 +112,8 @@ model_aliases:
 Или локально одной командой:
 uvx loosechange add thinkingmachines/inkling-small:free --to hermes --profile agent --apply
 • Команда делает бэкап config.yaml; без --apply — только покажет изменения.
-• Ключ: OPENROUTER_API_KEY в ~/.hermes/.env. Запуск: hermes -m free-agent
+• Ключ: OPENROUTER_API_KEY в ~/.hermes/.env. Ещё нет? Допишите к команде --key-file <файл с ключом> — ключ запишется локально, в бот не отправляется.
+• Запуск: hermes -m free-agent
 • Free-модели OpenRouter имеют лимиты запросов в минуту и в сутки.
 • Нужен ключ OpenRouter: https://openrouter.ai/keys — храните его только у себя.
 ```

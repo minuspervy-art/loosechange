@@ -23,7 +23,7 @@ uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmach
 ```bash
 uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmachines/inkling:free --to hermes --apply
 ```
-Потом `hermes -m free-agent` (нужен `OPENROUTER_API_KEY` в `~/.hermes/.env`, ключ — https://openrouter.ai/keys). Флаги: `--profile coding|chat|reasoning|longctx|design`, `--alias`, `--fallback` (добавить в цепочку fallback), `--force`, `--config`.
+Потом `hermes -m free-agent` (нужен `OPENROUTER_API_KEY` в `~/.hermes/.env`, ключ — https://openrouter.ai/keys). Ключ можно сразу взять из файла: `--key-file ~/or-key.txt` — он запишется в `~/.hermes/.env` с бэкапом и нигде не напечатается (другой уже записанный ключ заменяется только с `--replace-key`). Флаги: `--profile coding|chat|reasoning|longctx|design`, `--alias`, `--fallback` (добавить в цепочку fallback), `--force`, `--config`.
 VibeForge: `… add <id> --to vibeforge` печатает инструкцию — автозаписи нет, см. [docs/vibeforge-manual.md](docs/vibeforge-manual.md). Любой другой OpenAI-совместимый клиент: `--to other`.
 
 Профили: `agent` (tool-calling, ≥128k), `coding`, `chat`, `reasoning`, `longctx` (≥256k), `design`, `fast_cheap` (пока недоступен — OpenRouter не отдаёт скорость публично). Формулы — [docs/RANKING.md](docs/RANKING.md).

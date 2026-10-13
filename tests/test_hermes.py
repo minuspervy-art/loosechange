@@ -190,3 +190,69 @@ def test_has_openrouter_key(tmp_path, monkeypatch):
 def test_render_command_applies():
     s = hermes.render(MID, "agent")
     assert s.command.endswith("--apply") and s.copy_text == s.command
+
+
+KEY = "sk-or-v1-" + "0123456789abcdef" * 4
+KEY2 = "sk-or-v1-" + "fedcba9876543210" * 4
+
+
+@pytest.mark.parametrize(
+    "content",
+    [
+        KEY,
+        f"\n  {KEY}  \n",
+        f"OPENROUTER_API_KEY={KEY}\nOTHER=1\n",
+        r"{\rtf1\ansi{\fonttbl\f0 Helvetica;}\f0\fs24 " + KEY + r"\par}",
+    ],
+)
+def test_read_key_file_formats(tmp_path, content):
+    f = tmp_path / "key.any"
+    f.write_text(content)
+    assert hermes.read_key_file(f) == KEY
+
+
+def test_read_key_file_errors(tmp_path):
+    f = tmp_path / "k"
+    f.write_text("nothing here")
+    with pytest.raises(hermes.HermesConflict, match="no OpenRouter key"):
+        hermes.read_key_file(f)
+    f.write_text(f"{KEY}\n{KEY2}\n")
+    with pytest.raises(hermes.HermesConflict, match="2 different"):
+        hermes.read_key_file(f)
+
+
+def test_plan_key_add_same_replace_conflict(tmp_path):
+    cfg = tmp_path / "config.yaml"
+    env = tmp_path / ".env"
+    env.write_text("# OPENROUTER_API_KEY=commented-template\nOTHER=1")
+    p = hermes.plan_key(cfg, KEY)
+    assert p.action == "add"
+    assert (
+        p.after == f"# OPENROUTER_API_KEY=commented-template\nOTHER=1\nOPENROUTER_API_KEY={KEY}\n"
+    )
+    assert KEY not in p.describe() and "…" in p.describe()
+    env.write_text(p.after)
+    assert hermes.plan_key(cfg, KEY).action == "same"
+    with pytest.raises(hermes.HermesConflict, match="--replace-key") as exc:
+        hermes.plan_key(cfg, KEY2)
+    assert KEY not in str(exc.value) and KEY2 not in str(exc.value)
+    r = hermes.plan_key(cfg, KEY2, replace=True)
+    assert r.action == "replace" and r.after.count("OPENROUTER_API_KEY=") == 2  # + comment
+    assert f"OPENROUTER_API_KEY={KEY2}\n" in r.after and KEY not in r.after
+
+
+def test_plan_key_fills_empty_value(tmp_path):
+    (tmp_path / ".env").write_text("OPENROUTER_API_KEY=\n")
+    p = hermes.plan_key(tmp_path / "config.yaml", KEY)
+    assert p.action == "add" and p.after == f"OPENROUTER_API_KEY={KEY}\n"
+
+
+def test_new_env_file_is_private(tmp_path):
+    p = hermes.plan_key(tmp_path / "config.yaml", KEY)
+    assert hermes.write(p) is None
+    assert stat.S_IMODE((tmp_path / ".env").stat().st_mode) == 0o600
+
+
+def test_plan_key_rejects_garbage(tmp_path):
+    with pytest.raises(hermes.HermesConflict):
+        hermes.plan_key(tmp_path / "config.yaml", "not-a-key")

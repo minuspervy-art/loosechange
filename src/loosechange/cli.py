@@ -151,6 +151,17 @@ def add(
         bool, typer.Option("--dry-run/--apply", help="Show the diff (default) or write it")
     ] = True,
     force: Annotated[bool, typer.Option(help="Replace an existing alias")] = False,
+    key_file: Annotated[
+        Path | None,
+        typer.Option(
+            "--key-file",
+            help="Hermes: file with your OpenRouter key (sk-or-…; txt/.env/.rtf); "
+            "written to <hermes home>/.env, never printed",
+        ),
+    ] = None,
+    replace_key: Annotated[
+        bool, typer.Option("--replace-key", help="Overwrite a different existing key")
+    ] = False,
     check: Annotated[
         bool, typer.Option("--check/--no-check", help="Verify the id is a free model")
     ] = True,
@@ -184,31 +195,48 @@ def add(
 
     try:
         plan = hermes.plan(model_id, profile, config, alias=alias, fallback=fallback, force=force)
+        key_plan = None
+        if key_file:
+            key = hermes.read_key_file(key_file.expanduser())
+            key_plan = hermes.plan_key(plan.path, key, replace=replace_key)
     except (hermes.HermesConflict, OSError) as exc:
         typer.secho(f"error: {exc}", fg="red", err=True)
         raise typer.Exit(1) from None
     for w in plan.warnings:
         typer.secho(f"note: {w}", fg="yellow", err=True)
-    if not plan.changed:
+    if plan.changed:
+        typer.echo(plan.diff())
+    if key_plan:
+        typer.echo(key_plan.describe())  # masked: sk-or-v1-…abcd
+    if not plan.changed and not (key_plan and key_plan.changed):
         typer.echo("nothing to change")
+        _key_hint(plan.path)
         return
-    typer.echo(plan.diff())
     if dry_run:
-        typer.echo("dry run: nothing written; re-run with --apply to write (a backup is made)")
+        typer.echo("dry run: nothing written; re-run with --apply to write (backups are made)")
         return
-    backup = hermes.write(plan)
-    typer.echo(f"written {plan.path}" + (f" (backup: {backup})" if backup else ""))
-    try:
-        out = hermes.smoke_check(plan)
-    except Exception as exc:  # smoke check must never undo a successful write
-        out = f"skipped ({exc})"
-    if out is not None:
-        typer.echo(f"hermes config get model_aliases.{plan.alias}.model -> {out}")
+    if plan.changed:
+        backup = hermes.write(plan)
+        typer.echo(f"written {plan.path}" + (f" (backup: {backup})" if backup else ""))
+    if key_plan and key_plan.changed:
+        backup = hermes.write(key_plan)
+        typer.echo(f"written {key_plan.path}" + (f" (backup: {backup})" if backup else ""))
+    if plan.changed:
+        try:
+            out = hermes.smoke_check(plan)
+        except Exception as exc:  # smoke check must never undo a successful write
+            out = f"skipped ({exc})"
+        if out is not None:
+            typer.echo(f"hermes config get model_aliases.{plan.alias}.model -> {out}")
     typer.echo(f"use it: hermes -m {plan.alias}")
-    if not hermes.has_openrouter_key(plan.path):
+    _key_hint(plan.path)
+
+
+def _key_hint(config_path: Path) -> None:
+    if not hermes.has_openrouter_key(config_path):
         typer.secho(
-            "note: OPENROUTER_API_KEY is not set for Hermes — add it to "
-            f"{plan.path.parent / '.env'} (key: https://openrouter.ai/keys)",
+            "note: OPENROUTER_API_KEY is not set for Hermes — add it with --key-file <file> "
+            f"or to {config_path.parent / '.env'} (key: https://openrouter.ai/keys)",
             fg="yellow",
         )
 

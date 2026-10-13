@@ -114,3 +114,57 @@ def test_collect_cmd(tmp_path, monkeypatch, or_transport):
     assert r.exit_code == 0, r.output
     assert "free text models" in r.output
     assert (tmp_path / "models.json").exists()
+
+
+def test_add_with_key_file_never_prints_key(data, tmp_path, monkeypatch):
+    monkeypatch.setattr(hermes.shutil, "which", lambda _: None)
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    key = "sk-or-v1-" + "ab" * 32
+    key_file = tmp_path / "or.rtf"
+    key_file.write_text(r"{\rtf1 " + key + r"\par}")
+    home = tmp_path / "hermes"
+    home.mkdir()
+    cfg = home / "config.yaml"
+    cfg.write_text("model:\n  default: x\n")
+    (home / ".env").write_text("OTHER=1\n")
+    mid = "thinkingmachines/inkling:free"
+    base = ["add", mid, "--to", "hermes", "--config", cfg, "--data", data, "--key-file", key_file]
+
+    r = run(*base)  # dry run
+    assert r.exit_code == 0, r.output
+    assert key not in r.output and "sk-or-v1-…abab" in r.output
+    assert (home / ".env").read_text() == "OTHER=1\n"
+
+    r = run(*base, "--apply")
+    assert r.exit_code == 0, r.output
+    assert key not in r.output
+    assert f"OPENROUTER_API_KEY={key}\n" in (home / ".env").read_text()
+    assert list(home.glob(".env.bak-*"))
+    assert "not set for Hermes" not in r.output
+
+    r = run(*base, "--apply")  # idempotent
+    assert "nothing to change" in r.output
+
+    other = tmp_path / "other.txt"
+    other.write_text("sk-or-v1-" + "cd" * 32)
+    r = run(*[a if a != key_file else other for a in base], "--apply")
+    assert r.exit_code == 1 and "--replace-key" in r.output
+    assert key not in r.output
+
+
+def test_add_hints_key_file_when_missing(data, tmp_path, monkeypatch):
+    monkeypatch.setattr(hermes.shutil, "which", lambda _: None)
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    cfg = tmp_path / "config.yaml"
+    r = run(
+        "add",
+        "thinkingmachines/inkling:free",
+        "--to",
+        "hermes",
+        "--config",
+        cfg,
+        "--data",
+        data,
+        "--apply",
+    )
+    assert r.exit_code == 0 and "--key-file" in r.output

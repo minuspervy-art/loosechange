@@ -49,12 +49,16 @@ def render(model_id: str, profile: str) -> Snippet:
         notes={
             "ru": [
                 "Команда делает бэкап config.yaml; без --apply — только покажет изменения.",
-                f"Ключ: {OPENROUTER_KEY_ENV} в ~/.hermes/.env. Запуск: hermes -m {alias}",
+                f"Ключ: {OPENROUTER_KEY_ENV} в ~/.hermes/.env. Ещё нет? Допишите к команде "
+                "--key-file <файл с ключом> — ключ запишется локально, в бот не отправляется.",
+                f"Запуск: hermes -m {alias}",
                 "Free-модели OpenRouter имеют лимиты запросов в минуту и в сутки.",
             ],
             "en": [
                 "The command backs up config.yaml; without --apply it only shows the diff.",
-                f"Key: {OPENROUTER_KEY_ENV} in ~/.hermes/.env. Run: hermes -m {alias}",
+                f"Key: {OPENROUTER_KEY_ENV} in ~/.hermes/.env. Not there yet? Append "
+                "--key-file <file with the key> — it is written locally, never sent to the bot.",
+                f"Run: hermes -m {alias}",
                 "OpenRouter free models are rate-limited per minute and per day.",
             ],
         },
@@ -276,7 +280,7 @@ def plan(
     return p
 
 
-def write(p: Plan, now: datetime | None = None) -> Path | None:
+def write(p: Plan | KeyPlan, now: datetime | None = None) -> Path | None:
     """Backup + atomic write. Returns the backup path (None for a new file)."""
     if not p.changed:
         return None
@@ -327,3 +331,70 @@ def smoke_check(p: Plan, timeout: int = 60) -> str | None:
         env=env,
     )
     return (r.stdout or r.stderr).strip()
+
+
+# ---------------------------------------------------------------- OpenRouter key (--key-file)
+# The key is read from a local file and written to <hermes home>/.env. It never
+# leaves the machine and is never printed: output shows only a masked form.
+
+KEY_RE = re.compile(r"sk-or-[A-Za-z0-9_-]{16,}")
+_ENV_LINE = re.compile(rf"^\s*(?:export\s+)?{OPENROUTER_KEY_ENV}\s*=(.*)$")
+
+
+def read_key_file(path: Path) -> str:
+    """Find exactly one OpenRouter key (sk-or-…) in any text-ish file (.txt/.env/.rtf)."""
+    text = path.read_text(errors="replace")
+    keys = set(KEY_RE.findall(text))
+    if not keys:
+        raise HermesConflict(f"no OpenRouter key (sk-or-…) found in {path}")
+    if len(keys) > 1:
+        raise HermesConflict(f"{path} contains {len(keys)} different OpenRouter keys; keep one")
+    return keys.pop()
+
+
+def mask(key: str) -> str:
+    return f"{key[:9]}…{key[-4:]}" if len(key) > 16 else "…"
+
+
+@dataclass
+class KeyPlan:
+    path: Path
+    before: str
+    after: str
+    action: str  # add | replace | same
+    masked: str
+
+    @property
+    def changed(self) -> bool:
+        return self.before != self.after
+
+    def describe(self) -> str:
+        verb = {"add": "add", "replace": "replace", "same": "keep"}[self.action]
+        return f"{self.path}: {verb} {OPENROUTER_KEY_ENV}={self.masked}"
+
+
+def plan_key(config_path: Path, key: str, replace: bool = False) -> KeyPlan:
+    if not KEY_RE.fullmatch(key):
+        raise HermesConflict("the value does not look like an OpenRouter key (sk-or-…)")
+    env = config_path.parent / ".env"
+    before = env.read_text() if env.exists() else ""
+    lines = before.splitlines(keepends=True)
+    new_line = f"{OPENROUTER_KEY_ENV}={key}\n"
+    for i, line in enumerate(lines):
+        m = _ENV_LINE.match(line.rstrip("\n"))
+        if not m:
+            continue
+        current = m.group(1).split(" #", 1)[0].strip().strip("'\"")
+        if current == key:
+            return KeyPlan(env, before, before, "same", mask(key))
+        if current and not replace:
+            raise HermesConflict(
+                f"{OPENROUTER_KEY_ENV} is already set in {env} to another key "
+                f"({mask(current)}); use --replace-key to overwrite it"
+            )
+        lines[i] = new_line
+        return KeyPlan(env, before, "".join(lines), "replace" if current else "add", mask(key))
+    if lines and not lines[-1].endswith("\n"):
+        lines[-1] += "\n"
+    lines.append(new_line)
+    return KeyPlan(env, before, "".join(lines), "add", mask(key))
