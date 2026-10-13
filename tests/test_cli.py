@@ -210,3 +210,65 @@ def test_add_deepseek_dry_run_then_apply(data, tmp_path, monkeypatch):
     assert f"OPENROUTER_API_KEY={key}" in (tmp_path / "dsh" / ".env").read_text()
     r = run(*base, "--apply", "--dsh-profile", "web")
     assert (tmp_path / "dsh" / "profiles" / "web" / "cordis.patch.yml").exists()
+
+
+def _sync_env(tmp_path, data, monkeypatch, running=False, busy=None):
+    from loosechange.integrations import vibeforge as vf
+    from tests.integrations.test_vibeforge import make_db
+
+    db = make_db(tmp_path, {"VIBEFORGE_OPENROUTER_MODEL": "nvidia/nemotron-3-super-120b-a12b:free"})
+    monkeypatch.setenv("VIBEFORGE_DATA_DIR", str(db.parent))  # the "app" DB
+    calls = []
+    monkeypatch.setattr(vf, "app_running", lambda: running and "quit" not in calls)
+    monkeypatch.setattr(vf, "busy_reason", lambda path=None: busy)
+    monkeypatch.setattr(vf, "quit_app", lambda timeout_s=30: calls.append("quit"))
+    monkeypatch.setattr(vf, "launch_app", lambda: calls.append("launch"))
+    return db, calls
+
+
+def _sync(data, *extra):
+    return run("sync", "--data-dir", data.parent, "--max-age", 10**6, *extra)
+
+
+def test_sync_dry_run_then_apply_then_up_to_date(data, tmp_path, monkeypatch):
+    from tests.integrations.test_vibeforge import rows
+
+    db, calls = _sync_env(tmp_path, data, monkeypatch)
+    r = _sync(data)
+    assert r.exit_code == 0, r.output
+    assert "dry run" in r.output and "VIBEFORGE_OPENROUTER_MODELS" in r.output
+    r = _sync(data, "--apply")
+    assert r.exit_code == 0, r.output
+    assert "summary: добавлено 3" in r.output and calls == []
+    assert len(rows(db)["VIBEFORGE_OPENROUTER_MODELS"].split(", ")) == 4  # laguna-xs + 3
+    assert rows(db)["VIBEFORGE_OPENROUTER_MODEL"] == "nvidia/nemotron-3-super-120b-a12b:free"
+    r = _sync(data, "--apply")
+    assert "summary: модели VibeForge актуальны" in r.output
+
+
+def test_sync_if_closed_skips_open_app(data, tmp_path, monkeypatch):
+    from tests.integrations.test_vibeforge import OTHER, rows
+
+    db, calls = _sync_env(tmp_path, data, monkeypatch, running=True)
+    r = _sync(data, "--apply", "--if-closed")
+    assert r.exit_code == 0 and "VibeForge открыт" in r.output
+    assert rows(db)["VIBEFORGE_OPENROUTER_MODELS"] == OTHER and calls == []
+    r = _sync(data, "--apply")  # neither --restart nor --if-closed
+    assert r.exit_code == 1 and "--restart" in r.output
+
+
+def test_sync_restart_refuses_busy_and_restarts_idle(data, tmp_path, monkeypatch):
+    from tests.integrations.test_vibeforge import OTHER, rows
+
+    db, calls = _sync_env(
+        tmp_path, data, monkeypatch, running=True, busy="agents at work: 1 running"
+    )
+    r = _sync(data, "--apply", "--restart")
+    assert r.exit_code == 3 and "не перезапускаю" in r.output
+    assert rows(db)["VIBEFORGE_OPENROUTER_MODELS"] == OTHER and calls == []
+
+    db2, calls2 = _sync_env(tmp_path / "b", data, monkeypatch, running=True)
+    r = _sync(data, "--apply", "--restart")
+    assert r.exit_code == 0, r.output
+    assert calls2 == ["quit", "launch"] and "VibeForge reopened" in r.output
+    assert len(rows(db2)["VIBEFORGE_OPENROUTER_MODELS"].split(", ")) == 4

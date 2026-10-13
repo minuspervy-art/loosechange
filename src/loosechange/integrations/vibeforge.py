@@ -155,25 +155,44 @@ def plan(
     key: str | None = None,
     replace_key: bool = False,
 ) -> Plan:
+    """Add one model; it becomes the default only if there is none (or make_default)."""
     path = path or default_db_path()
     current = _read(path)
+    default = (current[MODEL_KEY] or "").strip()
+    new_default = model_id if (make_default or not default) else None
+    return plan_many([model_id], path, new_default, key, replace_key, current=current)
+
+
+def plan_many(
+    add: list[str],
+    path: Path | None = None,
+    new_default: str | None = None,
+    key: str | None = None,
+    replace_key: bool = False,
+    current: dict[str, str | None] | None = None,
+) -> Plan:
+    path = path or default_db_path()
+    current = current if current is not None else _read(path)
     p = Plan(path=path, current=current)
 
     models = split_models(current[MODELS_KEY])
-    if model_id in models:
-        p.warnings.append(f"{model_id} is already in OpenRouter custom models")
-    else:
-        p.updates[MODELS_KEY] = ", ".join([*models, model_id])
-        p.changes.append(f"custom models += {model_id}")
+    fresh = [m for m in dict.fromkeys(add) if m not in models]
+    for m in add:
+        if m in models:
+            p.warnings.append(f"{m} is already in OpenRouter custom models")
+    if fresh:
+        p.updates[MODELS_KEY] = ", ".join([*models, *fresh])
+        p.changes.extend(f"custom models += {m}" for m in fresh)
 
     default = (current[MODEL_KEY] or "").strip()
-    if default == model_id:
-        p.warnings.append(f"{model_id} is already the default OpenRouter model")
-    elif not default or make_default:
-        p.updates[MODEL_KEY] = model_id
-        p.changes.append(f"default model: {default or '(empty)'} -> {model_id}")
+    if new_default is None:
+        if default:
+            p.warnings.append(f"default model stays {default} (pass --make-default to switch)")
+    elif new_default == default:
+        p.warnings.append(f"{new_default} is already the default OpenRouter model")
     else:
-        p.warnings.append(f"default model stays {default} (pass --make-default to switch)")
+        p.updates[MODEL_KEY] = new_default
+        p.changes.append(f"default model: {default or '(empty)'} -> {new_default}")
 
     if key is not None:
         if not KEY_RE.fullmatch(key):
@@ -190,6 +209,10 @@ def plan(
             p.updates[OPENROUTER_KEY_ENV] = key
             p.changes.append(f"{OPENROUTER_KEY_ENV} -> {mask(key)}")
     return p
+
+
+def current_settings(path: Path | None = None) -> dict[str, str | None]:
+    return _read(path or default_db_path())
 
 
 def write(p: Plan, now: datetime | None = None) -> Path | None:
@@ -240,3 +263,64 @@ def has_openrouter_key(path: Path) -> bool:
         return bool((_read(path)[OPENROUTER_KEY_ENV] or "").strip())
     except ConfigConflict:
         return False
+
+
+# ---------------------------------------------------------------- app lifecycle (sync --restart)
+
+BUNDLE_ID = "com.vibeforge.app"
+# agent statuses that mean "nothing is happening" — anything else counts as busy
+IDLE_AGENT = {
+    "idle",
+    "failed",
+    "completed",
+    "finished",
+    "stopped",
+    "cancelled",
+    "canceled",
+    "error",
+    "interrupted",
+    "done",
+    "paused",
+}
+
+
+def busy_reason(path: Path | None = None) -> str | None:
+    """Why quitting VibeForge now would interrupt work (None = safe). Read-only."""
+    path = path or default_db_path()
+    con = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True)
+    try:
+        tables = {r[0] for r in con.execute("select name from sqlite_master where type='table'")}
+        if "agents" in tables:
+            rows = con.execute("select status, count(*) from agents group by status").fetchall()
+            busy = {st: n for st, n in rows if (st or "").lower() not in IDLE_AGENT}
+            if busy:
+                return "agents at work: " + ", ".join(f"{n} {st}" for st, n in busy.items())
+        for table in ("queue_items", "autopilot_runs"):
+            if table in tables:
+                n = con.execute(
+                    f"select count(*) from {table} where status = 'running'"  # noqa: S608
+                ).fetchone()[0]
+                if n:
+                    return f"{n} running {table.replace('_', ' ')}"
+    finally:
+        con.close()
+    return None
+
+
+def quit_app(timeout_s: float = 30.0) -> None:
+    """Ask VibeForge to quit like ⌘Q and wait until both processes are gone."""
+    subprocess.run(
+        ["osascript", "-e", f'tell application id "{BUNDLE_ID}" to quit'],
+        capture_output=True,
+        text=True,
+        timeout=timeout_s,
+    )
+    deadline = time.monotonic() + timeout_s
+    while app_running():
+        if time.monotonic() > deadline:
+            raise ConfigConflict("VibeForge did not quit in time; nothing was written")
+        time.sleep(0.5)
+
+
+def launch_app() -> None:
+    subprocess.run(["open", "-b", BUNDLE_ID], capture_output=True, text=True, timeout=30)

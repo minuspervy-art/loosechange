@@ -127,3 +127,29 @@ def test_missing_db_and_bad_schema(tmp_path):
 def test_split_models():
     assert vf.split_models("a, b,c\nd,, ") == ["a", "b", "c", "d"]
     assert vf.split_models(None) == []
+
+
+def test_busy_reason(tmp_path):
+    db = make_db(tmp_path)
+    con = sqlite3.connect(db)
+    con.execute("create table agents(id text, status text)")
+    con.execute("create table queue_items(id text, status text)")
+    con.execute("insert into agents values ('a', 'failed'), ('b', 'idle')")
+    con.commit()
+    assert vf.busy_reason(db) is None
+    con.execute("insert into agents values ('c', 'running')")
+    con.commit()
+    assert "1 running" in vf.busy_reason(db)
+    con.execute("update agents set status = 'idle'")
+    con.execute("insert into queue_items values ('q', 'running')")
+    con.commit()
+    con.close()
+    assert "queue items" in vf.busy_reason(db)
+
+
+def test_plan_many(tmp_path):
+    db = make_db(tmp_path, {"VIBEFORGE_OPENROUTER_MODEL": OTHER})
+    p = vf.plan_many([MID, OTHER, MID], db, new_default=None)
+    assert p.updates == {"VIBEFORGE_OPENROUTER_MODELS": f"{OTHER}, {MID}"}
+    p = vf.plan_many([MID], db, new_default=MID)
+    assert p.updates["VIBEFORGE_OPENROUTER_MODEL"] == MID

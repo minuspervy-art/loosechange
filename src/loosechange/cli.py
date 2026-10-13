@@ -364,6 +364,112 @@ def probe(
     )
 
 
+@app.command()
+def sync(
+    to: Annotated[
+        str, typer.Option("--to", help="vibeforge (the only target for now)")
+    ] = "vibeforge",
+    profile: ProfileOpt = "agent",
+    top: Annotated[int, typer.Option(help="How many best models to keep in the list")] = 3,
+    data_dir: Annotated[Path, typer.Option("--data-dir")] = DEFAULT_DATA_DIR,
+    config: Annotated[Path | None, typer.Option(help="VibeForge DB (default: the app's)")] = None,
+    restart: Annotated[
+        bool,
+        typer.Option(help="Quit VibeForge if it is open (refused while agents work) and reopen"),
+    ] = False,
+    if_closed: Annotated[
+        bool, typer.Option("--if-closed", help="Skip quietly when VibeForge is open (scheduled)")
+    ] = False,
+    max_age: Annotated[
+        int, typer.Option(help="Re-fetch the model list if the snapshot is older (minutes)")
+    ] = 60,
+    dry_run: Annotated[
+        bool, typer.Option("--dry-run/--apply", help="Show the plan (default) or write it")
+    ] = True,
+) -> None:
+    """Keep VibeForge's OpenRouter models current without typing ids: adds the best
+    free models a plain client can call; replaces the default only if it broke."""
+    from datetime import UTC, datetime, timedelta
+
+    from .core.collect import quick_collect
+    from .core.select import choose
+
+    if to != "vibeforge":
+        raise typer.BadParameter("only vibeforge is supported", param_hint="--to")
+    _check_profile(profile)
+    stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    snap_path = data_dir / "models.json"
+    snap = load_snapshot(snap_path)
+    if snap is None or datetime.now(UTC) - snap.generated_at > timedelta(minutes=max_age):
+        try:
+            snap, _ = quick_collect(data_dir)
+        except Exception as exc:  # offline: use what we have
+            typer.secho(f"note: could not refresh the model list ({exc})", fg="yellow", err=True)
+    if snap is None:
+        typer.secho(f"error: no model data in {data_dir}; run `loosechange collect`", fg="red")
+        raise typer.Exit(1)
+
+    try:
+        current = vibeforge.current_settings(config)
+        sel = choose(snap, current.get(vibeforge.MODEL_KEY), top=top, profile=profile)
+        plan = vibeforge.plan_many(
+            [m.id for m in sel.picks], config, sel.new_default, current=current
+        )
+    except (ConfigConflict, OSError, sqlite3.Error) as exc:
+        typer.secho(f"[{stamp}] error: {exc}", fg="red", err=True)
+        raise typer.Exit(1) from None
+    for r in sel.reasons:
+        typer.echo(f"note: {r}")
+    if not plan.changed:
+        typer.echo(
+            f"[{stamp}] VibeForge models are up to date ({', '.join(m.id for m in sel.picks)})"
+        )
+        typer.echo("summary: модели VibeForge актуальны")
+        return
+    typer.echo(plan.describe())
+    if dry_run:
+        typer.echo("dry run: nothing written; add --apply (and --restart if VibeForge is open)")
+        return
+
+    is_app_db = config is None or vibeforge._is_app_db(config)
+    restarted = False
+    if is_app_db and vibeforge.app_running():
+        if if_closed:
+            typer.echo(f"[{stamp}] VibeForge is open — skipped, will try next time")
+            typer.echo("summary: VibeForge открыт — обновлю в следующий раз")
+            return
+        if not restart:
+            typer.secho("error: VibeForge is running — quit it (⌘Q) or pass --restart", fg="red")
+            raise typer.Exit(1)
+        reason = vibeforge.busy_reason(config)
+        if reason:
+            typer.secho(f"[{stamp}] not restarting VibeForge: {reason}", fg="red")
+            typer.echo("summary: в VibeForge идёт работа агентов — не перезапускаю")
+            raise typer.Exit(3)
+        try:
+            vibeforge.quit_app()
+        except ConfigConflict as exc:
+            typer.secho(f"error: {exc}", fg="red")
+            raise typer.Exit(1) from None
+        restarted = True
+    try:
+        backup = vibeforge.write(plan)
+        typer.echo(f"[{stamp}] written {plan.path} (backup: {backup})")
+        typer.echo(f"smoke check: {vibeforge.smoke_check(plan)}")
+        added = [c.split("+= ", 1)[1] for c in plan.changes if "+= " in c]
+        summary = f"добавлено {len(added)}: " + ", ".join(a.split("/")[-1] for a in added)
+        if sel.new_default:
+            summary += f"; по умолчанию {sel.new_default.split('/')[-1]}"
+        typer.echo(f"summary: {summary}")
+    except (ConfigConflict, sqlite3.Error) as exc:
+        typer.secho(f"[{stamp}] error: {exc}", fg="red")
+        raise typer.Exit(1) from None
+    finally:
+        if restarted:
+            vibeforge.launch_app()
+            typer.echo("VibeForge reopened")
+
+
 @app.command("collect")
 def collect_cmd(
     data_dir: Annotated[Path, typer.Option("--data-dir")] = DEFAULT_DATA_DIR,
