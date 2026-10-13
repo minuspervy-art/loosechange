@@ -63,4 +63,7 @@ loosechange add <id> --to hermes --key-file ~/or-key.txt [--replace-key] --apply
 Для любого OpenAI-совместимого клиента: `base_url=https://openrouter.ai/api/v1`, `model=<id>`, `api_key=$OPENROUTER_API_KEY`.
 
 ## Нюансы OpenRouter free
+**Free-модели «только для агентных харнессов»** (факт 2026-10-13): `thinkingmachines/inkling-small:free` на прямой запрос с ключом отвечает `403 … is only available on agentic harnesses. Try plugging it into a coding agent or productivity app listed on https://openrouter.ai/apps`. Через Hermes (он шлёт `HTTP-Referer: https://hermes-agent.nousresearch.com`, `X-Title: Hermes Agent`) та же модель с тем же ключом отвечает нормально — проверено `hermes -z … -m thinkingmachines/inkling-small:free --provider openrouter` на копии конфига. В `/models` и `/endpoints` признака такого ограничения **нет** — узнать можно только вызовом, поэтому в данных он не отражён (не выдумываем). Для VibeForge — не проверено. Заголовки чужих приложений loosechange не подделывает. В сниппете «Другое» — предупреждение.
+Free-модели также часто отвечают `429 … temporarily rate-limited upstream` — это перегрузка у провайдера, не проблема ключа; помогает повтор позже или другая модель из списка.
+
 Лимиты на `:free` ограничены (требуют перепроверки по актуальной документации OR: запросы/мин и в сутки, различие с пополненным балансом); без ключа вызовы невозможны — бот напоминает получить ключ на openrouter.ai/keys.

@@ -53,7 +53,15 @@ def render_generic(model_id: str, profile: str) -> Snippet:
         body=body,
         copy_text=model_id,
         notes={
-            "ru": ["Любой OpenAI-совместимый клиент: укажите эти три параметра."],
-            "en": ["Any OpenAI-compatible client: set these three values."],
+            "ru": [
+                "Любой OpenAI-совместимый клиент: укажите эти три параметра.",
+                "Часть free-моделей (например, thinkingmachines/inkling*) OpenRouter отдаёт "
+                "только агентным приложениям из openrouter.ai/apps — в своём клиенте будет 403.",
+            ],
+            "en": [
+                "Any OpenAI-compatible client: set these three values.",
+                "Some free models (e.g. thinkingmachines/inkling*) are served only to agentic "
+                "apps listed on openrouter.ai/apps — a custom client gets 403.",
+            ],
         },
     )
