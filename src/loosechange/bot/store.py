@@ -1,0 +1,71 @@
+"""Snapshot source for the bot: local file (mtime-watched) or a URL (raw GitHub)."""
+
+from __future__ import annotations
+
+import logging
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import httpx
+
+from ..collect import load_history, load_snapshot
+from ..models import History, Snapshot
+
+log = logging.getLogger(__name__)
+
+
+@dataclass
+class DataStore:
+    path: Path | None = None  # data/models.json
+    # e.g. https://raw.githubusercontent.com/<you>/loosechange/main/data/models.json
+    url: str | None = None
+    refresh_s: int = 600
+    snapshot: Snapshot | None = None
+    history: History = field(default_factory=History)
+    _mtime: float = 0.0
+    _fetched: float = 0.0
+
+    @property
+    def version(self) -> int:
+        """Short id of the loaded snapshot, embedded in callback data to detect stale buttons."""
+        if not self.snapshot:
+            return 0
+        return int(self.snapshot.generated_at.timestamp()) % 100_000
+
+    async def get(self) -> Snapshot | None:
+        try:
+            if self.url:
+                await self._refresh_url()
+            elif self.path:
+                self._refresh_file()
+        except Exception as exc:  # keep serving the last good snapshot
+            log.warning("snapshot refresh failed: %s", exc)
+        return self.snapshot
+
+    def _refresh_file(self) -> None:
+        assert self.path is not None
+        if not self.path.exists():
+            return
+        mtime = self.path.stat().st_mtime
+        if mtime == self._mtime and self.snapshot:
+            return
+        snap = load_snapshot(self.path)
+        if snap:
+            self.snapshot = snap
+            self.history = load_history(self.path.parent / "history" / "changes.json")
+            self._mtime = mtime
+
+    async def _refresh_url(self) -> None:
+        assert self.url is not None
+        if self.snapshot and time.monotonic() - self._fetched < self.refresh_s:
+            return
+        async with httpx.AsyncClient(timeout=20) as client:
+            r = await client.get(self.url)
+            r.raise_for_status()
+            self.snapshot = Snapshot.model_validate_json(r.content)
+            hist_url = self.url.rsplit("/", 1)[0] + "/history/changes.json"
+            h = await client.get(hist_url)
+            if h.status_code == 200:
+                self.history = History.model_validate_json(h.content)
+        self._fetched = time.monotonic()

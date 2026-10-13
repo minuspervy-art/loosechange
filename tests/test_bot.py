@@ -1,0 +1,312 @@
+"""Bot self-check: real updates through the aiogram dispatcher, Telegram API mocked."""
+
+from datetime import UTC, datetime, timedelta
+from itertools import count
+
+import pytest
+from aiogram import Bot
+from aiogram.client.session.base import BaseSession
+from aiogram.methods import AnswerCallbackQuery, EditMessageText, SendMessage
+from aiogram.types import CallbackQuery, Chat, Message, Update, User
+
+from loosechange.bot.dialog import AddCb, CardCb, PickCb, guess_profile
+from loosechange.bot.handlers import Prefs
+from loosechange.bot.main import RedactFilter, build_dispatcher, load_dotenv
+from loosechange.bot.render import fmt_ctx, split_message
+from loosechange.bot.store import DataStore
+from loosechange.collect import _dump, build_snapshot
+from loosechange.models import History, HistoryEvent
+
+_ids = count(1)
+
+
+class RecordingSession(BaseSession):
+    def __init__(self) -> None:
+        super().__init__()
+        self.calls: list = []
+
+    async def make_request(self, bot, method, timeout=None):
+        self.calls.append(method)
+        if isinstance(method, SendMessage):
+            return Message(
+                message_id=next(_ids),
+                date=datetime.now(UTC),
+                chat=Chat(id=method.chat_id, type="private"),
+                text=method.text,
+            )
+        return True
+
+    async def stream_content(self, *a, **kw):  # pragma: no cover
+        yield b""
+
+    async def close(self) -> None:
+        pass
+
+    def sent(self, kind=SendMessage):
+        return [c for c in self.calls if isinstance(c, kind)]
+
+    def texts(self):
+        return [c.text for c in self.calls if isinstance(c, SendMessage | EditMessageText)]
+
+
+NOW = datetime.now(UTC)
+
+
+@pytest.fixture
+def env(tmp_path, raw_models):
+    snap = build_snapshot(raw_models, now=NOW)
+    _dump(tmp_path / "models.json", snap)
+    hist = History(events=[HistoryEvent(ts=NOW - timedelta(days=1), added=["a/new:free"])])
+    _dump(tmp_path / "history" / "changes.json", hist)
+    store = DataStore(path=tmp_path / "models.json")
+    prefs = Prefs()
+    dp = build_dispatcher(store, prefs, flood_interval=0)
+    session = RecordingSession()
+    bot = Bot("42:TEST", session=session, default=None)
+    return dp, bot, session, store, prefs
+
+
+def user(uid=7, lang="ru"):
+    return User(id=uid, is_bot=False, first_name="T", language_code=lang)
+
+
+def msg_update(text, uid=7, lang="ru"):
+    m = Message(
+        message_id=next(_ids),
+        date=datetime.now(UTC),
+        chat=Chat(id=uid, type="private"),
+        from_user=user(uid, lang),
+        text=text,
+    )
+    return Update(update_id=next(_ids), message=m)
+
+
+def cb_update(data, uid=7, lang="ru"):
+    m = Message(
+        message_id=next(_ids),
+        date=datetime.now(UTC),
+        chat=Chat(id=uid, type="private"),
+        text="prev",
+    )
+    cb = CallbackQuery(
+        id=str(next(_ids)), from_user=user(uid, lang), chat_instance="ci", data=data, message=m
+    )
+    return Update(update_id=next(_ids), callback_query=cb)
+
+
+async def feed(env, upd):
+    dp, bot, *_ = env
+    await dp.feed_update(bot, upd)
+
+
+def buttons(method):
+    kb = method.reply_markup
+    return [b for row in kb.inline_keyboard for b in row] if kb else []
+
+
+async def test_start_ru_and_en(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/start"))
+    await feed(env, msg_update("/start", uid=8, lang="en"))
+    ru, en = session.texts()
+    assert "Подобрать" in ru or "подобрать" in ru
+    assert "find a model" in en
+
+
+async def test_top_lists_rated_then_unrated(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/top"))
+    [sent] = session.sent()
+    assert "Топ" in sent.text
+    assert "inclusionai/ling-3.1-flash" in sent.text  # #1 by intelligence
+    labels = [b.text for b in buttons(sent)]
+    assert any("Hermes" in t for t in labels)
+    assert any("Показать все" in t for t in labels)
+    for b in buttons(sent):
+        assert len(b.callback_data.encode()) <= 64
+
+
+async def test_pick_full_dialog_and_snippet(env):
+    _, _, session, store, prefs = env
+    await feed(env, msg_update("/pick"))
+    assert "Для чего" in session.texts()[-1]
+    await feed(env, cb_update(PickCb(step="purpose", value="agent").pack()))
+    assert "Куда" in session.texts()[-1]
+    await feed(env, cb_update(PickCb(step="target", value="hermes").pack()))
+    assert "важнее" in session.texts()[-1]
+    await feed(env, cb_update(PickCb(step="priority", value="quality").pack()))
+    result = session.sent()[-1]
+    assert "Агент" in result.text
+    add_buttons = [b for b in buttons(result) if b.callback_data.startswith("a:")]
+    assert add_buttons and all("Hermes" in b.text for b in add_buttons)
+    assert prefs.last_list[7] == ("agent", "quality")
+
+    await feed(env, cb_update(add_buttons[0].callback_data))
+    snippet = session.sent()[-1].text
+    assert "model_aliases:" in snippet
+    assert "free-agent:" in snippet
+    assert "provider: openrouter" in snippet
+    assert "loosechange add" in snippet
+
+
+async def test_pick_preselected_skips_questions(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/pick coding vibeforge"))
+    assert "важнее" in session.texts()[-1]
+    await feed(env, cb_update(PickCb(step="priority", value="stability").pack()))
+    result = session.sent()[-1]
+    assert "Код" in result.text
+    assert all("VibeForge" in b.text for b in buttons(result) if b.callback_data.startswith("a:"))
+
+
+async def test_pick_freeform(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/pick"))
+    await feed(env, cb_update(PickCb(step="purpose", value="unknown").pack()))
+    assert "Опишите" in session.texts()[-1]
+    await feed(env, msg_update("пишу скрипт на python"))
+    assert "Код" in session.texts()[-1]
+
+
+async def test_fast_cheap_falls_back_with_notice(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/pick fast_cheap other"))
+    await feed(env, cb_update(PickCb(step="priority", value="quality").pack()))
+    texts = session.texts()
+    assert any("недоступен" in t for t in texts)
+    assert "Чат" in texts[-1]
+
+
+async def test_model_card_and_add(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/model thinkingmachines/inkling"))  # ':free' auto-appended
+    card = session.sent()[-1]
+    assert "Inkling" in card.text and "openrouter.ai/thinkingmachines/inkling:free" in card.text
+    [hermes_btn] = [b for b in buttons(card) if "Hermes" in b.text]
+    await feed(env, cb_update(hermes_btn.callback_data))
+    assert "model_aliases:" in session.sent()[-1].text
+
+    await feed(env, msg_update("/add"))
+    assert "Куда добавить" in session.sent()[-1].text
+
+    await feed(env, msg_update("/model nope/nope"))
+    assert "не найдена" in session.sent()[-1].text
+    await feed(env, msg_update("/model"))
+    assert "/model" in session.sent()[-1].text
+
+
+async def test_model_by_number_after_top(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/top"))
+    await feed(env, msg_update("/model 1"))
+    assert "Ling 3.1 Flash" in session.sent()[-1].text
+
+
+async def test_add_without_selection(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/add", uid=99))
+    assert "Сначала" in session.sent()[-1].text
+
+
+async def test_stale_button_is_rejected(env):
+    _, _, session, store, _ = env
+    await feed(env, msg_update("/top"))  # loads the snapshot
+    data = AddCb(profile="chat", priority="quality", rank=1, target="hermes", ver=store.version + 1)
+    await feed(env, cb_update(data.pack()))
+    answer = session.sent(AnswerCallbackQuery)[-1]
+    assert answer.show_alert and "Устарело" in answer.text
+    data = CardCb(idx=10_000, target="hermes", ver=store.version)
+    await feed(env, cb_update(data.pack()))
+    assert session.sent(AnswerCallbackQuery)[-1].show_alert
+
+
+async def test_new_and_about_and_lang(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/new"))
+    assert "a/new:free" in session.sent()[-1].text
+    await feed(env, msg_update("/about"))
+    assert "MIT" in session.sent()[-1].text
+    await feed(env, msg_update("/lang"))
+    await feed(env, cb_update("l:en"))
+    await feed(env, msg_update("/top"))
+    assert "Top:" in session.sent()[-1].text
+
+
+async def test_pagination(env):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/top"))
+    show_all = next(b for b in buttons(session.sent()[-1]) if b.callback_data.startswith("g:"))
+    await feed(env, cb_update(show_all.callback_data))
+    edit = session.sent(EditMessageText)[-1]
+    assert "Стр. 2/" in edit.text
+
+
+async def test_antiflood(raw_models, tmp_path):
+    _dump(tmp_path / "models.json", build_snapshot(raw_models, now=NOW))
+    dp = build_dispatcher(DataStore(path=tmp_path / "models.json"), Prefs(), flood_interval=2)
+    session = RecordingSession()
+    bot = Bot("42:TEST", session=session)
+    await dp.feed_update(bot, msg_update("/start", uid=5))
+    await dp.feed_update(bot, msg_update("/start", uid=5))
+    await dp.feed_update(bot, msg_update("/start", uid=6))
+    assert len(session.sent()) == 2
+
+
+def test_html_is_escaped(raw_models):
+    from loosechange.bot.render import model_card
+
+    m = build_snapshot(raw_models, now=NOW).models[0].model_copy(update={"name": "<b>x</b>&"})
+    assert "&lt;b&gt;x&lt;/b&gt;&amp;" in model_card(m, "ru")
+
+
+def test_split_message():
+    text = "\n".join("x" * 100 for _ in range(100))
+    parts = split_message(text, 1000)
+    assert all(len(p) <= 1000 for p in parts)
+    assert "\n".join(parts) == text
+
+
+def test_fmt_ctx():
+    assert fmt_ctx(1_048_576) == "1M"
+    assert fmt_ctx(262_144) == "256k"
+    assert fmt_ctx(128_000) == "128k"
+    assert fmt_ctx(512) == "512"
+
+
+@pytest.mark.parametrize(
+    "text,profile",
+    [
+        ("сверстать лендинг", "design"),
+        ("агент для hermes", "agent"),
+        ("разобрать длинный pdf договор", "longctx"),
+        ("задачи по математике", "reasoning"),
+        ("саммари писем", "fast_cheap"),
+        ("пишу бота на python", "coding"),
+        ("просто поболтать", "chat"),
+        ("fix a bug in my code", "coding"),
+    ],
+)
+def test_guess_profile(text, profile):
+    assert guess_profile(text) == profile
+
+
+def test_redact_filter():
+    import logging
+
+    rec = logging.LogRecord("x", logging.INFO, "f", 1, "url /bot%s/getMe", ("SECRET",), None)
+    RedactFilter("SECRET").filter(rec)
+    assert "SECRET" not in rec.getMessage()
+
+
+def test_load_dotenv(tmp_path, monkeypatch):
+    f = tmp_path / ".env"
+    f.write_text("# c\nLC_TEST_A=1\nLC_TEST_B=\nLC_TEST_C='q'\n")
+    monkeypatch.delenv("LC_TEST_A", raising=False)
+    monkeypatch.delenv("LC_TEST_B", raising=False)
+    monkeypatch.delenv("LC_TEST_C", raising=False)
+    load_dotenv(f)
+    import os
+
+    assert os.environ["LC_TEST_A"] == "1"
+    assert "LC_TEST_B" not in os.environ
+    assert os.environ["LC_TEST_C"] == "q"

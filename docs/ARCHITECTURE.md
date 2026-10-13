@@ -22,6 +22,17 @@ GitHub Action (cron 3ч)         ┌── bot (aiogram) ── Telegram
 
 Факт 2026-10-13: публичный `/endpoints` отдаёт `uptime_*`, но `latency_last_30m`/`throughput_last_30m` = `null` у всех free-моделей.
 
+## Запуск бота (этап 3)
+`uv run loosechange-bot` (или `python -m loosechange.bot`). Переменные окружения (`.env` читается автоматически, переменные окружения важнее):
+| Переменная | Назначение |
+|---|---|
+| `TELEGRAM_BOT_TOKEN` | обязательно |
+| `LOOSECHANGE_DATA` | путь к снапшоту, по умолчанию `data/models.json` (перечитывается при изменении mtime) |
+| `LOOSECHANGE_DATA_URL` | raw-URL снапшота в GitHub; если задан — бот читает его раз в 10 мин, путь игнорируется |
+| `LOOSECHANGE_SELF_COLLECT_HOURS` | если > 0 и URL не задан — бот сам запускает коллектор с этим интервалом (для Docker без GitHub Action) |
+| `LOOSECHANGE_CLI` | как показывать однострочник CLI, по умолчанию `uvx loosechange` |
+Токен дополнительно вырезается из любых строк логов (`RedactFilter`), логгер httpx приглушён до WARNING.
+
 ## Почему так
 - Бот не может изменить локальный конфиг пользователя → всегда отдаёт (а) YAML/JSON-сниппет, (б) однострочник `uvx loosechange add …`.
 - Нет БД: данные = один JSON в git, история = git log. Дёшево, прозрачно для open source.

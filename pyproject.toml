@@ -17,6 +17,7 @@ bot = ["aiogram>=3.13"]
 
 [project.scripts]
 loosechange = "loosechange.cli:app"
+loosechange-bot = "loosechange.bot.main:main"
 
 [dependency-groups]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6", "aiogram>=3.13"]
