@@ -16,6 +16,7 @@ from pathlib import Path
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.exceptions import TelegramUnauthorizedError
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 
@@ -119,20 +120,26 @@ async def run() -> None:
     dp = build_dispatcher(store)
 
     bot = Bot(token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-    for lang, cmds in COMMANDS.items():
-        await bot.set_my_commands(
-            [BotCommand(command=c, description=d) for c, d in cmds],
-            language_code=None if lang == "ru" else lang,
-        )
-    await bot.delete_webhook(drop_pending_updates=False)
-
-    tasks = []
-    hours = float(os.environ.get("LOOSECHANGE_SELF_COLLECT_HOURS", "0") or 0)
-    if hours > 0 and not url:
-        tasks.append(asyncio.create_task(self_collect_loop(data_path, hours)))
-    me = await bot.get_me()
-    log.info("starting long-polling as @%s", me.username)
+    tasks: list[asyncio.Task] = []
     try:
+        try:
+            me = await bot.get_me()
+        except TelegramUnauthorizedError:
+            raise SystemExit(
+                "Telegram rejected TELEGRAM_BOT_TOKEN (Unauthorized): the token is wrong or "
+                "was revoked/reissued in @BotFather — put the current token into .env"
+            ) from None
+        for lang, cmds in COMMANDS.items():
+            await bot.set_my_commands(
+                [BotCommand(command=c, description=d) for c, d in cmds],
+                language_code=None if lang == "ru" else lang,
+            )
+        await bot.delete_webhook(drop_pending_updates=False)
+
+        hours = float(os.environ.get("LOOSECHANGE_SELF_COLLECT_HOURS", "0") or 0)
+        if hours > 0 and not url:
+            tasks.append(asyncio.create_task(self_collect_loop(data_path, hours)))
+        log.info("starting long-polling as @%s", me.username)
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
         for task in tasks:

@@ -310,3 +310,29 @@ def test_load_dotenv(tmp_path, monkeypatch):
     assert os.environ["LC_TEST_A"] == "1"
     assert "LC_TEST_B" not in os.environ
     assert os.environ["LC_TEST_C"] == "q"
+
+
+async def test_unauthorized_token_gives_clear_error(monkeypatch, tmp_path):
+    from aiogram.exceptions import TelegramUnauthorizedError
+    from aiogram.methods import GetMe
+
+    import loosechange.bot.main as bm
+
+    closed = []
+
+    class FakeBot:
+        def __init__(self, *a, **kw):
+            self.session = self
+
+        async def get_me(self):
+            raise TelegramUnauthorizedError(method=GetMe(), message="Unauthorized")
+
+        async def close(self):
+            closed.append(True)
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "1:bad")
+    monkeypatch.setattr(bm, "Bot", FakeBot)
+    with pytest.raises(SystemExit, match="Unauthorized"):
+        await bm.run()
+    assert closed  # aiohttp session is closed even on failure
