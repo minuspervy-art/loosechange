@@ -63,7 +63,39 @@ loosechange add <id> --to hermes --key-file ~/or-key.txt [--replace-key] --apply
 Для любого OpenAI-совместимого клиента: `base_url=https://openrouter.ai/api/v1`, `model=<id>`, `api_key=$OPENROUTER_API_KEY`.
 
 ## Нюансы OpenRouter free
-**Free-модели «только для агентных харнессов»** (факт 2026-10-13): `thinkingmachines/inkling-small:free` на прямой запрос с ключом отвечает `403 … is only available on agentic harnesses. Try plugging it into a coding agent or productivity app listed on https://openrouter.ai/apps`. Через Hermes (он шлёт `HTTP-Referer: https://hermes-agent.nousresearch.com`, `X-Title: Hermes Agent`) та же модель с тем же ключом отвечает нормально — проверено `hermes -z … -m thinkingmachines/inkling-small:free --provider openrouter` на копии конфига. В `/models` и `/endpoints` признака такого ограничения **нет** — узнать можно только вызовом, поэтому в данных он не отражён (не выдумываем). Для VibeForge — не проверено. Заголовки чужих приложений loosechange не подделывает. В сниппете «Другое» — предупреждение.
+**Free-модели «только для агентных харнессов»** (факт 2026-10-13): `thinkingmachines/inkling-small:free` на прямой запрос с ключом отвечает `403 … is only available on agentic harnesses. Try plugging it into a coding agent or productivity app listed on https://openrouter.ai/apps`. Через Hermes (он шлёт `HTTP-Referer: https://hermes-agent.nousresearch.com`, `X-Title: Hermes Agent`) та же модель с тем же ключом отвечает нормально — проверено `hermes -z … -m thinkingmachines/inkling-small:free --provider openrouter` на копии конфига. В `/models` и `/endpoints` признака такого ограничения **нет** — узнать можно только вызовом, поэтому в данных он не отражён (не выдумываем). Заголовки чужих приложений loosechange не подделывает. В сниппете «Другое» — предупреждение.
+
+Проверка по харнессам (2026-10-13, один и тот же ключ, промпт «Reply with exactly one word: ok»):
+| Клиент | `inkling-small:free` | контроль `nemotron-3-super-120b-a12b:free` |
+|---|---|---|
+| прямой HTTP-запрос (curl/скрипт) | ❌ 403 «only available on agentic harnesses» | ✅ |
+| прямой запрос + поле `tools` | ❌ 403 — одно наличие tools ограничение не снимает | — |
+| Hermes v0.19.1 (`hermes -z … --provider openrouter`) | ✅ «ok» | — |
+| DeepSeek Harness 0.2.0-rc.2 (`dsh headless`) | ✅ «ok» | ✅ «ok» |
+| VibeForge 2.0.15 | не проверено: бэкенд сам в OpenRouter не ходит (в нём нет ни `openrouter.ai`, ни заголовков атрибуции), провайдер передаётся движку сессии (Claude Code / Codex CLI / …) — результат зависит от движка; проверка возможна только из UI | — |
+Как OpenRouter распознаёт харнесс, по коду однозначно не видно: у DeepSeek Harness нет `HTTP-Referer`/`X-Title` в исходниках, но он проходит. Не реверсили дальше намеренно (подбирать признаки для обхода ограничения не будем).
+
+## DeepSeek Harness (`/Applications/DeepSeek Harness.app`, `com.deepseek.dsh`) — исследовано
+Electron + CLI `Contents/Resources/runtime/cli/bin/dsh`; конфигурация — стек YAML-слоёв плагинов (Cordis), пользовательские данные — `$DSH_HOME` (профили в `$DSH_HOME/profiles`), данные приложения — `~/Library/Application Support/@deepseek-ai/dsh-desktop`. OpenRouter подключается плагином `@deepseek-ai/dsh-llm-pi-ai` (библиотека pi-ai), модель по умолчанию — слоем `agent-default-model`. Рабочий оверлей (проверен `dsh --profile headless --patch <файл> "…"` в изолированном `DSH_HOME`, ключ только в env процесса, на диск не попал):
+```yaml
+- id: llm-pi-ai
+  config:
+    providers:
+      openrouter:
+        displayName: OpenRouter
+        api: openai-completions
+        baseURL: https://openrouter.ai/api/v1
+        apiKeyEnv: OPENROUTER_API_KEY
+        models:
+          - id: thinkingmachines/inkling-small:free
+- id: agent-default-model
+  config:
+    provider: openrouter
+    model: thinkingmachines/inkling-small:free
+- id: session-title-llm   # иначе заголовки сессий идут в deepseek-official и требуют DEEPSEEK_API_KEY
+  disabled: true
+```
+Важно: в патчах `config` **заменяется целиком**, не сливается — перечисляйте все нужные поля. Автозапись в профили DSH loosechange пока не делает (кандидат в адаптер `integrations/deepseek_harness.py`: render оверлея + запись в `$DSH_HOME/profiles/<профиль>` с бэкапом).
 Free-модели также часто отвечают `429 … temporarily rate-limited upstream` — это перегрузка у провайдера, не проблема ключа; помогает повтор позже или другая модель из списка.
 
 Лимиты на `:free` ограничены (требуют перепроверки по актуальной документации OR: запросы/мин и в сутки, различие с пополненным балансом); без ключа вызовы невозможны — бот напоминает получить ключ на openrouter.ai/keys.
