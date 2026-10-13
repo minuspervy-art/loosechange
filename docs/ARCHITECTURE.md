@@ -13,6 +13,15 @@ GitHub Action (cron 3ч)         ┌── bot (aiogram) ── Telegram
 - **CLI** — `pipx install loosechange` / `uvx loosechange`. Команды: `list --profile coding`, `add <model-id> --to hermes|vibeforge [--dry-run]`.
 - **Integrations** — адаптеры `integrations/hermes.py`, `integrations/vibeforge.py` с общим интерфейсом `render(model) -> Snippet` и `apply(model, dry_run)`.
 
+## Collector и схема `data/models.json` (этап 1, реализовано)
+Запуск: `uv run python -m loosechange.collect` (или `loosechange collect`). Схема — pydantic `Snapshot` в `src/loosechange/models.py`, `schema_version: 1`:
+- `generated_at`, `source`, `total_models` (все модели OR), `models[]`, `excluded[]` (бесплатные, но не текстовые — с причиной).
+- `models[]`: `id`, `name`, `description` (≤300 симв.), `context_length`, `max_completion_tokens`, модальности, `supported_parameters`, `expiration_date`, `is_free_variant` (`:free`), `is_router` (`openrouter/*`), `benchmarks` (`intelligence`/`coding`/`agentic` как есть из OR, `null` если нет; `design_arena[]` целиком), `reliability` (лучший провайдер из `/endpoints`: `uptime_30m`, `uptime_1d`, `latency_30m`, `throughput_30m`, `providers`), `first_seen`.
+- `data/history/changes.json` — события `{ts, added[], removed[]}` между снапшотами, хранится 90 дней (для `/new`).
+- `/endpoints` запрашивается по каждой free-модели (~17 запросов); ошибка одного запроса → у модели просто нет `reliability`.
+
+Факт 2026-10-13: публичный `/endpoints` отдаёт `uptime_*`, но `latency_last_30m`/`throughput_last_30m` = `null` у всех free-моделей.
+
 ## Почему так
 - Бот не может изменить локальный конфиг пользователя → всегда отдаёт (а) YAML/JSON-сниппет, (б) однострочник `uvx loosechange add …`.
 - Нет БД: данные = один JSON в git, история = git log. Дёшево, прозрачно для open source.

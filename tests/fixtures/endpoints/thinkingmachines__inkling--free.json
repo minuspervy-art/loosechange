@@ -1,0 +1,69 @@
+{
+ "data": {
+  "id": "thinkingmachines/inkling:free",
+  "name": "Thinking Machines: Inkling (free)",
+  "created": 1784325956,
+  "description": "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total. It is designed for general-purpose reasoning, coding, agentic and tool-use systems,...",
+  "architecture": {
+   "tokenizer": "Other",
+   "instruct_type": null,
+   "modality": "text+image+audio->text",
+   "input_modalities": [
+    "text",
+    "image",
+    "audio"
+   ],
+   "output_modalities": [
+    "text"
+   ]
+  },
+  "endpoints": [
+   {
+    "name": "Thinking Machines | thinkingmachines/inkling-20260715:free",
+    "model_id": "thinkingmachines/inkling:free",
+    "model_name": "Thinking Machines: Inkling",
+    "context_length": 1048576,
+    "pricing": {
+     "prompt": "0",
+     "completion": "0",
+     "discount": 0
+    },
+    "provider_name": "Thinking Machines",
+    "tag": "thinkingmachines/nvfp4",
+    "quantization": "nvfp4",
+    "max_completion_tokens": 262144,
+    "max_prompt_tokens": null,
+    "supported_parameters": [
+     "reasoning",
+     "include_reasoning",
+     "temperature",
+     "top_p",
+     "max_tokens",
+     "stop",
+     "frequency_penalty",
+     "presence_penalty",
+     "seed",
+     "tools",
+     "reasoning_effort"
+    ],
+    "supports_tool_choice": {
+     "none": false,
+     "auto": false,
+     "required": false,
+     "function": false
+    },
+    "status": 0,
+    "uptime_last_30m": 100,
+    "uptime_last_5m": 100,
+    "uptime_last_1d": 99.51388888888889,
+    "supports_implicit_caching": false,
+    "native_tools": {},
+    "supports_voice_cloning": false,
+    "supports_multiple_audio_references": false,
+    "supports_image_reference": false,
+    "latency_last_30m": null,
+    "throughput_last_30m": null
+   }
+  ]
+ }
+}
