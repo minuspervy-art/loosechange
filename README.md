@@ -24,6 +24,7 @@ uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmach
 uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmachines/inkling:free --to hermes --apply
 ```
 Потом `hermes -m free-agent` (нужен `OPENROUTER_API_KEY` в `~/.hermes/.env`, ключ — https://openrouter.ai/keys). Ключ можно сразу взять из файла: `--key-file ~/or-key.txt` — он запишется в `~/.hermes/.env` с бэкапом и нигде не напечатается (другой уже записанный ключ заменяется только с `--replace-key`). Флаги: `--profile coding|chat|reasoning|longctx|design`, `--alias`, `--fallback` (добавить в цепочку fallback), `--force`, `--config`.
+VibeForge совсем без набора: `bash scripts/macos/install_vibeforge_sync.sh` — иконка «Обновить модели VibeForge» и фоновое обновление раз в 3 ч (подробно — [docs/guides/vibeforge-manual.md](docs/guides/vibeforge-manual.md)).
 DeepSeek Harness: `… add <id> --to deepseek` — патч профиля `~/.dsh/profiles/desktop/cordis.patch.yml` (dry-run, бэкап, приложение подхватит без перезапуска; `--key-file` кладёт ключ в `~/.dsh/.env`).
 VibeForge: `… add <id> --to vibeforge` печатает инструкцию — автозаписи нет, см. [docs/guides/vibeforge-manual.md](docs/guides/vibeforge-manual.md). Любой другой OpenAI-совместимый клиент: `--to other`.
 

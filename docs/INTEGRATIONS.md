@@ -59,11 +59,18 @@ loosechange add <id> --to hermes --key-file ~/or-key.txt [--replace-key] --apply
 loosechange add <id> --to vibeforge [--make-default] [--key-file ~/or.txt [--replace-key]] [--config <db>] [--apply]
 ```
 - Пишет **только** строки `app_settings`: `VIBEFORGE_OPENROUTER_MODELS` (добавляет id, порядок и остальные модели сохраняются), `VIBEFORGE_OPENROUTER_MODEL` (только если пусто или `--make-default`), `OPENROUTER_API_KEY` (только с `--key-file`; другой ключ — отказ без `--replace-key`). `license.*`, сессии и прочие таблицы не трогаются.
-- **Только при закрытом VibeForge** (`pgrep -f /VibeForge.app/Contents/` — и окно `app`, и бэкенд `node index.cjs`): иначе отказ «quit it (⌘Q)». Приложение держит настройки в памяти и перезаписало бы нашу правку.
+- **Только при закрытом VibeForge** (`pgrep -f '^/Applications/VibeForge\.app/Contents/'` — и окно `app`, и бэкенд `node index.cjs`; шаблон привязан к началу команды: без `^` он ловил любой процесс, в аргументах которого упомянут путь): иначе отказ «quit it (⌘Q)». Приложение держит настройки в памяти и перезаписало бы нашу правку.
 - Перед записью — целостный бэкап через SQLite backup API (`vibeforge.db.bak-<время>`, `600`, включает WAL), затем одна транзакция `BEGIN IMMEDIATE`, чтение назад для проверки.
 - Модели 🔒 `harness_only` (из `loosechange probe`) — отказ без `--force`: на движке API они дают 403 (проверено).
 - Проверено на целостной копии реальной БД (`sqlite3 .backup`, только чтение живой БД): dry-run, apply, повтор, ключ «already set»; реальная БД не изменилась (сверка по `updated_at`).
 - Бот: сниппет VibeForge — кнопка «📋 Скопировать команду» (`… --to vibeforge --apply`) с предупреждением закрыть VibeForge.
+
+**Без набора: `loosechange sync --to vibeforge` + иконка + launchd (2026-10-14).**
+- `sync` сам выбирает модели (`core/select.py`): топ-N (по умолчанию 3) профиля `agent`, без 🔒 `harness_only`, без роутера, без моделей с uptime < 90%, сначала проверенные `open`; добавляет недостающие в `VIBEFORGE_OPENROUTER_MODELS`; модель по умолчанию меняет только если её нет, она исчезла из бесплатных или 🔒. Снапшот старше `--max-age` (60 мин) сначала обновляется `quick_collect` (вердикты доступа сохраняются).
+- `--restart`: если VibeForge открыт — проверка «занят» по его БД (только чтение: агенты в статусе, отличном от `idle/failed/completed/stopped/paused/…`, или `running` в `queue_items`/`autopilot_runs` → отказ, код 3), затем `osascript … to quit` (как ⌘Q), ожидание выхода обоих процессов, запись, `open -b com.vibeforge.app`. `--if-closed`: открытый VibeForge — тихий пропуск.
+- Проверка «запущен»: `pgrep -f '^/Applications/VibeForge\.app/Contents/'`. Без `^` шаблон ловил посторонние процессы, в аргументах которых встречался путь (найдено на живом прогоне).
+- `scripts/macos/install_vibeforge_sync.sh` ставит иконку (AppleScript-апплет, режим `--restart`) и LaunchAgent `com.loosechange.vibeforge-sync` (каждые 3 ч, `--if-closed`). **Факт macOS:** фоновым заданиям launchd запрещён доступ к `~/Documents` (TCC → `Operation not permitted`), поэтому установщик выносит всё за пределы проекта: CLI — `uv tool install` (`~/.local/bin/loosechange`), скрипт и данные (`models.json`, `access.json`) — `~/Library/Application Support/loosechange/`. Полный доступ к диску для bash не выдаём.
+- Проверено вживую: задание launchd добавило `nemotron-3.5-lightning:free` в реальный VibeForge (с бэкапом БД, модель по умолчанию не тронута); иконка → «модели VibeForge актуальны».
 
 **Вывод для 2.0.15: безопасная автозапись невозможна.**
 1. Нет файла/таблицы с пользовательскими провайдерами — писать некуда, кроме строк `sessions`, а это рабочее состояние уже существующих сессий пользователя.

@@ -153,3 +153,13 @@ def test_plan_many(tmp_path):
     assert p.updates == {"VIBEFORGE_OPENROUTER_MODELS": f"{OTHER}, {MID}"}
     p = vf.plan_many([MID], db, new_default=MID)
     assert p.updates["VIBEFORGE_OPENROUTER_MODEL"] == MID
+
+
+def test_app_pattern_is_anchored():
+    import re
+
+    assert re.search(vf.APP_PATTERN, "/Applications/VibeForge.app/Contents/MacOS/app")
+    assert re.search(
+        vf.APP_PATTERN, "/Applications/VibeForge.app/Contents/Resources/resources/backend/bin/node"
+    )
+    assert not re.search(vf.APP_PATTERN, "zsh -c pgrep -f /Applications/VibeForge.app/Contents/")

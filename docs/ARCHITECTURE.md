@@ -62,6 +62,7 @@ loosechange/
 │  │  ├─ collect.py         # OpenRouter → data/models.json (+ history)
 │  │  ├─ refresh.py         # обновление по таймерам истечения (список / uptime)
 │  │  ├─ probe.py           # проверка доступа: open / harness_only (data/access.json)
+│  │  ├─ select.py          # выбор моделей для «обычного клиента» (sync)
 │  │  ├─ profiles.py        # профили задач: веса и требования
 │  │  └─ rank.py            # чистое ранжирование
 │  ├─ bot/                  # Telegram (aiogram 3, long-polling)
@@ -85,7 +86,7 @@ loosechange/
 │  ├─ guides/               # инструкции для пользователей (VibeForge)
 │  ├─ reports/              # генерируемые отчёты (самопроверка бота)
 │  └─ agent/                # промт автономной сборки
-├─ scripts/                 # служебные скрипты (bot_selfcheck.py)
+├─ scripts/                 # bot_selfcheck.py; macos/ — синхронизация VibeForge (иконка + launchd)
 ├─ .github/workflows/       # ci.yml, collect.yml
 └─ Dockerfile, pyproject.toml, uv.lock
 ```

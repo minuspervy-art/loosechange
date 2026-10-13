@@ -28,7 +28,9 @@ from .files import KEY_RE, ConfigConflict, mask
 MANUAL_URL = "docs/guides/vibeforge-manual.md"
 MODELS_KEY = "VIBEFORGE_OPENROUTER_MODELS"
 MODEL_KEY = "VIBEFORGE_OPENROUTER_MODEL"
-APP_MARKER = "/VibeForge.app/Contents/"
+# anchored: a process whose *command* starts in the bundle (the app and its node backend);
+# an unanchored match also hit shells whose arguments merely mention the path
+APP_PATTERN = r"^/Applications/VibeForge\.app/Contents/"
 
 
 def default_db_path() -> Path:
@@ -87,7 +89,7 @@ def manual(model_id: str) -> str:
 
 def app_running() -> bool:
     try:
-        r = subprocess.run(["pgrep", "-f", APP_MARKER], capture_output=True, text=True)
+        r = subprocess.run(["pgrep", "-f", APP_PATTERN], capture_output=True, text=True)
     except FileNotFoundError:  # not macOS
         return False
     return r.returncode == 0 and bool(r.stdout.strip())

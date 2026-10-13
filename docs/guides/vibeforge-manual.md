@@ -10,6 +10,16 @@ Id копируйте целиком, с суффиксом `:free` — без �
 
 > ⚠️ На движке «через API» VibeForge **не** считается агентным харнессом для OpenRouter: модели, которые OpenRouter отдаёт только харнессам, отвечают `403 … only available on agentic harnesses` (проверено на `thinkingmachines/inkling-small:free`). Для VibeForge берите модели без этого ограничения — например, `nvidia/nemotron-3-super-120b-a12b:free`, `google/gemma-4-31b-it:free`. Те же inkling-модели работают в Hermes и DeepSeek Harness.
 
+## 0. Совсем без набора (рекомендуется)
+Один раз установите (из папки проекта):
+```bash
+bash scripts/macos/install_vibeforge_sync.sh
+```
+Появятся:
+- **иконка `~/Applications/Обновить модели VibeForge.app`** (можно перетащить в Dock): двойной клик — VibeForge закрывается как по ⌘Q (**не** закрывается, если в нём работают агенты), в «Свои модели» OpenRouter добавляются лучшие бесплатные модели, которые VibeForge может вызвать (без 🔒 и без нестабильных), приложение открывается снова, приходит уведомление;
+- **фоновое обновление раз в 3 часа**, только когда VibeForge закрыт (открытый не трогает — попробует позже); уведомление — только если что-то добавлено.
+Модель по умолчанию меняется только если она сломалась (исчезла из бесплатных или 🔒). Лог: `~/Library/Logs/loosechange/vibeforge-sync.log`. Удалить: `bash scripts/macos/install_vibeforge_sync.sh --uninstall`. После `git pull` или нового `loosechange probe` запустите установщик ещё раз — он обновит копию.
+
 ## 2a. Одной командой (VibeForge закрыт)
 Закройте VibeForge (⌘Q), затем:
 ```bash
