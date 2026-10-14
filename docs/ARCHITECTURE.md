@@ -32,6 +32,7 @@ GitHub Action (cron 3ч)         ┌── bot (aiogram) ── Telegram
 | `LOOSECHANGE_REFRESH_MINUTES` | TTL списка моделей, по умолчанию `15`; `0` — выкл. (см. «Обновление данных») |
 | `LOOSECHANGE_FULL_REFRESH_MINUTES` | TTL uptime (полный сбор с `/endpoints`), по умолчанию `60`; `0` — выкл. |
 | `LOOSECHANGE_SELF_COLLECT_HOURS` | устаревшее (первый релиз): если задано — задаёт TTL uptime в часах |
+| `LOOSECHANGE_LINK_BASE` | https-адрес опубликованной `site/`; включает кнопку «⚡ Установить в один клик» |
 | `LOOSECHANGE_CLI` | префикс команды в сниппетах и кнопке «Скопировать команду», по умолчанию `uvx loosechange`; локально удобно `uv run --project <путь к репо> loosechange` |
 Токен дополнительно вырезается из любых строк логов (`RedactFilter`), логгер httpx приглушён до WARNING.
 
@@ -78,7 +79,9 @@ loosechange/
 │  │  ├─ hermes.py          # ~/.hermes/config.yaml (+ .env по --key-file)
 │  │  ├─ deepseek_harness.py # ~/.dsh/profiles/<p>/cordis.patch.yml (+ ~/.dsh/.env)
 │  │  └─ vibeforge.py       # только инструкция
-│  └─ cli.py                # loosechange list / show / add / collect
+│  ├─ deeplink.py           # loosechange://add?… — строгий разбор ссылки
+│  ├─ oneclick.py           # check/apply для обработчика ссылок
+│  └─ cli.py                # loosechange list / show / add / sync / probe / collect
 ├─ tests/                   # зеркалит src: core/, bot/, integrations/, test_cli.py
 │  └─ fixtures/             # реальные срезы OpenRouter API
 ├─ data/                    # models.json + history/ (коммитит Action) + access.json (probe)
@@ -86,7 +89,8 @@ loosechange/
 │  ├─ guides/               # инструкции для пользователей (VibeForge)
 │  ├─ reports/              # генерируемые отчёты (самопроверка бота)
 │  └─ agent/                # промт автономной сборки
-├─ scripts/                 # bot_selfcheck.py; macos/ — синхронизация VibeForge (иконка + launchd)
+├─ site/                    # add.html — страница-переходник для кнопки «⚡» (GitHub Pages)
+├─ scripts/                 # bot_selfcheck.py; macos/ — install.sh: обработчик ссылок, иконка, launchd
 ├─ .github/workflows/       # ci.yml, collect.yml
 └─ Dockerfile, pyproject.toml, uv.lock
 ```

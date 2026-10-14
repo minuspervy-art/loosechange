@@ -492,6 +492,30 @@ def sync(
             typer.echo("VibeForge reopened")
 
 
+@app.command("open-url", hidden=True)
+def open_url(
+    url: str,
+    mode: Annotated[str, typer.Option(help="check | apply | apply-restart")] = "check",
+    data: DataOpt = None,
+) -> None:
+    """Used by the loosechange:// handler app: prints STATUS on the first line
+    (ASK / ASK_RESTART / DONE / ERROR) and a message for the user after it."""
+    from . import oneclick
+
+    try:
+        snap = load_models(data)
+    except Exception as exc:  # the handler shows whatever we print
+        typer.echo(f"{oneclick.ERROR}\nНет данных о моделях: {exc}")
+        return
+    if mode == "check":
+        status, message = oneclick.check(url, snap)
+    elif mode in ("apply", "apply-restart"):
+        status, message = oneclick.apply(url, snap, restart=mode == "apply-restart")
+    else:
+        status, message = oneclick.ERROR, f"unknown mode {mode!r}"
+    typer.echo(f"{status}\n{message}")
+
+
 @app.command("collect")
 def collect_cmd(
     data_dir: Annotated[Path, typer.Option("--data-dir")] = DEFAULT_DATA_DIR,

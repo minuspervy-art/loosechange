@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>loosechange — установка модели</title>
+<style>
+  :root { --bg:#ffffff; --fg:#16181d; --muted:#5d6470; --card:#f4f5f7; --line:#dde0e5; --accent:#1f7a4d; --accent-fg:#ffffff; --warn:#a14a00; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111317; --fg:#e8eaee; --muted:#9aa1ad; --card:#1a1d23; --line:#2a2e36; --accent:#3fbf7f; --accent-fg:#08130d; --warn:#f0a35e; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:560px; margin:0 auto; padding:40px 16px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .muted { color:var(--muted); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin:20px 0; }
+  code { font:14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; word-break:break-all; }
+  .btn { display:block; text-align:center; background:var(--accent); color:var(--accent-fg); text-decoration:none; font-weight:600; padding:14px; border-radius:10px; margin:20px 0 8px; }
+  .warn { color:var(--warn); }
+  ol { padding-left:20px; }
+  pre { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Установка модели</h1>
+  <p class="muted">loosechange · бесплатные LLM с OpenRouter</p>
+
+  <div id="ok" hidden>
+    <div class="card">
+      <div class="muted">Модель</div>
+      <code id="model"></code>
+      <div class="muted" style="margin-top:10px">Куда</div>
+      <div id="target"></div>
+    </div>
+    <a id="open" class="btn" href="#">Установить на этом компьютере</a>
+    <p class="muted">Откроется приложение loosechange: оно покажет, что изменится, и ничего не запишет без вашего подтверждения. Перед записью делается бэкап.</p>
+    <p id="mobile" class="warn" hidden>Похоже, вы на телефоне. Установка работает на компьютере, где стоит loosechange, — откройте эту ссылку там (например, в Telegram Desktop).</p>
+    <details class="card">
+      <summary>Ничего не происходит?</summary>
+      <p>Нужен обработчик ссылок loosechange (macOS). Установка, один раз, в папке проекта:</p>
+      <pre>bash scripts/macos/install.sh</pre>
+      <p>Или без обработчика — командой в терминале:</p>
+      <pre id="cli"></pre>
+    </details>
+  </div>
+
+  <div id="bad" class="card warn" hidden>
+    Ссылка повреждена или устарела. Вернитесь в бота и нажмите «🔄 Обновить».
+  </div>
+</main>
+<script>
+  // Same rules as src/loosechange/deeplink.py: only these three fields, strict format.
+  const TARGETS = { hermes: "Hermes", vibeforge: "VibeForge", deepseek: "DeepSeek Harness" };
+  const PROFILES = ["agent", "coding", "chat", "reasoning", "longctx", "fast_cheap", "design"];
+  const MODEL_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}\/[A-Za-z0-9][A-Za-z0-9._:~-]{0,127}$/;
+
+  const q = new URLSearchParams(location.search);
+  const model = q.get("model") || "", to = q.get("to") || "", profile = q.get("profile") || "";
+  const valid = MODEL_RE.test(model) && TARGETS[to] && PROFILES.includes(profile) &&
+    [...q.keys()].every(k => ["model", "to", "profile"].includes(k));
+
+  if (!valid) {
+    document.getElementById("bad").hidden = false;
+  } else {
+    const params = new URLSearchParams({ model, to, profile }).toString();
+    const deeplink = "loosechange://add?" + params;
+    document.getElementById("model").textContent = model;
+    document.getElementById("target").textContent = TARGETS[to];
+    document.getElementById("open").href = deeplink;
+    const flags = { hermes: " --force", deepseek: " --force", vibeforge: " --make-default" }[to];
+    document.getElementById("cli").textContent =
+      "uvx loosechange add " + model + " --to " + to + " --profile " + profile + flags + " --apply";
+    document.getElementById("ok").hidden = false;
+    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    document.getElementById("mobile").hidden = !mobile;
+    // Try to hand over right away; the browser asks before opening an app.
+    if (!mobile) setTimeout(() => { location.href = deeplink; }, 400);
+  }
+</script>
+</body>
+</html>

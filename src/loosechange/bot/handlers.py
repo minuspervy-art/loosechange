@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import os
 import time
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
@@ -16,7 +17,7 @@ from aiogram.filters import Command, CommandObject, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, Message, TelegramObject
 
-from .. import integrations
+from .. import deeplink, integrations
 from ..core.profiles import Priority, get_profile
 from ..core.rank import RankResult, rank
 from ..core.schema import Model, Snapshot
@@ -402,9 +403,20 @@ async def _send_snippet(message: Message, model: Model, target: str, profile: st
         text = t(lang, "harness_warn", target=t(lang, f"t_{target}")) + "\n\n" + text
     await message.answer(
         text,
-        reply_markup=copy_kb(snippet, lang),
+        reply_markup=copy_kb(snippet, lang, one_click_link(model, target, profile)),
         disable_web_page_preview=True,
     )
+
+
+def one_click_link(model: Model, target: str, profile: str) -> str | None:
+    """https page that hands over to loosechange:// (only if site/ is published:
+    LOOSECHANGE_LINK_BASE, e.g. https://<you>.github.io/loosechange)."""
+    base = os.environ.get("LOOSECHANGE_LINK_BASE", "").strip()
+    if not base.startswith("https://") or target not in deeplink.TARGETS:
+        return None
+    if model.harness_only and target in PLAIN_CLIENT_TARGETS:
+        return None  # would 403 there
+    return deeplink.page_url(base, model.id, target, profile)
 
 
 async def _model_gone(message: Message, lang: str, profile: str, priority: str, target: str | None):

@@ -207,9 +207,12 @@ def card_kb(model_id: str, lang: str, harness_only: bool = False) -> InlineKeybo
 COPY_TEXT_LIMIT = 256  # Telegram limit for CopyTextButton.text
 
 
-def copy_kb(snippet: Snippet, lang: str) -> InlineKeyboardMarkup:
-    """One tap puts the ready command (or the model id) on the clipboard; + menu."""
+def copy_kb(snippet: Snippet, lang: str, link: str | None = None) -> InlineKeyboardMarkup:
+    """⚡ one-click install link (if published), the ready command (or the model id)
+    on the clipboard, and the menu."""
     rows = []
+    if link:
+        rows.append([InlineKeyboardButton(text=t(lang, "one_click"), url=link)])
     text = snippet.copy_text
     if text and len(text) <= COPY_TEXT_LIMIT:
         label = t(lang, "copy_cmd" if text == snippet.command else "copy_id")

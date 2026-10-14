@@ -591,3 +591,22 @@ async def test_no_vibeforge_button_for_harness_only(env_access):
     labels = [b.text for b in buttons(session.sent()[-1])]
     assert "🔧 VibeForge" not in labels and "🔧 Другое" not in labels
     assert "🔧 Hermes" in labels and "🔧 DeepSeek Harness" in labels
+
+
+async def test_one_click_button_only_when_published(env, monkeypatch):
+    _, _, session, *_ = env
+    await feed(env, msg_update("/model nvidia/nemotron-3-super-120b-a12b:free"))
+    vf_btn = next(b for b in buttons(session.sent()[-1]) if "VibeForge" in b.text)
+    await feed(env, cb_update(vf_btn.callback_data))
+    assert all(b.url is None for b in buttons(session.sent()[-1]))  # not configured
+
+    monkeypatch.setenv("LOOSECHANGE_LINK_BASE", "https://me.github.io/loosechange")
+    await feed(env, cb_update(vf_btn.callback_data))
+    first = buttons(session.sent()[-1])[0]
+    assert first.text == "⚡ Установить в один клик"
+    assert first.url.startswith("https://me.github.io/loosechange/add.html?model=nvidia%2F")
+    assert "to=vibeforge" in first.url
+
+    monkeypatch.setenv("LOOSECHANGE_LINK_BASE", "http://evil.example")  # https only
+    await feed(env, cb_update(vf_btn.callback_data))
+    assert all(b.url is None for b in buttons(session.sent()[-1]))
