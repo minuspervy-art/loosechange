@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 import time
 from collections.abc import Callable, Iterable
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 from pathlib import Path
 
@@ -46,8 +46,26 @@ class ProbeResult(BaseModel):
     checked_at: datetime
 
 
+CONGESTION_TTL = timedelta(hours=12)  # a 429 older than this no longer marks the model
+
+
+class Congestion(BaseModel):
+    """Observed 429s ("temporarily rate-limited upstream"): a fact with a timestamp."""
+
+    last_at: datetime
+    count: int = 1  # consecutive 429s since the last successful answer
+    source: str = "probe"  # probe | vibeforge-log
+
+
 class AccessReport(BaseModel):
     results: dict[str, ProbeResult] = Field(default_factory=dict)
+    congestion: dict[str, Congestion] = Field(default_factory=dict)
+
+    def congested_at(self, model_id: str, now: datetime | None = None) -> datetime | None:
+        c = self.congestion.get(model_id)
+        if c is None or (now or datetime.now(UTC)) - c.last_at > CONGESTION_TTL:
+            return None
+        return c.last_at
 
     def verdict(self, model_id: str) -> tuple[Access | None, datetime | None]:
         r = self.results.get(model_id)
@@ -98,22 +116,45 @@ def load_report(path: Path) -> AccessReport:
     return AccessReport.model_validate_json(path.read_text())
 
 
-def merge(old: AccessReport, new: dict[str, ProbeResult]) -> AccessReport:
-    """Definite answers replace old ones; rate limits / errors never erase a verdict."""
+def merge(old: AccessReport, new: dict[str, ProbeResult], source: str = "probe") -> AccessReport:
+    """Definite answers replace old ones; rate limits / errors never erase a verdict.
+    A 429 marks the model congested; a successful answer clears that mark."""
     merged = dict(old.results)
+    congestion = dict(old.congestion)
     for model_id, r in new.items():
         prev = merged.get(model_id)
         definite = r.outcome in (Outcome.OPEN, Outcome.HARNESS_ONLY)
         prev_definite = prev and prev.outcome in (Outcome.OPEN, Outcome.HARNESS_ONLY)
         if definite or not prev_definite:
             merged[model_id] = r
-    return AccessReport(results=merged)
+        if r.outcome is Outcome.RATE_LIMITED:
+            c = congestion.get(model_id)
+            if c is None or r.checked_at > c.last_at:
+                congestion[model_id] = Congestion(
+                    last_at=r.checked_at, count=(c.count + 1) if c else 1, source=source
+                )
+        elif r.outcome is Outcome.OPEN:
+            congestion.pop(model_id, None)
+    return AccessReport(results=merged, congestion=congestion)
 
 
-def apply_access(snapshot: Snapshot, report: AccessReport) -> Snapshot:
+def apply_access(snapshot: Snapshot, report: AccessReport, now: datetime | None = None) -> Snapshot:
     for m in snapshot.models:
         m.access, m.access_checked_at = report.verdict(m.id)
+        m.congested_at = report.congested_at(m.id, now)
     return snapshot
+
+
+def record(data_dir: Path, observed: dict[str, ProbeResult], source: str) -> AccessReport:
+    """Store outcomes seen elsewhere (e.g. a harness's own error log) like probe results,
+    and refresh the snapshot so the bot and `sync` see them."""
+    report_path = data_dir / "access.json"
+    report = merge(load_report(report_path), observed, source=source)
+    _dump(report_path, report)
+    snap = load_snapshot(data_dir / "models.json")
+    if snap is not None:
+        _dump(data_dir / "models.json", apply_access(snap, report))
+    return report
 
 
 def run(

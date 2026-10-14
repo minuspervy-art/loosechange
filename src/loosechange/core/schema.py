@@ -68,6 +68,12 @@ class Model(BaseModel):
     # from `loosechange probe` (data/access.json): "open" | "harness_only"; None = not checked
     access: str | None = None
     access_checked_at: datetime | None = None
+    # last observed 429 "rate-limited upstream" within the last 12 h (probe / harness logs)
+    congested_at: datetime | None = None
+
+    @property
+    def congested(self) -> bool:
+        return self.congested_at is not None
 
     @property
     def harness_only(self) -> bool:

@@ -610,3 +610,12 @@ async def test_one_click_button_only_when_published(env, monkeypatch):
     monkeypatch.setenv("LOOSECHANGE_LINK_BASE", "http://evil.example")  # https only
     await feed(env, cb_update(vf_btn.callback_data))
     assert all(b.url is None for b in buttons(session.sent()[-1]))
+
+
+def test_card_shows_congestion(raw_models):
+    from loosechange.bot.render import model_card
+
+    snap = build_snapshot(raw_models, now=NOW)
+    m = snap.get("google/gemma-4-31b-it:free")
+    m.congested_at = NOW
+    assert "⏳ перегружена: 429 в" in model_card(m, "ru")

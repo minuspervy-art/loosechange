@@ -256,3 +256,52 @@ def test_new_env_file_is_private(tmp_path):
 def test_plan_key_rejects_garbage(tmp_path):
     with pytest.raises(hermes.HermesConflict):
         hermes.plan_key(tmp_path / "config.yaml", "not-a-key")
+
+
+def test_plan_sync_alias_and_chain_keep_foreign_entries(cfg):
+    picks = ["nvidia/a:free", "nvidia/b:free"]
+    p = hermes.plan_sync(MID, picks, "agent", cfg)
+    data = load(p.after)
+    assert data["model_aliases"]["free-agent"]["model"] == MID
+    assert data["fallback_providers"] == [
+        {"provider": "custom:some-router", "model": "deepseek/deepseek-v4-pro"},  # untouched
+        {"provider": "openrouter", "model": "nvidia/a:free"},
+        {"provider": "openrouter", "model": "nvidia/b:free"},
+    ]
+    hermes.write(p)
+    assert not hermes.plan_sync(MID, picks, "agent", cfg).changed  # idempotent
+    # next day b is gone / congested, c is new; a paid openrouter entry is never removed
+    text = cfg.read_text().replace(
+        "_config_version: 33",
+        "_config_version: 33",
+    )
+    cfg.write_text(text)
+    p2 = hermes.plan_sync(MID, ["nvidia/a:free", "nvidia/c:free"], "agent", cfg)
+    chain = load(p2.after)["fallback_providers"]
+    assert [e["model"] for e in chain] == [
+        "deepseek/deepseek-v4-pro",
+        "nvidia/a:free",
+        "nvidia/c:free",
+    ]
+    assert any("-= openrouter/nvidia/b:free" in c for c in p2.changes)
+    assert "offer innovative\n      solutions." in p2.after  # rest of the file untouched
+
+
+def test_plan_sync_never_drops_paid_openrouter_entries(tmp_path):
+    p = tmp_path / "config.yaml"
+    p.write_text(
+        "fallback_providers:\n- provider: openrouter\n  model: anthropic/claude-opus-5\n"
+        "- provider: openrouter\n  model: old/x:free\n"
+    )
+    plan = hermes.plan_sync(MID, ["new/y:free"], "agent", p)
+    models = [e["model"] for e in load(plan.after)["fallback_providers"]]
+    assert models == ["anthropic/claude-opus-5", "new/y:free"]
+
+
+def test_indentless_fallback_list_is_one_block(tmp_path):
+    p = tmp_path / "config.yaml"
+    p.write_text("fallback_providers:\n- provider: x\n  model: y\nother: 1\n")
+    plan = hermes.plan(MID, "agent", p, fallback=True)
+    data = load(plan.after)
+    assert data["other"] == 1
+    assert data["fallback_providers"][-1] == {"provider": "openrouter", "model": MID}

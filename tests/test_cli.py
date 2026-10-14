@@ -240,7 +240,7 @@ def test_sync_dry_run_then_apply_then_up_to_date(data, tmp_path, monkeypatch):
     assert "dry run" in r.output and "VIBEFORGE_OPENROUTER_MODELS" in r.output
     r = _sync(data, "--apply")
     assert r.exit_code == 0, r.output
-    assert "summary: добавлено 3" in r.output and calls == []
+    assert "summary: добавлено: " in r.output and calls == []
     assert len(rows(db)["VIBEFORGE_OPENROUTER_MODELS"].split(", ")) == 4  # laguna-xs + 3
     assert rows(db)["VIBEFORGE_OPENROUTER_MODEL"] == "nvidia/nemotron-3-super-120b-a12b:free"
     r = _sync(data, "--apply")

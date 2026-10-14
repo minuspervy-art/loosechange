@@ -1,6 +1,6 @@
 # Самопроверка бота
 
-Сгенерировано `scripts/bot_selfcheck.py` 2026-10-14 10:25 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
+Сгенерировано `scripts/bot_selfcheck.py` 2026-10-14 10:49 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
 
 **user:** `/start`
 **bot (send):**
@@ -44,6 +44,7 @@ google/gemma-4-26b-a4b-it:free
 5. Google: Gemma 4 31B (free) — ⭐ 57.2
 google/gemma-4-31b-it:free
 🧠 14.7 · 💻 43.4 · 🤖 4.2 · 📏 256k · 🛠 · 💭
+⏳ перегружена: 429 в 10:41 UTC
 
 Стр. 1/3
 ```
@@ -93,6 +94,7 @@ nvidia/nemotron-3-ultra-550b-a55b:free
 4. Google: Gemma 4 31B (free) — ⭐ 45
 google/gemma-4-31b-it:free
 🧠 14.7 · 💻 43.4 · 🤖 4.2 · 📏 256k · 🛠 · 💭
+⏳ перегружена: 429 в 10:41 UTC
 
 5. Google: Gemma 4 26B A4B  (free) — ⭐ 41.5
 google/gemma-4-26b-a4b-it:free

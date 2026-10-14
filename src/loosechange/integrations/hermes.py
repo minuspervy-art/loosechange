@@ -130,7 +130,9 @@ def _block(lines: list[str], key: str) -> tuple[int, int, str] | None:
                 text = lines[j].rstrip("\n")
                 if not text.strip():
                     continue
-                if not text.startswith((" ", "\t")):
+                # "- item" at column 0 is a valid (indentless) list under this key;
+                # a top-level key can never start with a dash
+                if not text.startswith((" ", "\t", "- ")) and text != "-":
                     if text.startswith("#"):
                         continue  # column-0 comment: belongs to whatever follows
                     break
@@ -313,3 +315,87 @@ def smoke_check(p: Plan, timeout: int = 60) -> str | None:
         env=env,
     )
     return (r.stdout or r.stderr).strip()
+
+
+# ---------------------------------------------------------------- sync (alias + fallback chain)
+
+
+def _fallback_items(lines: list[str]) -> tuple[int, int, list[tuple[int, int]]] | None:
+    """(block start, end, [(item start, item end)...]) of a block-style fallback list."""
+    blk = _block(lines, "fallback_providers")
+    if blk is None:
+        return None
+    start, end, inline = blk
+    if inline:
+        return start, end, []
+    dash = None
+    starts = []
+    for i in range(start + 1, end):
+        text = lines[i]
+        if text.lstrip().startswith("- "):
+            indent = len(text) - len(text.lstrip(" "))
+            if dash is None:
+                dash = indent
+            if indent == dash:
+                starts.append(i)
+    items = [(s, starts[n + 1] if n + 1 < len(starts) else end) for n, s in enumerate(starts)]
+    return start, end, items
+
+
+def plan_sync(
+    alias_model: str,
+    fallback_models: list[str],
+    profile: str,
+    path: Path | None = None,
+    alias: str | None = None,
+) -> Plan:
+    """Point model_aliases.free-<profile> at `alias_model` and keep `fallback_providers`
+    holding exactly our current free picks: add missing openrouter entries, drop stale
+    openrouter `:free` entries. Entries of other providers are never touched."""
+    p = plan(alias_model, profile, path, alias=alias, force=True)
+    data = _load(p.after) or {}
+    chain = data.get("fallback_providers") or []
+    if not isinstance(chain, list):
+        raise HermesConflict("fallback_providers exists but is not a list")
+    desired = [m for m in dict.fromkeys(fallback_models) if m != alias_model]
+
+    def ours(e) -> bool:
+        return (
+            isinstance(e, dict)
+            and e.get("provider") == "openrouter"
+            and str(e.get("model", "")).endswith(":free")
+        )
+
+    stale = [i for i, e in enumerate(chain) if ours(e) and e.get("model") not in desired]
+    present = {e.get("model") for e in chain if ours(e)}
+    missing = [m for m in desired if m not in present]
+    if not stale and not missing:
+        return p
+
+    lines = p.after.splitlines(keepends=True)
+    if stale:
+        found = _fallback_items(lines)
+        if found is None or len(found[2]) != len(chain):
+            raise HermesConflict("fallback_providers layout is unusual; edit it by hand")
+        start, _, items = found
+        for i in sorted(stale, reverse=True):
+            s, e = items[i]
+            del lines[s:e]
+        if len(stale) == len(chain) and not missing:
+            lines[start] = "fallback_providers: []\n"
+    for m in missing:
+        _add_fallback(lines, m)
+
+    expected = copy.deepcopy(data)
+    kept = [e for i, e in enumerate(chain) if i not in set(stale)]
+    expected["fallback_providers"] = [
+        *kept,
+        *({"provider": "openrouter", "model": m} for m in missing),
+    ]
+    after = "".join(lines)
+    if _load(after) != expected:
+        raise HermesConflict("could not edit fallback_providers safely; edit it by hand")
+    p.after = after
+    p.changes.extend(f"fallback_providers -= openrouter/{chain[i]['model']}" for i in stale)
+    p.changes.extend(f"fallback_providers += openrouter/{m}" for m in missing)
+    return p

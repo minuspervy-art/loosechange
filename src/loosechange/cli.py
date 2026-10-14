@@ -386,42 +386,12 @@ def probe(
     )
 
 
-@app.command()
-def sync(
-    to: Annotated[
-        str, typer.Option("--to", help="vibeforge (the only target for now)")
-    ] = "vibeforge",
-    profile: ProfileOpt = "agent",
-    top: Annotated[int, typer.Option(help="How many best models to keep in the list")] = 3,
-    data_dir: Annotated[Path, typer.Option("--data-dir")] = DEFAULT_DATA_DIR,
-    config: Annotated[Path | None, typer.Option(help="VibeForge DB (default: the app's)")] = None,
-    restart: Annotated[
-        bool,
-        typer.Option(help="Quit VibeForge if it is open (refused while agents work) and reopen"),
-    ] = False,
-    if_closed: Annotated[
-        bool, typer.Option("--if-closed", help="Skip quietly when VibeForge is open (scheduled)")
-    ] = False,
-    max_age: Annotated[
-        int, typer.Option(help="Re-fetch the model list if the snapshot is older (minutes)")
-    ] = 60,
-    dry_run: Annotated[
-        bool, typer.Option("--dry-run/--apply", help="Show the plan (default) or write it")
-    ] = True,
-) -> None:
-    """Keep VibeForge's OpenRouter models current without typing ids: adds the best
-    free models a plain client can call; replaces the default only if it broke."""
+def _fresh_snapshot(data_dir: Path, max_age: int) -> Snapshot:
     from datetime import UTC, datetime, timedelta
 
     from .core.collect import quick_collect
-    from .core.select import choose
 
-    if to != "vibeforge":
-        raise typer.BadParameter("only vibeforge is supported", param_hint="--to")
-    _check_profile(profile)
-    stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    snap_path = data_dir / "models.json"
-    snap = load_snapshot(snap_path)
+    snap = load_snapshot(data_dir / "models.json")
     if snap is None or datetime.now(UTC) - snap.generated_at > timedelta(minutes=max_age):
         try:
             snap, _ = quick_collect(data_dir)
@@ -430,12 +400,119 @@ def sync(
     if snap is None:
         typer.secho(f"error: no model data in {data_dir}; run `loosechange collect`", fg="red")
         raise typer.Exit(1)
+    return snap
+
+
+@app.command()
+def sync(
+    to: Annotated[str, typer.Option("--to", help="vibeforge | hermes")] = "vibeforge",
+    profile: ProfileOpt = "agent",
+    top: Annotated[int, typer.Option(help="How many best models to keep")] = 3,
+    data_dir: Annotated[Path, typer.Option("--data-dir")] = DEFAULT_DATA_DIR,
+    config: Annotated[
+        Path | None, typer.Option(help="VibeForge DB / Hermes config.yaml (default: the app's)")
+    ] = None,
+    restart: Annotated[
+        bool,
+        typer.Option(help="VibeForge: quit it if open (refused while agents work) and reopen"),
+    ] = False,
+    if_closed: Annotated[
+        bool, typer.Option("--if-closed", help="VibeForge: skip quietly when it is open")
+    ] = False,
+    prune: Annotated[
+        bool,
+        typer.Option(
+            "--prune/--no-remove",
+            help="VibeForge: drop :free models that went 🔒, vanished or are rate-limited",
+        ),
+    ] = True,
+    max_age: Annotated[
+        int, typer.Option(help="Re-fetch the model list if the snapshot is older (minutes)")
+    ] = 60,
+    dry_run: Annotated[
+        bool, typer.Option("--dry-run/--apply", help="Show the plan (default) or write it")
+    ] = True,
+) -> None:
+    """Keep a harness's free models current with no typing.
+
+    vibeforge: best models a plain client can call into «Свои модели»; drops broken
+    :free ones; replaces the default only if it broke. Learns from VibeForge's own
+    recent 429/403 errors.
+    hermes: alias free-<profile> -> best model; fallback_providers keeps the next
+    best free models, so Hermes switches by itself on 429."""
+    from datetime import datetime
+
+    from .core.probe import record
+
+    if to not in ("vibeforge", "hermes"):
+        raise typer.BadParameter("vibeforge | hermes", param_hint="--to")
+    _check_profile(profile)
+    stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    snap = _fresh_snapshot(data_dir, max_age)
+
+    # facts from VibeForge's own error log (429 upstream / 403 harness-only), read-only
+    try:
+        observed = vibeforge.recent_errors(config if to == "vibeforge" else None)
+    except (OSError, sqlite3.Error):
+        observed = {}
+    if observed and (data_dir / "models.json").exists():
+        record(data_dir, observed, source="vibeforge-log")
+        snap = load_snapshot(data_dir / "models.json") or snap
+
+    if to == "hermes":
+        _sync_hermes(snap, profile, top, config, dry_run, stamp)
+    else:
+        _sync_vibeforge(snap, profile, top, config, restart, if_closed, prune, dry_run, stamp)
+
+
+def _sync_hermes(snap, profile, top, config, dry_run, stamp) -> None:
+    from .core.select import choose
+
+    sel = choose(snap, None, top=top + 1, profile=profile, harness=True)
+    if not sel.picks:
+        typer.secho("error: no usable free model right now", fg="red")
+        raise typer.Exit(1)
+    best, chain = sel.picks[0].id, [m.id for m in sel.picks[1:]]
+    try:
+        plan = hermes.plan_sync(best, chain, profile, config)
+    except (ConfigConflict, OSError) as exc:
+        typer.secho(f"[{stamp}] error: {exc}", fg="red", err=True)
+        raise typer.Exit(1) from None
+    if not plan.changed:
+        typer.echo(f"[{stamp}] Hermes is up to date: {plan.alias} -> {best}; fallback: {chain}")
+        typer.echo("summary: Hermes актуален")
+        return
+    typer.echo(plan.diff())
+    if dry_run:
+        typer.echo("dry run: nothing written; add --apply (a backup is made)")
+        return
+    backup = hermes.write(plan)
+    typer.echo(f"[{stamp}] written {plan.path}" + (f" (backup: {backup})" if backup else ""))
+    out = None
+    try:
+        out = hermes.smoke_check(plan)
+    except Exception as exc:  # never undo a successful write
+        out = f"skipped ({exc})"
+    if out is not None:
+        typer.echo(f"smoke check: {out}")
+    typer.echo(f"summary: Hermes: {plan.alias} → {best.split('/')[-1]}, запасных {len(chain)}")
+
+
+def _sync_vibeforge(snap, profile, top, config, restart, if_closed, prune, dry_run, stamp):
+    from .core.select import broken_for, choose
 
     try:
         current = vibeforge.current_settings(config)
         sel = choose(snap, current.get(vibeforge.MODEL_KEY), top=top, profile=profile)
+        remove = {}
+        if prune:
+            for mid in vibeforge.split_models(current.get(vibeforge.MODELS_KEY)):
+                if mid.endswith(":free"):  # never touch paid / custom ids
+                    why = broken_for(snap.get(mid), harness=False)
+                    if why:
+                        remove[mid] = why
         plan = vibeforge.plan_many(
-            [m.id for m in sel.picks], config, sel.new_default, current=current
+            [m.id for m in sel.picks], config, sel.new_default, current=current, remove=remove
         )
     except (ConfigConflict, OSError, sqlite3.Error) as exc:
         typer.secho(f"[{stamp}] error: {exc}", fg="red", err=True)
@@ -448,6 +525,8 @@ def sync(
         )
         typer.echo("summary: модели VibeForge актуальны")
         return
+    for c in plan.changes:
+        typer.echo(f"  • {c}")
     typer.echo(plan.describe())
     if dry_run:
         typer.echo("dry run: nothing written; add --apply (and --restart if VibeForge is open)")
@@ -479,10 +558,15 @@ def sync(
         typer.echo(f"[{stamp}] written {plan.path} (backup: {backup})")
         typer.echo(f"smoke check: {vibeforge.smoke_check(plan)}")
         added = [c.split("+= ", 1)[1] for c in plan.changes if "+= " in c]
-        summary = f"добавлено {len(added)}: " + ", ".join(a.split("/")[-1] for a in added)
+        removed = [c.split("-= ", 1)[1].split(" (")[0] for c in plan.changes if "-= " in c]
+        parts = []
+        if added:
+            parts.append("добавлено: " + ", ".join(a.split("/")[-1] for a in added))
+        if removed:
+            parts.append("убрано: " + ", ".join(r.split("/")[-1] for r in removed))
         if sel.new_default:
-            summary += f"; по умолчанию {sel.new_default.split('/')[-1]}"
-        typer.echo(f"summary: {summary}")
+            parts.append(f"по умолчанию {sel.new_default.split('/')[-1]}")
+        typer.echo("summary: " + "; ".join(parts))
     except (ConfigConflict, sqlite3.Error) as exc:
         typer.secho(f"[{stamp}] error: {exc}", fg="red")
         raise typer.Exit(1) from None

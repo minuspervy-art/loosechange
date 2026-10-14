@@ -163,3 +163,44 @@ def test_app_pattern_is_anchored():
         vf.APP_PATTERN, "/Applications/VibeForge.app/Contents/Resources/resources/backend/bin/node"
     )
     assert not re.search(vf.APP_PATTERN, "zsh -c pgrep -f /Applications/VibeForge.app/Contents/")
+
+
+def test_recent_errors_from_vibeforge_log(tmp_path):
+    import json as _json
+    import time as _time
+
+    db = make_db(tmp_path)
+    con = sqlite3.connect(db)
+    con.execute("create table logs(id text, payload text, created_at integer)")
+    now = int(_time.time() * 1000)
+    rows = [
+        (
+            "1",
+            'OpenRouter returned HTTP 429: {"raw":"google/gemma-4-31b-it:free is '
+            'temporarily rate-limited upstream. Please retry"}',
+            now - 60_000,
+        ),
+        (
+            "2",
+            "thinkingmachines/inkling-small:free is only available on agentic harnesses",
+            now - 120_000,
+        ),
+        ("3", "x/old:free is temporarily rate-limited upstream", now - 3 * 86_400_000),  # too old
+    ]
+    for r in rows:
+        con.execute("insert into logs values (?, ?, ?)", (r[0], _json.dumps({"text": r[1]}), r[2]))
+    con.commit()
+    con.close()
+    found = vf.recent_errors(db, hours=24)
+    assert found["google/gemma-4-31b-it:free"].outcome.value == "rate_limited"
+    assert found["thinkingmachines/inkling-small:free"].outcome.value == "harness_only"
+    assert "x/old:free" not in found
+
+
+def test_plan_many_removes_only_listed_and_keeps_order(tmp_path):
+    db = make_db(tmp_path, {"VIBEFORGE_OPENROUTER_MODELS": f"a/x:free, {OTHER}, b/paid, c/y:free"})
+    p = vf.plan_many(
+        [MID], db, remove={"a/x:free": "harness-only", "c/y:free": "gone", "z/q": "no"}
+    )
+    assert p.updates["VIBEFORGE_OPENROUTER_MODELS"] == f"{OTHER}, b/paid, {MID}"
+    assert any("-= a/x:free (harness-only)" in c for c in p.changes)

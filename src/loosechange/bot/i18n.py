@@ -73,6 +73,7 @@ STRINGS: dict[str, dict[str, str]] = {
         ),
         "router": "🎲 роутер: случайная free-модель",
         "harness_only": "🔒 только Hermes / DeepSeek Harness",
+        "congested": "⏳ перегружена: 429 в {at}",
         "hidden_harness": (
             "<i>Скрыто {n}: OpenRouter отдаёт их только агентным харнессам "
             "(Hermes, DeepSeek Harness) — в {target} будет 403.</i>"
@@ -184,6 +185,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "about_timers": "Refresh timers: model list every {list} min, uptime every {full} min.",
         "router": "🎲 router: random free model",
         "harness_only": "🔒 Hermes / DeepSeek Harness only",
+        "congested": "⏳ rate-limited: 429 at {at}",
         "hidden_harness": (
             "<i>{n} hidden: OpenRouter serves them only to agentic harnesses "
             "(Hermes, DeepSeek Harness) — {target} would get 403.</i>"

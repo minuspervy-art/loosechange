@@ -87,3 +87,39 @@ def test_run_writes_report_and_snapshot_and_collect_keeps_it(tmp_path, raw_model
     # a later data refresh keeps the verdicts
     collect(tmp_path, client=httpx.Client(transport=or_transport), with_endpoints=False)
     assert load_snapshot(tmp_path / "models.json").get(ids[0]).harness_only
+
+
+def test_congestion_recorded_cleared_and_expires():
+    from datetime import timedelta
+
+    from loosechange.core.probe import CONGESTION_TTL
+
+    r429 = ProbeResult(outcome=Outcome.RATE_LIMITED, http=429, checked_at=T)
+    rep = merge(AccessReport(), {"m": r429})
+    rep = merge(rep, {"m": ProbeResult(outcome=Outcome.RATE_LIMITED, checked_at=T + timedelta(1))})
+    assert rep.congestion["m"].count == 2
+    assert rep.congested_at("m", now=T + timedelta(1)) is not None
+    assert rep.congested_at("m", now=T + timedelta(1) + CONGESTION_TTL * 2) is None  # stale
+    assert rep.verdict("m") == (None, None)  # 429 is never a verdict
+    rep = merge(rep, {"m": ProbeResult(outcome=Outcome.OPEN, http=200, checked_at=T)})
+    assert "m" not in rep.congestion and rep.verdict("m")[0] == "open"
+
+
+def test_record_updates_snapshot(tmp_path, raw_models):
+    from loosechange.core.probe import record
+
+    _dump(tmp_path / "models.json", build_snapshot(raw_models, now=T))
+    now = datetime.now(UTC)
+    record(
+        tmp_path,
+        {"google/gemma-4-31b-it:free": ProbeResult(outcome=Outcome.RATE_LIMITED, checked_at=now)},
+        source="vibeforge-log",
+    )
+    snap = load_snapshot(tmp_path / "models.json")
+    assert snap.get("google/gemma-4-31b-it:free").congested
+    assert (
+        json.loads((tmp_path / "access.json").read_text())["congestion"][
+            "google/gemma-4-31b-it:free"
+        ]["source"]
+        == "vibeforge-log"
+    )

@@ -41,3 +41,19 @@ def test_default_replaced_only_when_broken(raw_models):
         sel = choose(s, current, today=TODAY)
         assert sel.new_default == sel.picks[0].id
         assert why in sel.reasons[0]
+
+
+def test_congested_skipped_and_default_replaced(raw_models):
+    from datetime import UTC, datetime
+
+    s = snap_with_access(raw_models)
+    s.get("nvidia/nemotron-3-super-120b-a12b:free").congested_at = datetime.now(UTC)
+    sel = choose(s, "nvidia/nemotron-3-super-120b-a12b:free", top=3, today=TODAY)
+    assert "nvidia/nemotron-3-super-120b-a12b:free" not in [m.id for m in sel.picks]
+    assert sel.new_default and "rate-limited" in sel.reasons[0]
+
+
+def test_harness_mode_allows_harness_only_first(raw_models):
+    s = snap_with_access(raw_models)
+    sel = choose(s, None, top=2, today=TODAY, harness=True)
+    assert sel.picks[0].id.startswith("thinkingmachines/inkling")

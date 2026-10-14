@@ -15,11 +15,12 @@ harness-only models), so the CLI refuses those models without --force.
 from __future__ import annotations
 
 import os
+import re
 import sqlite3
 import subprocess
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from .base import OPENROUTER_KEY_ENV, Snippet, cli_command
@@ -172,19 +173,24 @@ def plan_many(
     key: str | None = None,
     replace_key: bool = False,
     current: dict[str, str | None] | None = None,
+    remove: dict[str, str] | None = None,
 ) -> Plan:
+    """`remove`: model id -> reason (only ids actually in the list are removed)."""
     path = path or default_db_path()
     current = current if current is not None else _read(path)
     p = Plan(path=path, current=current)
 
     models = split_models(current[MODELS_KEY])
-    fresh = [m for m in dict.fromkeys(add) if m not in models]
+    dropped = [m for m in models if remove and m in remove and m not in add]
+    kept = [m for m in models if m not in dropped]
+    fresh = [m for m in dict.fromkeys(add) if m not in kept]
     for m in add:
-        if m in models:
+        if m in kept:
             p.warnings.append(f"{m} is already in OpenRouter custom models")
-    if fresh:
-        p.updates[MODELS_KEY] = ", ".join([*models, *fresh])
+    if fresh or dropped:
+        p.updates[MODELS_KEY] = ", ".join([*kept, *fresh])
         p.changes.extend(f"custom models += {m}" for m in fresh)
+        p.changes.extend(f"custom models -= {m} ({remove[m]})" for m in dropped)
 
     default = (current[MODEL_KEY] or "").strip()
     if new_default is None:
@@ -326,3 +332,44 @@ def quit_app(timeout_s: float = 30.0) -> None:
 
 def launch_app() -> None:
     subprocess.run(["open", "-b", BUNDLE_ID], capture_output=True, text=True, timeout=30)
+
+
+# ---------------------------------------------------------------- learning from VibeForge's errors
+
+_RATE_RE = re.compile(r"([A-Za-z0-9][\w.-]*/[\w.:~-]+?) is temporarily rate-limited upstream")
+_HARNESS_RE = re.compile(r"([A-Za-z0-9][\w.-]*/[\w.:~-]+?) is only available on agentic harnesses")
+
+
+def recent_errors(path: Path | None = None, hours: float = 24.0) -> dict:
+    """OpenRouter refusals VibeForge itself logged lately (read-only): model ->
+    ProbeResult(rate_limited | harness_only) with the log time. Real observations, so
+    `sync` can stop recommending those models."""
+    from ..core.probe import Outcome, ProbeResult
+
+    path = path or default_db_path()
+    since = int((time.time() - hours * 3600) * 1000)
+    con = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True)
+    try:
+        tables = {r[0] for r in con.execute("select name from sqlite_master where type='table'")}
+        if "logs" not in tables:
+            return {}
+        rows = con.execute(
+            "select payload, created_at from logs where created_at >= ? and "
+            "(payload like '%rate-limited upstream%' or payload like '%agentic harnesses%') "
+            "order by created_at",
+            (since,),
+        ).fetchall()
+    finally:
+        con.close()
+    found: dict = {}
+    for payload, created in rows:
+        at = datetime.fromtimestamp(created / 1000, tz=UTC)
+        for rx, outcome, http in (
+            (_RATE_RE, Outcome.RATE_LIMITED, 429),
+            (_HARNESS_RE, Outcome.HARNESS_ONLY, 403),
+        ):
+            for model_id in set(rx.findall(payload or "")):
+                found[model_id] = ProbeResult(
+                    outcome=outcome, http=http, message="seen in VibeForge log", checked_at=at
+                )
+    return found

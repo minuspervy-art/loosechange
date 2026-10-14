@@ -100,6 +100,8 @@ def model_lines(
         warn.append(t(lang, "router"))
     if m.harness_only:
         warn.append(t(lang, "harness_only"))
+    if m.congested_at:
+        warn.append(t(lang, "congested", at=m.congested_at.strftime("%H:%M UTC")))
     if NO_TOOLS_FLAG in flags:
         warn.append(t(lang, "no_tools"))
     if FALLBACK_FLAG in flags:
