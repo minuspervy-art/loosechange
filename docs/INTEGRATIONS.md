@@ -18,6 +18,8 @@ model_aliases:
     provider: openrouter
     base_url: https://openrouter.ai/api/v1
 ```
+**`sync --to hermes` (2026-10-14):** `model_aliases.free-<профиль>` → лучшая модель для Hermes (🔒-модели здесь работают), `fallback_providers` держит следующие 3 бесплатные — при 429/перегрузке Hermes переключается сам (цепочка глобальная: ваши записи идут первыми и не трогаются; удаляются только наши `openrouter` + `:free`, выпавшие из топа). Запускается фоновым заданием вместе с синхронизацией VibeForge (без перезапусков). Проверено: применено к реальному `~/.hermes/config.yaml` (с бэкапом), `hermes -m free-agent` → «ok». Разбор блоков учитывает и списки без отступа (`- item` с колонки 0).
+
 Опционально `--fallback` — добавить в `fallback_providers: [{provider: openrouter, model: …}]` (Hermes переключится на free-модель при rate-limit/overload основной).
 Использование: `hermes -m free-agent` (oneshot/CLI резолвят `model_aliases` до каталога). Ключ: `OPENROUTER_API_KEY` в `~/.hermes/.env`. Проверено на копии: резолвер Hermes даёт `provider=openrouter, base_url=https://openrouter.ai/api/v1, api_mode=chat_completions`.
 
