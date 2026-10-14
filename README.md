@@ -14,24 +14,24 @@ Open source (MIT), без монетизации.
 ### CLI: выбрать модель и добавить в Hermes
 Пакет пока не опубликован на PyPI — запуск из git (после публикации будет просто `uvx loosechange …`):
 ```bash
-uvx --from git+https://github.com/<you>/loosechange loosechange list --profile agent
+uvx --from git+https://github.com/minuspervy-art/loosechange loosechange list --profile agent
 ```
 ```bash
-uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmachines/inkling:free --to hermes
+uvx --from git+https://github.com/minuspervy-art/loosechange loosechange add thinkingmachines/inkling:free --to hermes
 ```
 Без флагов `add` — это **dry-run**: печатает диф `~/.hermes/config.yaml`. Записать (с бэкапом `config.yaml.bak-<время>`):
 ```bash
-uvx --from git+https://github.com/<you>/loosechange loosechange add thinkingmachines/inkling:free --to hermes --apply
+uvx --from git+https://github.com/minuspervy-art/loosechange loosechange add thinkingmachines/inkling:free --to hermes --apply
 ```
 Потом `hermes -m free-agent` (нужен `OPENROUTER_API_KEY` в `~/.hermes/.env`, ключ — https://openrouter.ai/keys). Ключ можно сразу взять из файла: `--key-file ~/or-key.txt` — он запишется в `~/.hermes/.env` с бэкапом и нигде не напечатается (другой уже записанный ключ заменяется только с `--replace-key`). Флаги: `--profile coding|chat|reasoning|longctx|design`, `--alias`, `--fallback` (добавить в цепочку fallback), `--force`, `--config`.
-**Установка в один клик из бота (macOS):** `bash scripts/macos/install.sh` ставит обработчик ссылок `loosechange://` — после этого кнопка «⚡ Установить в один клик» в боте открывает окно «Установить …?» и после подтверждения ставит модель (с бэкапом) в Hermes / VibeForge / DeepSeek Harness. Кнопка появляется, когда опубликована страница `site/` (GitHub Pages, `.github/workflows/pages.yml`) и боту задан `LOOSECHANGE_LINK_BASE=https://<you>.github.io/loosechange`.
+**Установка в один клик из бота (macOS):** `bash scripts/macos/install.sh` ставит обработчик ссылок `loosechange://` — после этого кнопка «⚡ Установить в один клик» в боте открывает окно «Установить …?» и после подтверждения ставит модель (с бэкапом) в Hermes / VibeForge / DeepSeek Harness. Кнопка появляется, когда опубликована страница `site/` (GitHub Pages, `.github/workflows/pages.yml`) и боту задан `LOOSECHANGE_LINK_BASE=https://minuspervy-art.github.io/loosechange`.
 VibeForge совсем без набора: `bash scripts/macos/install.sh` — иконка «Обновить модели VibeForge» и фоновое обновление раз в 3 ч (подробно — [docs/guides/vibeforge-manual.md](docs/guides/vibeforge-manual.md)).
 DeepSeek Harness: `… add <id> --to deepseek` — патч профиля `~/.dsh/profiles/desktop/cordis.patch.yml` (dry-run, бэкап, приложение подхватит без перезапуска; `--key-file` кладёт ключ в `~/.dsh/.env`).
 VibeForge: `… add <id> --to vibeforge` печатает инструкцию — автозаписи нет, см. [docs/guides/vibeforge-manual.md](docs/guides/vibeforge-manual.md). Любой другой OpenAI-совместимый клиент: `--to other`.
 
 Какие free-модели OpenRouter отдаёт только агентным харнессам (Hermes, DeepSeek Harness), а не обычным клиентам вроде VibeForge — проверяется вашим ключом, по запросу на модель, $0:
 ```bash
-uvx --from git+https://github.com/<you>/loosechange loosechange probe --key-file ~/or-key.txt
+uvx --from git+https://github.com/minuspervy-art/loosechange loosechange probe --key-file ~/or-key.txt
 ```
 
 Профили: `agent` (tool-calling, ≥128k), `coding`, `chat`, `reasoning`, `longctx` (≥256k), `design`, `fast_cheap` (пока недоступен — OpenRouter не отдаёт скорость публично). Формулы — [docs/RANKING.md](docs/RANKING.md).
@@ -59,7 +59,7 @@ docker build -t loosechange .
 ```bash
 docker run -d --restart unless-stopped --env-file .env --name loosechange loosechange
 ```
-В образе есть снапшот `data/models.json`; бот сам держит его свежим по таймерам истечения: список бесплатных моделей — каждые 15 мин, uptime — раз в час (`LOOSECHANGE_REFRESH_MINUTES`, `LOOSECHANGE_FULL_REFRESH_MINUTES`; подробности — docs/ARCHITECTURE.md → «Обновление данных»). Если репозиторий опубликован и Action обновляет JSON — задайте `LOOSECHANGE_DATA_URL=https://raw.githubusercontent.com/<you>/loosechange/main/data/models.json`.
+В образе есть снапшот `data/models.json`; бот сам держит его свежим по таймерам истечения: список бесплатных моделей — каждые 15 мин, uptime — раз в час (`LOOSECHANGE_REFRESH_MINUTES`, `LOOSECHANGE_FULL_REFRESH_MINUTES`; подробности — docs/ARCHITECTURE.md → «Обновление данных»). Если репозиторий опубликован и Action обновляет JSON — задайте `LOOSECHANGE_DATA_URL=https://raw.githubusercontent.com/minuspervy-art/loosechange/main/data/models.json`.
 
 ### Данные по расписанию (GitHub Actions)
 - `.github/workflows/collect.yml` — каждые 3 ч `loosechange collect` и коммит `data/` (только `GITHUB_TOKEN`, секреты бота в CI не нужны). Запуск вручную — `workflow_dispatch`.

@@ -1,6 +1,6 @@
 # Самопроверка бота
 
-Сгенерировано `scripts/bot_selfcheck.py` 2026-10-14 09:05 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
+Сгенерировано `scripts/bot_selfcheck.py` 2026-10-14 10:25 UTC на `data/models.json`: реальные handlers и диспетчер aiogram, Telegram API подменён записывающей сессией. Это не заменяет ручной прогон в Telegram.
 
 **user:** `/start`
 **bot (send):**
@@ -32,9 +32,10 @@ thinkingmachines/inkling:free
 🧠 25 · 💻 52.1 · 🤖 22.5 · 🎨 1167 · 📏 1M · 🛠 · 💭
 🔒 только Hermes / DeepSeek Harness
 
-3. NVIDIA: Nemotron 3 Ultra (free) — ⭐ 89.1
+3. NVIDIA: Nemotron 3 Ultra (free) — ⭐ 79.1
 nvidia/nemotron-3-ultra-550b-a55b:free
 🧠 22.9 · 💻 49.3 · 🤖 20.1 · 🎨 1127 · 📏 1M · 🛠 · 💭
+⚠️ uptime 87% за 30 мин
 
 4. Google: Gemma 4 26B A4B  (free) — ⭐ 65
 google/gemma-4-26b-a4b-it:free
@@ -84,9 +85,10 @@ thinkingmachines/inkling:free
 🧠 25 · 💻 52.1 · 🤖 22.5 · 🎨 1167 · 📏 1M · 🛠 · 💭
 🔒 только Hermes / DeepSeek Harness
 
-3. NVIDIA: Nemotron 3 Ultra (free) — ⭐ 88.5
+3. NVIDIA: Nemotron 3 Ultra (free) — ⭐ 78.5
 nvidia/nemotron-3-ultra-550b-a55b:free
 🧠 22.9 · 💻 49.3 · 🤖 20.1 · 🎨 1127 · 📏 1M · 🛠 · 💭
+⚠️ uptime 87% за 30 мин
 
 4. Google: Gemma 4 31B (free) — ⭐ 45
 google/gemma-4-31b-it:free
@@ -111,7 +113,7 @@ model_aliases:
     base_url: https://openrouter.ai/api/v1
 
 Или локально одной командой:
-uvx loosechange add thinkingmachines/inkling-small:free --to hermes --profile agent --force --apply
+uvx --from git+https://github.com/minuspervy-art/loosechange loosechange add thinkingmachines/inkling-small:free --to hermes --profile agent --force --apply
 • Команда делает бэкап config.yaml; без --apply — только покажет изменения.
 • Ключ: OPENROUTER_API_KEY в ~/.hermes/.env. Ещё нет? Допишите к команде --key-file <файл с ключом> — ключ запишется локально, в бот не отправляется.
 • Запуск: hermes -m free-agent

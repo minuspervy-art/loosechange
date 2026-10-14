@@ -8,14 +8,15 @@ from dataclasses import dataclass, field
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_KEY_ENV = "OPENROUTER_API_KEY"
-DEFAULT_CLI = "uvx loosechange"
+# straight from the repo: the bare name `loosechange` on PyPI is not ours (see SECURITY.md)
+DEFAULT_CLI = "uvx --from git+https://github.com/minuspervy-art/loosechange loosechange"
 
 
 def cli_prefix() -> str:
     """How users run the CLI. Read lazily: the bot loads .env after imports.
 
     Override until the package is on PyPI, e.g.
-    LOOSECHANGE_CLI="uvx --from git+https://github.com/<you>/loosechange loosechange"
+    LOOSECHANGE_CLI="uvx --from git+https://github.com/minuspervy-art/loosechange loosechange"
     """
     return os.environ.get("LOOSECHANGE_CLI", "").strip() or DEFAULT_CLI
 

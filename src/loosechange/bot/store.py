@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 @dataclass
 class DataStore:
     path: Path | None = None  # data/models.json
-    # e.g. https://raw.githubusercontent.com/<you>/loosechange/main/data/models.json
+    # e.g. https://raw.githubusercontent.com/minuspervy-art/loosechange/main/data/models.json
     url: str | None = None
     refresh_s: int = 600
     refresher: Refresher | None = None  # timed refresh of the local file (path mode)

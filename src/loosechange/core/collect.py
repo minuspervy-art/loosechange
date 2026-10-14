@@ -34,7 +34,7 @@ log = logging.getLogger(__name__)
 API = "https://openrouter.ai/api/v1"
 DEFAULT_DATA_DIR = Path("data")
 HISTORY_KEEP_DAYS = 90
-USER_AGENT = "loosechange (+https://github.com/loosechange)"
+USER_AGENT = "loosechange (+https://github.com/minuspervy-art/loosechange)"
 
 
 def _zero(value: Any) -> bool:

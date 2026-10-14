@@ -410,7 +410,7 @@ async def _send_snippet(message: Message, model: Model, target: str, profile: st
 
 def one_click_link(model: Model, target: str, profile: str) -> str | None:
     """https page that hands over to loosechange:// (only if site/ is published:
-    LOOSECHANGE_LINK_BASE, e.g. https://<you>.github.io/loosechange)."""
+    LOOSECHANGE_LINK_BASE, e.g. https://minuspervy-art.github.io/loosechange)."""
     base = os.environ.get("LOOSECHANGE_LINK_BASE", "").strip()
     if not base.startswith("https://") or target not in deeplink.TARGETS:
         return None

@@ -39,8 +39,9 @@
     <p id="mobile" class="warn" hidden>Похоже, вы на телефоне. Установка работает на компьютере, где стоит loosechange, — откройте эту ссылку там (например, в Telegram Desktop).</p>
     <details class="card">
       <summary>Ничего не происходит?</summary>
-      <p>Нужен обработчик ссылок loosechange (macOS). Установка, один раз, в папке проекта:</p>
-      <pre>bash scripts/macos/install.sh</pre>
+      <p>Нужен обработчик ссылок loosechange (macOS). Установка, один раз:</p>
+      <pre>git clone https://github.com/minuspervy-art/loosechange
+cd loosechange &amp;&amp; bash scripts/macos/install.sh</pre>
       <p>Или без обработчика — командой в терминале:</p>
       <pre id="cli"></pre>
     </details>
@@ -71,7 +72,7 @@
     document.getElementById("open").href = deeplink;
     const flags = { hermes: " --force", deepseek: " --force", vibeforge: " --make-default" }[to];
     document.getElementById("cli").textContent =
-      "uvx loosechange add " + model + " --to " + to + " --profile " + profile + flags + " --apply";
+      "uvx --from git+https://github.com/minuspervy-art/loosechange loosechange add " + model + " --to " + to + " --profile " + profile + flags + " --apply";
     document.getElementById("ok").hidden = false;
     const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     document.getElementById("mobile").hidden = !mobile;

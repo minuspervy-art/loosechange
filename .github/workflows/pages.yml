@@ -2,7 +2,7 @@ name: pages
 
 # Publishes site/ (the one-click install page, add.html) to GitHub Pages.
 # Enable once: Settings → Pages → Source: GitHub Actions. Then set the bot's
-# LOOSECHANGE_LINK_BASE=https://<you>.github.io/loosechange
+# LOOSECHANGE_LINK_BASE=https://minuspervy-art.github.io/loosechange
 on:
   push:
     branches: [main]
