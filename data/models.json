@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-14T10:21:21.737718Z",
- "reliability_at": "2026-10-14T10:06:20.878645Z",
+ "generated_at": "2026-10-14T17:16:50.612924Z",
+ "reliability_at": "2026-10-14T17:16:50.612924Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 462,
  "models": [
@@ -51,7 +51,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:00.286214Z"
+   "access_checked_at": "2026-10-13T21:49:00.286214Z",
+   "congested_at": null
   },
   {
    "id": "dots-studio/dots-3-note-preview:free",
@@ -89,15 +90,16 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 84.09722222222223,
+    "uptime_30m": 93.33333333333333,
+    "uptime_1d": 96.80555555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:03.392861Z"
+   "access_checked_at": "2026-10-13T21:49:03.392861Z",
+   "congested_at": null
   },
   {
    "id": "google/gemma-4-26b-a4b-it:free",
@@ -136,15 +138,16 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_30m": null,
+    "uptime_1d": 99.81024667931689,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": null,
-   "access_checked_at": null
+   "access_checked_at": null,
+   "congested_at": null
   },
   {
    "id": "google/gemma-4-31b-it:free",
@@ -183,7 +186,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -191,7 +194,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": null,
-   "access_checked_at": null
+   "access_checked_at": null,
+   "congested_at": null
   },
   {
    "id": "liquid/lfm-2.5-2.6b:free",
@@ -245,7 +249,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:11.882335Z"
+   "access_checked_at": "2026-10-13T21:49:11.882335Z",
+   "congested_at": null
   },
   {
    "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
@@ -284,15 +289,16 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 3.3333333333333335,
-    "uptime_1d": 7.5,
+    "uptime_30m": 13.333333333333334,
+    "uptime_1d": 8.194444444444445,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:14.597303Z"
+   "access_checked_at": "2026-10-13T21:49:14.597303Z",
+   "congested_at": null
   },
   {
    "id": "nvidia/nemotron-3-super-120b-a12b:free",
@@ -339,7 +345,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:18.623501Z"
+   "access_checked_at": "2026-10-13T21:49:18.623501Z",
+   "congested_at": null
   },
   {
    "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
@@ -377,9 +384,9 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1132.0,
-      "win_rate": 39.0,
-      "rank": 74
+      "elo": 1130.0,
+      "win_rate": 38.9,
+      "rank": 75
      },
      {
       "arena": "models",
@@ -391,28 +398,28 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1148.0,
+      "elo": 1147.0,
       "win_rate": 36.0,
-      "rank": 83
+      "rank": 84
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1141.0,
-      "win_rate": 37.3,
+      "elo": 1142.0,
+      "win_rate": 37.4,
       "rank": 83
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1142.0,
-      "win_rate": 36.3,
-      "rank": 77
+      "elo": 1140.0,
+      "win_rate": 36.2,
+      "rank": 78
      },
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1068.0,
+      "elo": 1069.0,
       "win_rate": 32.4,
       "rank": 69
      },
@@ -426,22 +433,23 @@
      {
       "arena": "models",
       "category": "website",
-      "elo": 1145.0,
+      "elo": 1144.0,
       "win_rate": 35.0,
-      "rank": 91
+      "rank": 92
      }
     ]
    },
    "reliability": {
-    "uptime_30m": 86.66666666666667,
-    "uptime_1d": 78.95833333333333,
+    "uptime_30m": 53.333333333333336,
+    "uptime_1d": 75.625,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:22.002584Z"
+   "access_checked_at": "2026-10-13T21:49:22.002584Z",
+   "congested_at": null
   },
   {
    "id": "nvidia/nemotron-3.5-content-safety:free",
@@ -476,15 +484,16 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 76.66666666666667,
-    "uptime_1d": 99.09722222222223,
+    "uptime_30m": 100.0,
+    "uptime_1d": 98.68055555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:25.997114Z"
+   "access_checked_at": "2026-10-13T21:49:25.997114Z",
+   "congested_at": null
   },
   {
    "id": "nvidia/nemotron-3.5-lightning:free",
@@ -528,7 +537,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:29.130402Z"
+   "access_checked_at": "2026-10-13T21:49:29.130402Z",
+   "congested_at": null
   },
   {
    "id": "openrouter/free",
@@ -585,7 +595,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": null,
-   "access_checked_at": null
+   "access_checked_at": null,
+   "congested_at": null
   },
   {
    "id": "poolside/laguna-s-2.1:free",
@@ -627,7 +638,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:50:18.021943Z"
+   "access_checked_at": "2026-10-13T21:50:18.021943Z",
+   "congested_at": null
   },
   {
    "id": "poolside/laguna-xs-2.1:free",
@@ -669,7 +681,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
-   "access_checked_at": "2026-10-13T21:49:38.650822Z"
+   "access_checked_at": "2026-10-13T21:49:38.650822Z",
+   "congested_at": null
   },
   {
    "id": "thinkingmachines/inkling-small:free",
@@ -718,7 +731,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "harness_only",
-   "access_checked_at": "2026-10-13T21:49:42.772532Z"
+   "access_checked_at": "2026-10-13T21:49:42.772532Z",
+   "congested_at": null
   },
   {
    "id": "thinkingmachines/inkling:free",
@@ -767,9 +781,9 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1163.0,
-      "win_rate": 40.3,
-      "rank": 62
+      "elo": 1160.0,
+      "win_rate": 40.2,
+      "rank": 63
      },
      {
       "arena": "models",
@@ -781,9 +795,9 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1208.0,
+      "elo": 1207.0,
       "win_rate": 42.2,
-      "rank": 56
+      "rank": 57
      },
      {
       "arena": "models",
@@ -795,9 +809,9 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1170.0,
+      "elo": 1169.0,
       "win_rate": 37.9,
-      "rank": 66
+      "rank": 67
      },
      {
       "arena": "models",
@@ -810,15 +824,15 @@
       "arena": "models",
       "category": "uicomponent",
       "elo": 1200.0,
-      "win_rate": 40.2,
+      "win_rate": 40.1,
       "rank": 57
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1226.0,
+      "elo": 1225.0,
       "win_rate": 44.5,
-      "rank": 52
+      "rank": 53
      }
     ]
    },
@@ -831,7 +845,8 @@
    },
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "harness_only",
-   "access_checked_at": "2026-10-13T21:49:45.043277Z"
+   "access_checked_at": "2026-10-13T21:49:45.043277Z",
+   "congested_at": null
   }
  ],
  "excluded": [
