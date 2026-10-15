@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-15T11:36:38.491518Z",
- "reliability_at": "2026-10-15T11:36:38.491518Z",
+ "generated_at": "2026-10-15T17:06:04.158229Z",
+ "reliability_at": "2026-10-15T17:06:04.158229Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 462,
  "models": [
@@ -91,7 +91,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.75,
+    "uptime_1d": 98.73506676036541,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -138,8 +138,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 93.10344827586206,
-    "uptime_1d": 99.4263862332696,
+    "uptime_30m": null,
+    "uptime_1d": 97.89272030651341,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -186,8 +186,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_30m": null,
+    "uptime_1d": 97.41035856573706,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -289,8 +289,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 26.666666666666668,
-    "uptime_1d": 15.208333333333332,
+    "uptime_30m": 0.0,
+    "uptime_1d": 17.418899858956276,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -338,7 +338,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93055555555556,
+    "uptime_1d": 99.92977528089888,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -384,7 +384,7 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1131.0,
+      "elo": 1132.0,
       "win_rate": 38.9,
       "rank": 75
      },
@@ -426,22 +426,22 @@
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1142.0,
+      "elo": 1139.0,
       "win_rate": 36.1,
-      "rank": 79
+      "rank": 80
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1145.0,
+      "elo": 1146.0,
       "win_rate": 35.1,
       "rank": 91
      }
     ]
    },
    "reliability": {
-    "uptime_30m": 13.333333333333334,
-    "uptime_1d": 65.27777777777779,
+    "uptime_30m": 0.0,
+    "uptime_1d": 58.019525801952575,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -485,7 +485,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.09722222222223,
+    "uptime_1d": 99.08127208480565,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -538,6 +538,55 @@
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
    "access_checked_at": "2026-10-13T21:49:29.130402Z",
+   "congested_at": null
+  },
+  {
+   "id": "nvidia/nemotron-3.5-super-vl:free",
+   "name": "NVIDIA: Nemotron 3.5 Super VL (free)",
+   "description": "NVIDIA Nemotron 3.5 Super VL is an open multimodal mixture-of-experts model from NVIDIA, with 12B active parameters out of 120B total. It takes text, images, documents, GUI screenshots, and video...",
+   "context_length": 1000000,
+   "max_completion_tokens": 131072,
+   "input_modalities": [
+    "text",
+    "image",
+    "video"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_parameters": [
+    "include_reasoning",
+    "max_tokens",
+    "reasoning",
+    "response_format",
+    "seed",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_p"
+   ],
+   "created": 1792076662,
+   "expiration_date": null,
+   "knowledge_cutoff": null,
+   "is_free_variant": true,
+   "is_router": false,
+   "benchmarks": {
+    "intelligence": null,
+    "coding": null,
+    "agentic": null,
+    "design_arena": []
+   },
+   "reliability": {
+    "uptime_30m": 100.0,
+    "uptime_1d": 82.79569892473118,
+    "latency_30m": null,
+    "throughput_30m": null,
+    "providers": 1
+   },
+   "first_seen": "2026-10-15T17:06:04.158229Z",
+   "access": null,
+   "access_checked_at": null,
    "congested_at": null
   },
   {
@@ -631,7 +680,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93055555555556,
+    "uptime_1d": 99.92932862190813,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -724,7 +773,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_1d": 99.57597173144876,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -781,7 +830,7 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1162.0,
+      "elo": 1161.0,
       "win_rate": 40.1,
       "rank": 63
      },
@@ -795,9 +844,9 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1208.0,
+      "elo": 1207.0,
       "win_rate": 42.2,
-      "rank": 56
+      "rank": 57
      },
      {
       "arena": "models",
@@ -810,35 +859,35 @@
       "arena": "models",
       "category": "gamedev",
       "elo": 1169.0,
-      "win_rate": 37.9,
+      "win_rate": 38.0,
       "rank": 67
      },
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1112.0,
-      "win_rate": 35.0,
+      "elo": 1111.0,
+      "win_rate": 34.9,
       "rank": 57
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1200.0,
+      "elo": 1198.0,
       "win_rate": 40.2,
       "rank": 58
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1226.0,
-      "win_rate": 44.6,
+      "elo": 1225.0,
+      "win_rate": 44.5,
       "rank": 53
      }
     ]
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_1d": 99.22425952045134,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
