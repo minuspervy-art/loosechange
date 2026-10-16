@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-16T11:30:34.874788Z",
- "reliability_at": "2026-10-16T11:30:34.874788Z",
+ "generated_at": "2026-10-16T16:43:48.020349Z",
+ "reliability_at": "2026-10-16T16:43:48.020349Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 465,
+ "total_models": 466,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -90,8 +90,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 96.66666666666667,
-    "uptime_1d": 98.73506676036541,
+    "uptime_30m": 100.0,
+    "uptime_1d": 97.19495091164096,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -138,8 +138,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 98.28571428571429,
+    "uptime_30m": null,
+    "uptime_1d": 98.81422924901186,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -186,8 +186,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 97.40518962075848,
+    "uptime_30m": null,
+    "uptime_1d": 98.93390191897655,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -290,7 +290,7 @@
    },
    "reliability": {
     "uptime_30m": 0.0,
-    "uptime_1d": 8.409893992932863,
+    "uptime_1d": 5.411103302881236,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -338,7 +338,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.9297259311314,
+    "uptime_1d": 99.92997198879551,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -384,30 +384,30 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1132.0,
+      "elo": 1133.0,
       "win_rate": 38.9,
       "rank": 75
      },
      {
       "arena": "models",
       "category": "asciiart",
-      "elo": 1097.0,
-      "win_rate": 37.5,
+      "elo": 1096.0,
+      "win_rate": 37.4,
       "rank": 60
      },
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1149.0,
+      "elo": 1148.0,
       "win_rate": 36.1,
-      "rank": 84
+      "rank": 85
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1142.0,
+      "elo": 1143.0,
       "win_rate": 37.5,
-      "rank": 84
+      "rank": 82
      },
      {
       "arena": "models",
@@ -427,21 +427,21 @@
       "arena": "models",
       "category": "uicomponent",
       "elo": 1139.0,
-      "win_rate": 36.1,
+      "win_rate": 36.0,
       "rank": 80
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1146.0,
-      "win_rate": 35.1,
-      "rank": 91
+      "elo": 1145.0,
+      "win_rate": 35.2,
+      "rank": 92
      }
     ]
    },
    "reliability": {
     "uptime_30m": 0.0,
-    "uptime_1d": 9.902370990237099,
+    "uptime_1d": 9.88857938718663,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -485,7 +485,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.93992932862191,
+    "uptime_1d": 98.10260014054813,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -529,8 +529,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 66.66666666666666,
-    "uptime_1d": 79.97198879551821,
+    "uptime_30m": 40.0,
+    "uptime_1d": 67.87709497206704,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -575,11 +575,33 @@
     "intelligence": 26.5,
     "coding": null,
     "agentic": null,
-    "design_arena": []
+    "design_arena": [
+     {
+      "arena": "models",
+      "category": "codecategories",
+      "elo": 1176.0,
+      "win_rate": 35.1,
+      "rank": 69
+     },
+     {
+      "arena": "models",
+      "category": "gamedev",
+      "elo": 1144.0,
+      "win_rate": 32.5,
+      "rank": 73
+     },
+     {
+      "arena": "models",
+      "category": "website",
+      "elo": 1180.0,
+      "win_rate": 35.9,
+      "rank": 73
+     }
+    ]
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.41137123745818,
+    "uptime_1d": 99.43661971830986,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -773,7 +795,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.29328621908127,
+    "uptime_1d": 99.71890372452566,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -830,7 +852,7 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1161.0,
+      "elo": 1162.0,
       "win_rate": 40.0,
       "rank": 63
      },
@@ -844,9 +866,9 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1208.0,
+      "elo": 1207.0,
       "win_rate": 42.2,
-      "rank": 56
+      "rank": 57
      },
      {
       "arena": "models",
@@ -859,7 +881,7 @@
       "arena": "models",
       "category": "gamedev",
       "elo": 1169.0,
-      "win_rate": 38.0,
+      "win_rate": 38.1,
       "rank": 67
      },
      {
@@ -879,15 +901,15 @@
      {
       "arena": "models",
       "category": "website",
-      "elo": 1226.0,
+      "elo": 1224.0,
       "win_rate": 44.5,
-      "rank": 53
+      "rank": 54
      }
     ]
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.65724381625441,
+    "uptime_1d": 99.43780744905129,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
