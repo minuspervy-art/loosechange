@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-16T16:43:48.020349Z",
- "reliability_at": "2026-10-16T16:43:48.020349Z",
+ "generated_at": "2026-10-16T21:16:10.134159Z",
+ "reliability_at": "2026-10-16T21:16:10.134159Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 466,
+ "total_models": 467,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -91,7 +91,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 97.19495091164096,
+    "uptime_1d": 97.15277777777777,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -139,7 +139,7 @@
    },
    "reliability": {
     "uptime_30m": null,
-    "uptime_1d": 98.81422924901186,
+    "uptime_1d": 98.8118811881188,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -290,7 +290,7 @@
    },
    "reliability": {
     "uptime_30m": 0.0,
-    "uptime_1d": 5.411103302881236,
+    "uptime_1d": 4.513888888888888,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -338,7 +338,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.92997198879551,
+    "uptime_1d": 99.93055555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -441,7 +441,7 @@
    },
    "reliability": {
     "uptime_30m": 0.0,
-    "uptime_1d": 9.88857938718663,
+    "uptime_1d": 9.583333333333334,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -485,7 +485,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.10260014054813,
+    "uptime_1d": 97.77777777777777,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -529,8 +529,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 40.0,
-    "uptime_1d": 67.87709497206704,
+    "uptime_30m": 30.0,
+    "uptime_1d": 54.166666666666664,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -601,7 +601,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.43661971830986,
+    "uptime_1d": 99.375,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -795,7 +795,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.71890372452566,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -909,7 +909,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.43780744905129,
+    "uptime_1d": 99.86111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -917,6 +917,59 @@
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "harness_only",
    "access_checked_at": "2026-10-13T21:49:45.043277Z",
+   "congested_at": null
+  },
+  {
+   "id": "xingchen-agi/xing4.0-29b-a4b:free",
+   "name": "XingChen: Xing4.0 29B A4B (free)",
+   "description": "Xing4.0-29B-A4B is an open-weight mixture-of-experts language model from China Telecom's AI team (TeleAI) and the successor to the TeleChat series. It has 29B total parameters with 4B active per token...",
+   "context_length": 262144,
+   "max_completion_tokens": 235929,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_parameters": [
+    "frequency_penalty",
+    "include_reasoning",
+    "max_tokens",
+    "min_p",
+    "presence_penalty",
+    "reasoning",
+    "repetition_penalty",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_k",
+    "top_p"
+   ],
+   "created": 1792177496,
+   "expiration_date": null,
+   "knowledge_cutoff": null,
+   "is_free_variant": true,
+   "is_router": false,
+   "benchmarks": {
+    "intelligence": null,
+    "coding": null,
+    "agentic": null,
+    "design_arena": []
+   },
+   "reliability": {
+    "uptime_30m": 100.0,
+    "uptime_1d": 97.36842105263158,
+    "latency_30m": null,
+    "throughput_30m": null,
+    "providers": 1
+   },
+   "first_seen": "2026-10-16T21:16:10.134159Z",
+   "access": null,
+   "access_checked_at": null,
    "congested_at": null
   }
  ],
