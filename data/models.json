@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-18T20:49:45.382293Z",
- "reliability_at": "2026-10-18T20:49:45.382293Z",
+ "generated_at": "2026-10-18T23:18:11.597054Z",
+ "reliability_at": "2026-10-18T23:18:11.597054Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 471,
  "models": [
@@ -242,7 +242,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_1d": 99.86111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -289,8 +289,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 60.0,
-    "uptime_1d": 15.138888888888888,
+    "uptime_30m": 63.33333333333333,
+    "uptime_1d": 20.27777777777778,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -338,7 +338,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.02777777777779,
+    "uptime_1d": 99.09722222222223,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -441,7 +441,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 66.80555555555556,
+    "uptime_1d": 77.22222222222223,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -485,7 +485,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.30507296733843,
+    "uptime_1d": 99.37456567060458,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -530,7 +530,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 61.31944444444445,
+    "uptime_1d": 66.94444444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -614,8 +614,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 96.66666666666667,
+    "uptime_30m": 50.0,
+    "uptime_1d": 95.625,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -976,7 +976,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.88888888888889,
+    "uptime_1d": 98.95833333333334,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
