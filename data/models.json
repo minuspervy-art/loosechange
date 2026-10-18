@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-18T11:14:38.065567Z",
- "reliability_at": "2026-10-18T11:14:38.065567Z",
+ "generated_at": "2026-10-18T15:55:25.174526Z",
+ "reliability_at": "2026-10-18T15:55:25.174526Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 471,
  "models": [
@@ -290,7 +290,7 @@
    },
    "reliability": {
     "uptime_30m": 6.666666666666667,
-    "uptime_1d": 8.055555555555555,
+    "uptime_1d": 9.027777777777777,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -338,7 +338,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.72222222222223,
+    "uptime_1d": 99.51388888888889,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -412,9 +412,9 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1141.0,
-      "win_rate": 36.4,
-      "rank": 77
+      "elo": 1140.0,
+      "win_rate": 36.3,
+      "rank": 78
      },
      {
       "arena": "models",
@@ -433,7 +433,7 @@
      {
       "arena": "models",
       "category": "website",
-      "elo": 1145.0,
+      "elo": 1146.0,
       "win_rate": 35.2,
       "rank": 92
      }
@@ -441,7 +441,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 26.52777777777778,
+    "uptime_1d": 46.31944444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -529,8 +529,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 50.0,
-    "uptime_1d": 39.375,
+    "uptime_30m": 66.66666666666666,
+    "uptime_1d": 51.18055555555555,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -579,15 +579,15 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1127.0,
-      "win_rate": 28.0,
-      "rank": 80
+      "elo": 1132.0,
+      "win_rate": 28.8,
+      "rank": 76
      },
      {
       "arena": "models",
       "category": "codecategories",
       "elo": 1155.0,
-      "win_rate": 32.6,
+      "win_rate": 32.5,
       "rank": 81
      },
      {
@@ -600,22 +600,22 @@
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1119.0,
-      "win_rate": 29.1,
+      "elo": 1116.0,
+      "win_rate": 28.9,
       "rank": 87
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1171.0,
-      "win_rate": 34.4,
-      "rank": 78
+      "elo": 1169.0,
+      "win_rate": 34.2,
+      "rank": 79
      }
     ]
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 94.65277777777777,
+    "uptime_1d": 95.97222222222223,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -859,9 +859,9 @@
      {
       "arena": "agents",
       "category": "webapps",
-      "elo": 1192.0,
+      "elo": 1194.0,
       "win_rate": 48.6,
-      "rank": 23
+      "rank": 22
      },
      {
       "arena": "models",
@@ -882,7 +882,7 @@
       "category": "codecategories",
       "elo": 1207.0,
       "win_rate": 42.2,
-      "rank": 57
+      "rank": 56
      },
      {
       "arena": "models",
@@ -894,7 +894,7 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1169.0,
+      "elo": 1168.0,
       "win_rate": 38.1,
       "rank": 68
      },
@@ -902,7 +902,7 @@
       "arena": "models",
       "category": "svg",
       "elo": 1112.0,
-      "win_rate": 35.0,
+      "win_rate": 34.9,
       "rank": 57
      },
      {
@@ -910,7 +910,7 @@
       "category": "uicomponent",
       "elo": 1200.0,
       "win_rate": 40.3,
-      "rank": 56
+      "rank": 57
      },
      {
       "arena": "models",
@@ -976,7 +976,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.79166666666667,
+    "uptime_1d": 98.81944444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
