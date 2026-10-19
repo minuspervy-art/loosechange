@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-19T13:26:32.996280Z",
- "reliability_at": "2026-10-19T13:26:32.996280Z",
+ "generated_at": "2026-10-19T20:37:00.913864Z",
+ "reliability_at": "2026-10-19T20:37:00.913864Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 469,
+ "total_models": 470,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -91,7 +91,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93055555555556,
+    "uptime_1d": 99.51388888888889,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -138,8 +138,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 98.62542955326461,
+    "uptime_30m": null,
+    "uptime_1d": 98.57904085257549,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -186,8 +186,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 97.06896551724138,
+    "uptime_30m": null,
+    "uptime_1d": 96.96969696969697,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -337,8 +337,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 3.3333333333333335,
-    "uptime_1d": 19.72222222222222,
+    "uptime_30m": 43.333333333333336,
+    "uptime_1d": 12.777777777777777,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -386,7 +386,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.44444444444444,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -489,7 +489,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_1d": 98.33333333333333,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -532,8 +532,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 93.33333333333333,
-    "uptime_1d": 98.61111111111111,
+    "uptime_30m": 100.0,
+    "uptime_1d": 97.91666666666666,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -578,7 +578,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 87.63888888888889,
+    "uptime_1d": 98.61111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -662,8 +662,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 60.0,
-    "uptime_1d": 93.19444444444444,
+    "uptime_30m": 73.33333333333333,
+    "uptime_1d": 89.51388888888889,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -1024,7 +1024,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.375,
+    "uptime_1d": 99.79166666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
