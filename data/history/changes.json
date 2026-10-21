@@ -34,6 +34,13 @@
     "minimax/minimax-m3.1-flash:free"
    ],
    "removed": []
+  },
+  {
+   "ts": "2026-10-21T21:46:40.476259Z",
+   "added": [
+    "recursive/flint-v1.0:free"
+   ],
+   "removed": []
   }
  ]
 }

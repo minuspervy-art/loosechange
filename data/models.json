@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-21T17:16:58.195471Z",
- "reliability_at": "2026-10-21T17:16:58.195471Z",
+ "generated_at": "2026-10-21T21:46:40.476259Z",
+ "reliability_at": "2026-10-21T21:46:40.476259Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 468,
+ "total_models": 469,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -242,7 +242,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 82.91666666666667,
+    "uptime_1d": 82.84722222222223,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -337,8 +337,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 3.3333333333333335,
-    "uptime_1d": 4.166666666666666,
+    "uptime_30m": 56.666666666666664,
+    "uptime_1d": 7.013888888888889,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -532,8 +532,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 99.65277777777779,
+    "uptime_30m": 96.66666666666667,
+    "uptime_1d": 99.58333333333333,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -662,8 +662,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 93.33333333333333,
-    "uptime_1d": 93.61111111111111,
+    "uptime_30m": 100.0,
+    "uptime_1d": 94.72222222222221,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -815,6 +815,56 @@
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
    "access_checked_at": "2026-10-13T21:49:38.650822Z",
+   "congested_at": null
+  },
+  {
+   "id": "recursive/flint-v1.0:free",
+   "name": "Recursive: Flint (free)",
+   "description": "Flint is an open-weight mixture-of-experts model from Recursive, with about 2.5B active parameters out of 40B total, built by Recursive's autoresearch system Eureka Machine for coding agents. It is suited...",
+   "context_length": 262144,
+   "max_completion_tokens": 235929,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_parameters": [
+    "include_reasoning",
+    "logprobs",
+    "max_tokens",
+    "reasoning",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_logprobs",
+    "top_p"
+   ],
+   "created": 1792422073,
+   "expiration_date": null,
+   "knowledge_cutoff": null,
+   "is_free_variant": true,
+   "is_router": false,
+   "benchmarks": {
+    "intelligence": null,
+    "coding": null,
+    "agentic": null,
+    "design_arena": []
+   },
+   "reliability": {
+    "uptime_30m": 100.0,
+    "uptime_1d": 100.0,
+    "latency_30m": null,
+    "throughput_30m": null,
+    "providers": 1
+   },
+   "first_seen": "2026-10-21T21:46:40.476259Z",
+   "access": null,
+   "access_checked_at": null,
    "congested_at": null
   },
   {
@@ -1024,7 +1074,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.51388888888889,
+    "uptime_1d": 99.58333333333333,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
