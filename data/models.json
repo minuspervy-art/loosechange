@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-22T11:59:17.903088Z",
- "reliability_at": "2026-10-22T11:59:17.903088Z",
+ "generated_at": "2026-10-22T17:15:14.874420Z",
+ "reliability_at": "2026-10-22T17:15:14.874420Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 468,
  "models": [
@@ -186,8 +186,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 99.59514170040485,
+    "uptime_30m": null,
+    "uptime_1d": 99.79035639412997,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -241,8 +241,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 10.0,
-    "uptime_1d": 65.06944444444444,
+    "uptime_30m": 3.3333333333333335,
+    "uptime_1d": 47.083333333333336,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -250,54 +250,6 @@
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
    "access_checked_at": "2026-10-13T21:49:11.882335Z",
-   "congested_at": null
-  },
-  {
-   "id": "minimax/minimax-m3.1-flash:free",
-   "name": "MiniMax: MiniMax M3.1 Flash (free)",
-   "description": "MiniMax-M3.1-Flash is a multimodal model from MiniMax. Compared with M3, it delivers significant improvements across multiple benchmarks, particularly in complex agentic tasks, coding, and cybersecurity. It is built for complex,...",
-   "context_length": 1000000,
-   "max_completion_tokens": 524288,
-   "input_modalities": [
-    "text",
-    "image",
-    "video"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "include_reasoning",
-    "max_tokens",
-    "reasoning",
-    "reasoning_effort",
-    "response_format",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_p"
-   ],
-   "created": 1792379569,
-   "expiration_date": null,
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": 42.7,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-19T13:26:32.996280Z",
-   "access": null,
-   "access_checked_at": null,
    "congested_at": null
   },
   {
@@ -337,8 +289,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 6.666666666666667,
-    "uptime_1d": 9.930555555555555,
+    "uptime_30m": 16.666666666666664,
+    "uptime_1d": 10.208333333333334,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -432,7 +384,7 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1132.0,
+      "elo": 1131.0,
       "win_rate": 38.9,
       "rank": 76
      },
@@ -446,14 +398,14 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1147.0,
+      "elo": 1146.0,
       "win_rate": 36.1,
       "rank": 87
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1141.0,
+      "elo": 1142.0,
       "win_rate": 37.5,
       "rank": 85
      },
@@ -467,14 +419,14 @@
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1070.0,
+      "elo": 1069.0,
       "win_rate": 32.4,
       "rank": 69
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1139.0,
+      "elo": 1136.0,
       "win_rate": 35.8,
       "rank": 83
      },
@@ -489,7 +441,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_1d": 99.58333333333333,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -533,7 +485,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.79166666666667,
+    "uptime_1d": 99.58333333333333,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -627,30 +579,30 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1129.0,
-      "win_rate": 28.5,
-      "rank": 78
+      "elo": 1127.0,
+      "win_rate": 28.3,
+      "rank": 81
      },
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1156.0,
-      "win_rate": 32.8,
+      "elo": 1155.0,
+      "win_rate": 32.7,
       "rank": 82
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1111.0,
-      "win_rate": 29.2,
+      "elo": 1110.0,
+      "win_rate": 29.1,
       "rank": 93
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1143.0,
-      "win_rate": 32.0,
-      "rank": 81
+      "elo": 1152.0,
+      "win_rate": 32.3,
+      "rank": 76
      },
      {
       "arena": "models",
@@ -662,8 +614,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 83.33333333333334,
-    "uptime_1d": 94.16666666666667,
+    "uptime_30m": 40.0,
+    "uptime_1d": 90.13888888888889,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -976,35 +928,35 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1206.0,
+      "elo": 1205.0,
       "win_rate": 42.2,
-      "rank": 58
+      "rank": 59
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1159.0,
-      "win_rate": 37.5,
-      "rank": 78
+      "elo": 1157.0,
+      "win_rate": 37.4,
+      "rank": 80
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1166.0,
-      "win_rate": 38.0,
+      "elo": 1165.0,
+      "win_rate": 37.9,
       "rank": 71
      },
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1110.0,
-      "win_rate": 34.6,
-      "rank": 57
+      "elo": 1108.0,
+      "win_rate": 34.4,
+      "rank": 58
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1201.0,
+      "elo": 1198.0,
       "win_rate": 40.5,
       "rank": 58
      },
@@ -1072,7 +1024,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.51388888888889,
+    "uptime_1d": 99.375,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
