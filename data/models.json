@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-23T17:13:14.516595Z",
- "reliability_at": "2026-10-23T17:13:14.516595Z",
+ "generated_at": "2026-10-23T21:28:02.315526Z",
+ "reliability_at": "2026-10-23T21:28:02.315526Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 468,
+ "total_models": 469,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -241,8 +241,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 0.0,
-    "uptime_1d": 7.986111111111111,
+    "uptime_30m": 26.666666666666668,
+    "uptime_1d": 8.958333333333334,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -289,8 +289,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 3.3333333333333335,
-    "uptime_1d": 12.01388888888889,
+    "uptime_30m": 30.0,
+    "uptime_1d": 12.986111111111112,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -484,8 +484,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 63.33333333333333,
-    "uptime_1d": 93.45859429366736,
+    "uptime_30m": 100.0,
+    "uptime_1d": 92.77777777777779,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -614,8 +614,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 96.66666666666667,
-    "uptime_1d": 87.22222222222223,
+    "uptime_30m": 83.33333333333334,
+    "uptime_1d": 91.11111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -1023,8 +1023,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 93.33333333333333,
-    "uptime_1d": 98.81944444444444,
+    "uptime_30m": 100.0,
+    "uptime_1d": 97.91666666666666,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
