@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-25T23:18:55.974912Z",
- "reliability_at": "2026-10-25T23:18:55.974912Z",
+ "generated_at": "2026-10-26T04:54:16.998254Z",
+ "reliability_at": "2026-10-26T04:54:16.998254Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 467,
  "models": [
@@ -289,8 +289,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 83.33333333333334,
-    "uptime_1d": 21.180555555555554,
+    "uptime_30m": 6.666666666666667,
+    "uptime_1d": 21.11111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -384,43 +384,43 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1128.0,
-      "win_rate": 38.8,
-      "rank": 77
+      "elo": 1126.0,
+      "win_rate": 38.1,
+      "rank": 78
      },
      {
       "arena": "models",
       "category": "asciiart",
-      "elo": 1100.0,
-      "win_rate": 37.6,
+      "elo": 1098.0,
+      "win_rate": 37.5,
       "rank": 60
      },
      {
       "arena": "models",
       "category": "codecategories",
       "elo": 1145.0,
-      "win_rate": 36.1,
+      "win_rate": 36.0,
       "rank": 89
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1141.0,
+      "elo": 1140.0,
       "win_rate": 37.4,
-      "rank": 85
+      "rank": 87
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1138.0,
-      "win_rate": 36.1,
-      "rank": 82
+      "elo": 1140.0,
+      "win_rate": 36.0,
+      "rank": 79
      },
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1069.0,
-      "win_rate": 32.4,
+      "elo": 1068.0,
+      "win_rate": 32.3,
       "rank": 71
      },
      {
@@ -484,8 +484,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 96.66666666666667,
-    "uptime_1d": 95.76388888888889,
+    "uptime_30m": 100.0,
+    "uptime_1d": 95.27777777777777,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -581,28 +581,28 @@
       "category": "3d",
       "elo": 1117.0,
       "win_rate": 28.0,
-      "rank": 84
+      "rank": 83
      },
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1153.0,
+      "elo": 1152.0,
       "win_rate": 32.8,
-      "rank": 84
+      "rank": 86
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1112.0,
-      "win_rate": 29.6,
-      "rank": 93
+      "elo": 1111.0,
+      "win_rate": 29.5,
+      "rank": 95
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1149.0,
-      "win_rate": 31.5,
-      "rank": 77
+      "elo": 1145.0,
+      "win_rate": 31.1,
+      "rank": 78
      },
      {
       "arena": "models",
@@ -614,8 +614,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 91.31944444444444,
+    "uptime_30m": 90.0,
+    "uptime_1d": 87.98611111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -759,7 +759,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93055555555556,
+    "uptime_1d": 99.51388888888889,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -914,14 +914,14 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1157.0,
+      "elo": 1156.0,
       "win_rate": 39.9,
       "rank": 65
      },
      {
       "arena": "models",
       "category": "asciiart",
-      "elo": 1089.0,
+      "elo": 1087.0,
       "win_rate": 33.6,
       "rank": 64
      },
@@ -930,14 +930,14 @@
       "category": "codecategories",
       "elo": 1204.0,
       "win_rate": 42.2,
-      "rank": 62
+      "rank": 63
      },
      {
       "arena": "models",
       "category": "dataviz",
       "elo": 1157.0,
       "win_rate": 37.5,
-      "rank": 80
+      "rank": 81
      },
      {
       "arena": "models",
@@ -950,8 +950,8 @@
       "arena": "models",
       "category": "svg",
       "elo": 1106.0,
-      "win_rate": 34.4,
-      "rank": 61
+      "win_rate": 34.3,
+      "rank": 60
      },
      {
       "arena": "models",
