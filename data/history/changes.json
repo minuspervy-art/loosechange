@@ -48,6 +48,13 @@
    "removed": [
     "minimax/minimax-m3.1-flash:free"
    ]
+  },
+  {
+   "ts": "2026-10-27T15:24:08.155748Z",
+   "added": [],
+   "removed": [
+    "nvidia/nemotron-3-super-120b-a12b:free"
+   ]
   }
  ]
 }

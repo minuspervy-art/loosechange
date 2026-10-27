@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-27T09:05:19.223523Z",
- "reliability_at": "2026-10-27T09:05:19.223523Z",
+ "generated_at": "2026-10-27T15:24:08.155748Z",
+ "reliability_at": "2026-10-27T15:24:08.155748Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 464,
+ "total_models": 463,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -242,7 +242,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93050729673384,
+    "uptime_1d": 99.93041057759221,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -290,7 +290,7 @@
    },
    "reliability": {
     "uptime_30m": 0.0,
-    "uptime_1d": 3.194444444444444,
+    "uptime_1d": 3.2638888888888893,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -298,54 +298,6 @@
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
    "access_checked_at": "2026-10-13T21:49:14.597303Z",
-   "congested_at": null
-  },
-  {
-   "id": "nvidia/nemotron-3-super-120b-a12b:free",
-   "name": "NVIDIA: Nemotron 3 Super (free)",
-   "description": "NVIDIA Nemotron 3 Super is a 120B-parameter open hybrid MoE model, activating just 12B parameters for maximum compute efficiency and accuracy in complex multi-agent applications. Built on a hybrid Mamba-Transformer...",
-   "context_length": 262144,
-   "max_completion_tokens": 235929,
-   "input_modalities": [
-    "text"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "include_reasoning",
-    "max_tokens",
-    "reasoning",
-    "reasoning_effort",
-    "response_format",
-    "seed",
-    "structured_outputs",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_p"
-   ],
-   "created": 1773245239,
-   "expiration_date": null,
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": 12.8,
-    "coding": 37.7,
-    "agentic": 1.7,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 0.0,
-    "uptime_1d": 0.0,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z",
-   "access": "open",
-   "access_checked_at": "2026-10-13T21:49:18.623501Z",
    "congested_at": null
   },
   {
@@ -393,7 +345,7 @@
       "category": "asciiart",
       "elo": 1098.0,
       "win_rate": 37.3,
-      "rank": 60
+      "rank": 61
      },
      {
       "arena": "models",
@@ -419,7 +371,7 @@
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1066.0,
+      "elo": 1067.0,
       "win_rate": 32.3,
       "rank": 73
      },
@@ -485,7 +437,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 96.31688672689369,
+    "uptime_1d": 97.07724425887265,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -615,7 +567,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 85.625,
+    "uptime_1d": 92.29166666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -715,8 +667,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_30m": 96.66666666666667,
+    "uptime_1d": 99.93055555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -759,7 +711,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.86101459346769,
+    "uptime_1d": 99.86082115518441,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -914,7 +866,7 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1156.0,
+      "elo": 1157.0,
       "win_rate": 39.9,
       "rank": 66
      },
@@ -923,7 +875,7 @@
       "category": "asciiart",
       "elo": 1087.0,
       "win_rate": 33.6,
-      "rank": 64
+      "rank": 65
      },
      {
       "arena": "models",
@@ -936,7 +888,7 @@
       "arena": "models",
       "category": "dataviz",
       "elo": 1156.0,
-      "win_rate": 37.4,
+      "win_rate": 37.6,
       "rank": 81
      },
      {
@@ -949,9 +901,9 @@
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1105.0,
+      "elo": 1106.0,
       "win_rate": 34.3,
-      "rank": 62
+      "rank": 61
      },
      {
       "arena": "models",
@@ -1024,7 +976,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_1d": 99.93055555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
