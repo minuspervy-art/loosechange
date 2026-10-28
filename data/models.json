@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-28T05:49:30.923326Z",
- "reliability_at": "2026-10-28T05:49:30.923326Z",
+ "generated_at": "2026-10-28T13:02:52.023417Z",
+ "reliability_at": "2026-10-28T13:02:52.023417Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 464,
  "models": [
@@ -37,7 +37,7 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 9.9,
+    "intelligence": null,
     "coding": 36.5,
     "agentic": 1.1,
     "design_arena": []
@@ -132,13 +132,13 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 16.7,
+    "intelligence": null,
     "coding": 39.3,
     "agentic": 2.9,
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
+    "uptime_30m": 100.0,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -180,13 +180,13 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 14.7,
+    "intelligence": null,
     "coding": 43.4,
     "agentic": 4.2,
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
+    "uptime_30m": 100.0,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -235,7 +235,7 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 8.4,
+    "intelligence": null,
     "coding": 7.7,
     "agentic": null,
     "design_arena": []
@@ -283,14 +283,14 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 10.3,
+    "intelligence": null,
     "coding": 13.8,
     "agentic": null,
     "design_arena": []
    },
    "reliability": {
     "uptime_30m": 0.0,
-    "uptime_1d": 8.680555555555555,
+    "uptime_1d": 8.472222222222223,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -329,16 +329,16 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 22.9,
+    "intelligence": 11.8,
     "coding": 49.3,
     "agentic": 20.1,
     "design_arena": [
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1127.0,
+      "elo": 1126.0,
       "win_rate": 38.1,
-      "rank": 79
+      "rank": 80
      },
      {
       "arena": "models",
@@ -352,7 +352,7 @@
       "category": "codecategories",
       "elo": 1145.0,
       "win_rate": 36.0,
-      "rank": 90
+      "rank": 89
      },
      {
       "arena": "models",
@@ -437,7 +437,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.81780250347705,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -475,7 +475,7 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 12.9,
+    "intelligence": null,
     "coding": 26.8,
     "agentic": 3.5,
     "design_arena": []
@@ -524,30 +524,30 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 26.5,
+    "intelligence": 13.6,
     "coding": null,
     "agentic": null,
     "design_arena": [
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1120.0,
-      "win_rate": 28.6,
+      "elo": 1121.0,
+      "win_rate": 28.8,
       "rank": 83
      },
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1153.0,
-      "win_rate": 33.0,
+      "elo": 1152.0,
+      "win_rate": 32.9,
       "rank": 85
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1110.0,
-      "win_rate": 29.4,
-      "rank": 95
+      "elo": 1111.0,
+      "win_rate": 29.6,
+      "rank": 94
      },
      {
       "arena": "models",
@@ -559,9 +559,9 @@
      {
       "arena": "models",
       "category": "website",
-      "elo": 1169.0,
-      "win_rate": 35.1,
-      "rank": 82
+      "elo": 1167.0,
+      "win_rate": 34.8,
+      "rank": 83
      }
     ]
    },
@@ -802,7 +802,7 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 25.7,
+    "intelligence": 12.9,
     "coding": 52.9,
     "agentic": 23.5,
     "design_arena": []
@@ -852,7 +852,7 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": 25.0,
+    "intelligence": 12.5,
     "coding": 52.1,
     "agentic": 22.5,
     "design_arena": [
@@ -866,7 +866,7 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1157.0,
+      "elo": 1156.0,
       "win_rate": 39.9,
       "rank": 66
      },
@@ -976,7 +976,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93055555555556,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
