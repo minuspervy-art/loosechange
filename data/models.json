@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-29T10:04:31.739598Z",
- "reliability_at": "2026-10-29T10:04:31.739598Z",
+ "generated_at": "2026-10-29T18:30:59.607045Z",
+ "reliability_at": "2026-10-29T18:30:59.607045Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 457,
+ "total_models": 456,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -91,7 +91,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 97.77777777777777,
+    "uptime_1d": 98.26268241834607,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -138,7 +138,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -186,7 +186,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -289,8 +289,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 0.0,
-    "uptime_1d": 13.125,
+    "uptime_30m": 10.0,
+    "uptime_1d": 13.055555555555557,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -352,7 +352,7 @@
       "category": "codecategories",
       "elo": 1146.0,
       "win_rate": 36.0,
-      "rank": 90
+      "rank": 89
      },
      {
       "arena": "models",
@@ -378,9 +378,9 @@
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1136.0,
+      "elo": 1135.0,
       "win_rate": 35.9,
-      "rank": 83
+      "rank": 85
      },
      {
       "arena": "models",
@@ -392,8 +392,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 96.66666666666667,
-    "uptime_1d": 99.23611111111111,
+    "uptime_30m": 100.0,
+    "uptime_1d": 99.16666666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -436,8 +436,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 56.666666666666664,
-    "uptime_1d": 90.48611111111111,
+    "uptime_30m": 100.0,
+    "uptime_1d": 87.77777777777777,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -538,30 +538,30 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1151.0,
-      "win_rate": 32.8,
-      "rank": 86
+      "elo": 1152.0,
+      "win_rate": 33.1,
+      "rank": 85
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1108.0,
+      "elo": 1107.0,
       "win_rate": 29.3,
       "rank": 95
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1134.0,
-      "win_rate": 30.3,
-      "rank": 85
+      "elo": 1139.0,
+      "win_rate": 31.1,
+      "rank": 84
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1167.0,
-      "win_rate": 34.9,
-      "rank": 83
+      "elo": 1169.0,
+      "win_rate": 35.2,
+      "rank": 82
      }
     ]
    },
@@ -809,7 +809,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.19444444444444,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -880,22 +880,22 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1204.0,
-      "win_rate": 42.2,
-      "rank": 63
+      "elo": 1205.0,
+      "win_rate": 42.3,
+      "rank": 61
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1156.0,
-      "win_rate": 37.6,
-      "rank": 81
+      "elo": 1158.0,
+      "win_rate": 37.7,
+      "rank": 80
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1164.0,
-      "win_rate": 37.8,
+      "elo": 1165.0,
+      "win_rate": 37.9,
       "rank": 72
      },
      {
@@ -908,22 +908,22 @@
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1197.0,
-      "win_rate": 40.6,
-      "rank": 60
+      "elo": 1196.0,
+      "win_rate": 40.5,
+      "rank": 61
      },
      {
       "arena": "models",
       "category": "website",
       "elo": 1224.0,
-      "win_rate": 44.6,
+      "win_rate": 44.7,
       "rank": 58
      }
     ]
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 97.08333333333333,
+    "uptime_1d": 99.86111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
