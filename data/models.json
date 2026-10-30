@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-30T18:02:55.623805Z",
- "reliability_at": "2026-10-30T18:02:55.623805Z",
+ "generated_at": "2026-10-30T22:25:32.322816Z",
+ "reliability_at": "2026-10-30T22:25:32.322816Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 456,
  "models": [
@@ -290,7 +290,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 91.59722222222221,
+    "uptime_1d": 98.54166666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -437,7 +437,7 @@
    },
    "reliability": {
     "uptime_30m": 0.0,
-    "uptime_1d": 43.40277777777778,
+    "uptime_1d": 25.208333333333332,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -566,8 +566,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 99.44444444444444,
+    "uptime_30m": 0.0,
+    "uptime_1d": 90.06944444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -759,7 +759,7 @@
    },
    "reliability": {
     "uptime_30m": 0.0,
-    "uptime_1d": 52.29166666666667,
+    "uptime_1d": 33.958333333333336,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
