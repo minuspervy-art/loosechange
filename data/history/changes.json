@@ -55,6 +55,14 @@
    "removed": [
     "nvidia/nemotron-3-super-120b-a12b:free"
    ]
+  },
+  {
+   "ts": "2026-10-31T19:20:14.521267Z",
+   "added": [],
+   "removed": [
+    "poolside/laguna-s-2.1:free",
+    "poolside/laguna-xs-2.1:free"
+   ]
   }
  ]
 }

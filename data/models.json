@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-31T12:40:32.609202Z",
- "reliability_at": "2026-10-31T12:40:32.609202Z",
+ "generated_at": "2026-10-31T19:20:14.521267Z",
+ "reliability_at": "2026-10-31T19:20:14.521267Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 456,
+ "total_models": 452,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -138,7 +138,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -186,8 +186,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 99.81378026070763,
+    "uptime_30m": null,
+    "uptime_1d": 99.82110912343471,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -290,7 +290,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 96.80555555555556,
+    "uptime_1d": 96.94444444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -482,7 +482,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.375,
+    "uptime_1d": 99.44444444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -633,92 +633,6 @@
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": null,
    "access_checked_at": null,
-   "congested_at": null
-  },
-  {
-   "id": "poolside/laguna-s-2.1:free",
-   "name": "Poolside: Laguna S 2.1 (free)",
-   "description": "Laguna S 2.1 is the latest coding agent model from [Poolside](<https://poolside.ai/>). Laguna S 2.1 is a 118B total parameter model with 8B active parameters, scoring 70.2% on Terminal-Bench 2.1 and...",
-   "context_length": 262144,
-   "max_completion_tokens": 32768,
-   "input_modalities": [
-    "text"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "include_reasoning",
-    "max_tokens",
-    "reasoning",
-    "temperature",
-    "tool_choice",
-    "tools"
-   ],
-   "created": 1784652683,
-   "expiration_date": "2026-10-31",
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": null,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z",
-   "access": "open",
-   "access_checked_at": "2026-10-13T21:50:18.021943Z",
-   "congested_at": null
-  },
-  {
-   "id": "poolside/laguna-xs-2.1:free",
-   "name": "Poolside: Laguna XS 2.1 (free)",
-   "description": "Laguna XS 2.1 is the latest coding agent model in the 33B-A3B category from [Poolside](https://poolside.ai/) and a step forward from their Laguna XS.2 model (released in April 2026). It combines...",
-   "context_length": 262144,
-   "max_completion_tokens": 32768,
-   "input_modalities": [
-    "text"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "include_reasoning",
-    "max_tokens",
-    "reasoning",
-    "temperature",
-    "tool_choice",
-    "tools"
-   ],
-   "created": 1783002429,
-   "expiration_date": "2026-10-31",
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": null,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z",
-   "access": "open",
-   "access_checked_at": "2026-10-13T21:49:38.650822Z",
    "congested_at": null
   },
   {
