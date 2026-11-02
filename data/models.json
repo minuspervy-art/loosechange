@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-01T19:43:49.437116Z",
- "reliability_at": "2026-11-01T19:43:49.437116Z",
+ "generated_at": "2026-11-02T00:48:21.599704Z",
+ "reliability_at": "2026-11-02T00:48:21.599704Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 452,
  "models": [
@@ -290,7 +290,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93055555555556,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -345,7 +345,7 @@
       "category": "asciiart",
       "elo": 1099.0,
       "win_rate": 37.4,
-      "rank": 62
+      "rank": 63
      },
      {
       "arena": "models",
@@ -532,7 +532,7 @@
       "arena": "models",
       "category": "3d",
       "elo": 1124.0,
-      "win_rate": 30.4,
+      "win_rate": 30.3,
       "rank": 82
      },
      {
@@ -775,7 +775,7 @@
       "category": "webapps",
       "elo": 1182.0,
       "win_rate": 48.6,
-      "rank": 26
+      "rank": 25
      },
      {
       "arena": "models",
@@ -789,7 +789,7 @@
       "category": "asciiart",
       "elo": 1086.0,
       "win_rate": 33.3,
-      "rank": 66
+      "rank": 67
      },
      {
       "arena": "models",
@@ -815,8 +815,8 @@
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1106.0,
-      "win_rate": 34.3,
+      "elo": 1107.0,
+      "win_rate": 34.4,
       "rank": 63
      },
      {
