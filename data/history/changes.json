@@ -63,6 +63,13 @@
     "poolside/laguna-s-2.1:free",
     "poolside/laguna-xs-2.1:free"
    ]
+  },
+  {
+   "ts": "2026-11-03T23:27:10.513877Z",
+   "added": [
+    "stealth/crouton-alpha"
+   ],
+   "removed": []
   }
  ]
 }
