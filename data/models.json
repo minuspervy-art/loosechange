@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-04T06:32:43.087754Z",
- "reliability_at": "2026-11-04T06:32:43.087754Z",
+ "generated_at": "2026-11-04T17:18:09.092975Z",
+ "reliability_at": "2026-11-04T17:18:09.092975Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 455,
+ "total_models": 453,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -138,8 +138,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
-    "uptime_1d": 99.81718464351006,
+    "uptime_30m": 100.0,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -187,7 +187,7 @@
    },
    "reliability": {
     "uptime_30m": null,
-    "uptime_1d": 100.0,
+    "uptime_1d": 99.79879275653923,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -338,8 +338,8 @@
       "arena": "models",
       "category": "3d",
       "elo": 1127.0,
-      "win_rate": 38.1,
-      "rank": 79
+      "win_rate": 38.2,
+      "rank": 81
      },
      {
       "arena": "models",
@@ -366,7 +366,7 @@
       "arena": "models",
       "category": "gamedev",
       "elo": 1139.0,
-      "win_rate": 36.0,
+      "win_rate": 35.9,
       "rank": 80
      },
      {
@@ -379,8 +379,8 @@
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1136.0,
-      "win_rate": 35.9,
+      "elo": 1137.0,
+      "win_rate": 36.0,
       "rank": 84
      },
      {
@@ -393,8 +393,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 96.66666666666667,
-    "uptime_1d": 94.86111111111111,
+    "uptime_30m": 100.0,
+    "uptime_1d": 94.93055555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -532,30 +532,30 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1125.0,
-      "win_rate": 30.4,
-      "rank": 82
+      "elo": 1128.0,
+      "win_rate": 30.9,
+      "rank": 79
      },
      {
       "arena": "models",
       "category": "codecategories",
       "elo": 1150.0,
-      "win_rate": 33.1,
+      "win_rate": 33.2,
       "rank": 89
      },
      {
       "arena": "models",
       "category": "gamedev",
       "elo": 1108.0,
-      "win_rate": 29.5,
-      "rank": 94
+      "win_rate": 29.6,
+      "rank": 95
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1133.0,
-      "win_rate": 30.6,
-      "rank": 86
+      "elo": 1136.0,
+      "win_rate": 31.0,
+      "rank": 85
      },
      {
       "arena": "models",
@@ -568,7 +568,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.86111111111111,
+    "uptime_1d": 99.79166666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -673,8 +673,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 33.33333333333333,
-    "uptime_1d": 0.6944444444444444,
+    "uptime_30m": 100.0,
+    "uptime_1d": 43.81944444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -724,8 +724,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 96.05263157894737,
+    "uptime_30m": 93.33333333333333,
+    "uptime_1d": 97.78305621536025,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -733,170 +733,6 @@
    "first_seen": "2026-11-03T23:27:10.513877Z",
    "access": null,
    "access_checked_at": null,
-   "congested_at": null
-  },
-  {
-   "id": "thinkingmachines/inkling-small:free",
-   "name": "Thinking Machines: Inkling Small (free)",
-   "description": "Inkling Small is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 12B active parameters out of 276B total. It is positioned as the smaller, more efficient member of...",
-   "context_length": 1048576,
-   "max_completion_tokens": 262144,
-   "input_modalities": [
-    "text",
-    "image",
-    "audio"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "presence_penalty",
-    "reasoning",
-    "reasoning_effort",
-    "seed",
-    "stop",
-    "temperature",
-    "tools",
-    "top_p"
-   ],
-   "created": 1785443117,
-   "expiration_date": "2026-11-04",
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": 12.9,
-    "coding": 52.9,
-    "agentic": 23.5,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 98.33333333333333,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z",
-   "access": "harness_only",
-   "access_checked_at": "2026-10-13T21:49:42.772532Z",
-   "congested_at": null
-  },
-  {
-   "id": "thinkingmachines/inkling:free",
-   "name": "Thinking Machines: Inkling (free)",
-   "description": "Inkling is an open-weight multimodal mixture-of-experts model from Thinking Machines Lab, with 41B active parameters out of 975B total. It is designed for general-purpose reasoning, coding, agentic and tool-use systems,...",
-   "context_length": 1048576,
-   "max_completion_tokens": 262144,
-   "input_modalities": [
-    "text",
-    "image",
-    "audio"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "presence_penalty",
-    "reasoning",
-    "reasoning_effort",
-    "seed",
-    "stop",
-    "temperature",
-    "tools",
-    "top_p"
-   ],
-   "created": 1784325956,
-   "expiration_date": "2026-11-04",
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": 12.5,
-    "coding": 52.1,
-    "agentic": 22.5,
-    "design_arena": [
-     {
-      "arena": "agents",
-      "category": "webapps",
-      "elo": 1182.0,
-      "win_rate": 48.6,
-      "rank": 26
-     },
-     {
-      "arena": "models",
-      "category": "3d",
-      "elo": 1156.0,
-      "win_rate": 39.8,
-      "rank": 66
-     },
-     {
-      "arena": "models",
-      "category": "asciiart",
-      "elo": 1092.0,
-      "win_rate": 34.1,
-      "rank": 65
-     },
-     {
-      "arena": "models",
-      "category": "codecategories",
-      "elo": 1204.0,
-      "win_rate": 42.2,
-      "rank": 63
-     },
-     {
-      "arena": "models",
-      "category": "dataviz",
-      "elo": 1157.0,
-      "win_rate": 37.6,
-      "rank": 81
-     },
-     {
-      "arena": "models",
-      "category": "gamedev",
-      "elo": 1165.0,
-      "win_rate": 37.9,
-      "rank": 72
-     },
-     {
-      "arena": "models",
-      "category": "svg",
-      "elo": 1106.0,
-      "win_rate": 34.3,
-      "rank": 63
-     },
-     {
-      "arena": "models",
-      "category": "uicomponent",
-      "elo": 1196.0,
-      "win_rate": 40.5,
-      "rank": 61
-     },
-     {
-      "arena": "models",
-      "category": "website",
-      "elo": 1223.0,
-      "win_rate": 44.7,
-      "rank": 58
-     }
-    ]
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 60.69444444444444,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z",
-   "access": "harness_only",
-   "access_checked_at": "2026-10-13T21:49:45.043277Z",
    "congested_at": null
   },
   {

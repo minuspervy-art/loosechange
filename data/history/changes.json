@@ -70,6 +70,14 @@
     "stealth/crouton-alpha"
    ],
    "removed": []
+  },
+  {
+   "ts": "2026-11-04T17:18:09.092975Z",
+   "added": [],
+   "removed": [
+    "thinkingmachines/inkling-small:free",
+    "thinkingmachines/inkling:free"
+   ]
   }
  ]
 }
