@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-04T17:18:09.092975Z",
- "reliability_at": "2026-11-04T17:18:09.092975Z",
+ "generated_at": "2026-11-04T23:44:10.527230Z",
+ "reliability_at": "2026-11-04T23:44:10.527230Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 453,
+ "total_models": 454,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -138,7 +138,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -674,7 +674,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 43.81944444444444,
+    "uptime_1d": 70.06944444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -724,8 +724,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 93.33333333333333,
-    "uptime_1d": 97.78305621536025,
+    "uptime_30m": 100.0,
+    "uptime_1d": 96.94444444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
