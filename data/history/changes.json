@@ -78,6 +78,13 @@
     "thinkingmachines/inkling-small:free",
     "thinkingmachines/inkling:free"
    ]
+  },
+  {
+   "ts": "2026-11-06T16:48:03.383245Z",
+   "added": [],
+   "removed": [
+    "nvidia/nemotron-3.5-content-safety:free"
+   ]
   }
  ]
 }
