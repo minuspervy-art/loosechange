@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-06T23:13:38.185705Z",
- "reliability_at": "2026-11-06T23:13:38.185705Z",
+ "generated_at": "2026-11-07T06:05:47.653374Z",
+ "reliability_at": "2026-11-07T06:05:47.653374Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 458,
+ "total_models": 460,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -231,7 +231,7 @@
     "top_p"
    ],
    "created": 1786470519,
-   "expiration_date": null,
+   "expiration_date": "2026-11-13",
    "knowledge_cutoff": null,
    "is_free_variant": true,
    "is_router": false,
@@ -243,7 +243,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_1d": 98.33333333333333,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -251,6 +251,62 @@
    "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": "open",
    "access_checked_at": "2026-10-13T21:49:11.882335Z",
+   "congested_at": null
+  },
+  {
+   "id": "liquid/lfm-3-1.7b:free",
+   "name": "LiquidAI: LFM3-1.7B (free)",
+   "description": "A compact 1.7B-parameter text model with a 256K-token context, post-trained for agents, tool calling, and structured outputs. It reasons before it answers. Prompts and outputs may be retained and used...",
+   "context_length": 262144,
+   "max_completion_tokens": 8192,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_parameters": [
+    "frequency_penalty",
+    "include_reasoning",
+    "logprobs",
+    "max_completion_tokens",
+    "max_tokens",
+    "min_p",
+    "presence_penalty",
+    "reasoning",
+    "repetition_penalty",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_k",
+    "top_logprobs",
+    "top_p"
+   ],
+   "created": 1794009477,
+   "expiration_date": null,
+   "knowledge_cutoff": null,
+   "is_free_variant": true,
+   "is_router": false,
+   "benchmarks": {
+    "intelligence": null,
+    "coding": null,
+    "agentic": null,
+    "design_arena": []
+   },
+   "reliability": {
+    "uptime_30m": 100.0,
+    "uptime_1d": 85.75851393188854,
+    "latency_30m": null,
+    "throughput_30m": null,
+    "providers": 1
+   },
+   "first_seen": "2026-11-07T06:05:47.653374Z",
+   "access": null,
+   "access_checked_at": null,
    "congested_at": null
   },
   {
@@ -337,9 +393,9 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1124.0,
+      "elo": 1123.0,
       "win_rate": 38.1,
-      "rank": 82
+      "rank": 83
      },
      {
       "arena": "models",
@@ -353,21 +409,21 @@
       "category": "codecategories",
       "elo": 1144.0,
       "win_rate": 36.0,
-      "rank": 90
+      "rank": 91
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1142.0,
-      "win_rate": 37.5,
-      "rank": 87
+      "elo": 1143.0,
+      "win_rate": 37.6,
+      "rank": 86
      },
      {
       "arena": "models",
       "category": "gamedev",
       "elo": 1137.0,
       "win_rate": 35.9,
-      "rank": 79
+      "rank": 80
      },
      {
       "arena": "models",
@@ -380,21 +436,21 @@
       "arena": "models",
       "category": "uicomponent",
       "elo": 1136.0,
-      "win_rate": 35.8,
-      "rank": 86
+      "win_rate": 35.9,
+      "rank": 85
      },
      {
       "arena": "models",
       "category": "website",
       "elo": 1143.0,
-      "win_rate": 35.2,
+      "win_rate": 35.3,
       "rank": 99
      }
     ]
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 95.34722222222223,
+    "uptime_1d": 99.86111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -488,30 +544,30 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1128.0,
-      "win_rate": 30.8,
-      "rank": 79
+      "elo": 1126.0,
+      "win_rate": 31.1,
+      "rank": 82
      },
      {
       "arena": "models",
       "category": "codecategories",
       "elo": 1150.0,
-      "win_rate": 33.2,
-      "rank": 88
+      "win_rate": 33.3,
+      "rank": 89
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1106.0,
-      "win_rate": 29.6,
-      "rank": 94
+      "elo": 1107.0,
+      "win_rate": 29.7,
+      "rank": 95
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1137.0,
-      "win_rate": 31.1,
-      "rank": 85
+      "elo": 1135.0,
+      "win_rate": 31.0,
+      "rank": 86
      },
      {
       "arena": "models",
@@ -630,7 +686,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.86111111111111,
+    "uptime_1d": 99.93055555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1

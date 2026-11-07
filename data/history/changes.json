@@ -85,6 +85,13 @@
    "removed": [
     "nvidia/nemotron-3.5-content-safety:free"
    ]
+  },
+  {
+   "ts": "2026-11-07T06:05:47.653374Z",
+   "added": [
+    "liquid/lfm-3-1.7b:free"
+   ],
+   "removed": []
   }
  ]
 }
