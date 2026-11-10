@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-09T19:52:18.941039Z",
- "reliability_at": "2026-11-09T19:52:18.941039Z",
+ "generated_at": "2026-11-10T03:37:02.112832Z",
+ "reliability_at": "2026-11-10T03:37:02.112832Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 463,
+ "total_models": 464,
  "models": [
   {
    "id": "cohere/north-mini-code:free",
@@ -243,7 +243,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 97.5,
+    "uptime_1d": 96.80555555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -298,8 +298,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 82.22222222222221,
+    "uptime_30m": 93.33333333333333,
+    "uptime_1d": 88.61111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -428,14 +428,14 @@
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1067.0,
-      "win_rate": 32.1,
+      "elo": 1066.0,
+      "win_rate": 32.0,
       "rank": 76
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1137.0,
+      "elo": 1136.0,
       "win_rate": 36.0,
       "rank": 87
      },
@@ -449,8 +449,8 @@
     ]
    },
    "reliability": {
-    "uptime_30m": 16.666666666666664,
-    "uptime_1d": 97.15277777777777,
+    "uptime_30m": 100.0,
+    "uptime_1d": 92.29166666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -544,9 +544,9 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1124.0,
-      "win_rate": 30.9,
-      "rank": 82
+      "elo": 1122.0,
+      "win_rate": 30.8,
+      "rank": 83
      },
      {
       "arena": "models",
@@ -558,9 +558,9 @@
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1097.0,
-      "win_rate": 27.2,
-      "rank": 102
+      "elo": 1099.0,
+      "win_rate": 27.4,
+      "rank": 101
      },
      {
       "arena": "models",
@@ -587,7 +587,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
+    "uptime_1d": 99.86111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -704,17 +704,14 @@
    "congested_at": null
   },
   {
-   "id": "stealth/crouton-alpha",
-   "name": "Crouton Alpha",
-   "description": "Crouton Alpha is a lightweight model built for scalable coding, agentic, and multimodal workflows. It's ideal for executing agentic sub-tasks, tool use, and document analysis in high-volume, repeated work. Developers...",
+   "id": "thinkingmachines/inkling-2-small:free",
+   "name": "Thinking Machines: Inkling 2 Small (free)",
+   "description": "Inkling 2 Small is a multimodal mixture-of-experts reasoning model from Thinking Machines Lab, with 17B active parameters out of 594B total. It is the first model in the second Inkling...",
    "context_length": 1048576,
-   "max_completion_tokens": 943718,
+   "max_completion_tokens": 131072,
    "input_modalities": [
     "text",
-    "image",
-    "video",
-    "file",
-    "audio"
+    "image"
    ],
    "output_modalities": [
     "text"
@@ -724,32 +721,31 @@
     "max_tokens",
     "reasoning",
     "reasoning_effort",
-    "response_format",
-    "structured_outputs",
+    "seed",
+    "stop",
     "temperature",
-    "tool_choice",
     "tools",
     "top_p"
    ],
-   "created": 1793669930,
+   "created": 1794261847,
    "expiration_date": null,
    "knowledge_cutoff": null,
-   "is_free_variant": false,
+   "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": null,
+    "intelligence": 30.6,
     "coding": null,
     "agentic": null,
     "design_arena": []
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.86111111111111,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-11-03T23:27:10.513877Z",
+   "first_seen": "2026-11-10T03:37:02.112832Z",
    "access": null,
    "access_checked_at": null,
    "congested_at": null

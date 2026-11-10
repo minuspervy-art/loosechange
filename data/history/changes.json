@@ -92,6 +92,15 @@
     "liquid/lfm-3-1.7b:free"
    ],
    "removed": []
+  },
+  {
+   "ts": "2026-11-10T03:37:02.112832Z",
+   "added": [
+    "thinkingmachines/inkling-2-small:free"
+   ],
+   "removed": [
+    "stealth/crouton-alpha"
+   ]
   }
  ]
 }
