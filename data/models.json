@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-10T21:19:40.675110Z",
- "reliability_at": "2026-11-10T21:19:40.675110Z",
+ "generated_at": "2026-11-11T06:34:39.671692Z",
+ "reliability_at": "2026-11-11T06:34:39.671692Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 469,
  "models": [
@@ -187,7 +187,7 @@
    },
    "reliability": {
     "uptime_30m": null,
-    "uptime_1d": 99.31506849315068,
+    "uptime_1d": 99.3127147766323,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -242,8 +242,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 97.22222222222221,
+    "uptime_30m": 86.66666666666667,
+    "uptime_1d": 95.76388888888889,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -299,7 +299,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 91.45833333333333,
+    "uptime_1d": 92.36111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -393,8 +393,8 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1115.0,
-      "win_rate": 38.1,
+      "elo": 1116.0,
+      "win_rate": 38.0,
       "rank": 84
      },
      {
@@ -407,7 +407,7 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1141.0,
+      "elo": 1142.0,
       "win_rate": 35.9,
       "rank": 92
      },
@@ -421,9 +421,9 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1132.0,
+      "elo": 1134.0,
       "win_rate": 35.8,
-      "rank": 81
+      "rank": 80
      },
      {
       "arena": "models",
@@ -435,8 +435,8 @@
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1135.0,
-      "win_rate": 35.9,
+      "elo": 1137.0,
+      "win_rate": 36.1,
       "rank": 87
      },
      {
@@ -544,15 +544,15 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1120.0,
-      "win_rate": 31.2,
-      "rank": 82
+      "elo": 1116.0,
+      "win_rate": 30.4,
+      "rank": 83
      },
      {
       "arena": "models",
       "category": "codecategories",
       "elo": 1150.0,
-      "win_rate": 33.5,
+      "win_rate": 33.4,
       "rank": 88
      },
      {
@@ -565,8 +565,8 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1102.0,
-      "win_rate": 29.6,
+      "elo": 1103.0,
+      "win_rate": 29.5,
       "rank": 96
      },
      {
@@ -579,7 +579,7 @@
      {
       "arena": "models",
       "category": "website",
-      "elo": 1165.0,
+      "elo": 1166.0,
       "win_rate": 35.3,
       "rank": 85
      }
@@ -587,7 +587,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.86111111111111,
+    "uptime_1d": 99.79166666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -746,59 +746,6 @@
     "providers": 1
    },
    "first_seen": "2026-11-10T03:37:02.112832Z",
-   "access": null,
-   "access_checked_at": null,
-   "congested_at": null
-  },
-  {
-   "id": "xingchen-agi/xing4.0-29b-a4b:free",
-   "name": "XingChen: Xing4.0 29B A4B (free)",
-   "description": "Xing4.0-29B-A4B is an open-weight mixture-of-experts language model from China Telecom's AI team (TeleAI) and the successor to the TeleChat series. It has 29B total parameters with 4B active per token...",
-   "context_length": 262144,
-   "max_completion_tokens": 235929,
-   "input_modalities": [
-    "text"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "min_p",
-    "presence_penalty",
-    "reasoning",
-    "repetition_penalty",
-    "response_format",
-    "seed",
-    "stop",
-    "structured_outputs",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_p"
-   ],
-   "created": 1792177496,
-   "expiration_date": null,
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": null,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 100.0,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-16T21:16:10.134159Z",
    "access": null,
    "access_checked_at": null,
    "congested_at": null
