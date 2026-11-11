@@ -108,6 +108,13 @@
    "removed": [
     "xingchen-agi/xing4.0-29b-a4b:free"
    ]
+  },
+  {
+   "ts": "2026-11-11T17:13:16.266207Z",
+   "added": [
+    "baidu/ernie-5.5-flash-preview:free"
+   ],
+   "removed": []
   }
  ]
 }
