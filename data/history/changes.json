@@ -115,6 +115,13 @@
     "baidu/ernie-5.5-flash-preview:free"
    ],
    "removed": []
+  },
+  {
+   "ts": "2026-11-12T19:59:29.079335Z",
+   "added": [
+    "apodex/apodex-1.1-mini:free"
+   ],
+   "removed": []
   }
  ]
 }
