@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-12T19:59:29.079335Z",
- "reliability_at": "2026-11-12T19:59:29.079335Z",
+ "generated_at": "2026-11-13T01:52:25.645393Z",
+ "reliability_at": "2026-11-13T01:52:25.645393Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 473,
+ "total_models": 475,
  "models": [
   {
    "id": "apodex/apodex-1.1-mini:free",
@@ -341,7 +341,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 96.875,
+    "uptime_1d": 98.61111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -445,7 +445,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.58333333333333,
+    "uptime_1d": 99.79166666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -491,9 +491,9 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1115.0,
+      "elo": 1111.0,
       "win_rate": 38.0,
-      "rank": 86
+      "rank": 87
      },
      {
       "arena": "models",
@@ -519,30 +519,30 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1133.0,
-      "win_rate": 35.6,
-      "rank": 84
+      "elo": 1127.0,
+      "win_rate": 35.4,
+      "rank": 87
      },
      {
       "arena": "models",
       "category": "svg",
-      "elo": 1061.0,
-      "win_rate": 32.2,
+      "elo": 1062.0,
+      "win_rate": 32.1,
       "rank": 78
      },
      {
       "arena": "models",
       "category": "uicomponent",
       "elo": 1128.0,
-      "win_rate": 35.4,
+      "win_rate": 35.3,
       "rank": 92
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1141.0,
-      "win_rate": 35.1,
-      "rank": 101
+      "elo": 1131.0,
+      "win_rate": 34.4,
+      "rank": 102
      }
     ]
    },
@@ -593,7 +593,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.61111111111111,
+    "uptime_1d": 98.81944444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -642,50 +642,50 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1119.0,
-      "win_rate": 30.6,
+      "elo": 1116.0,
+      "win_rate": 30.2,
       "rank": 84
      },
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1141.0,
-      "win_rate": 32.5,
+      "elo": 1140.0,
+      "win_rate": 32.4,
       "rank": 93
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1097.0,
-      "win_rate": 27.4,
-      "rank": 102
+      "elo": 1085.0,
+      "win_rate": 26.1,
+      "rank": 106
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1104.0,
-      "win_rate": 29.5,
-      "rank": 98
+      "elo": 1078.0,
+      "win_rate": 27.1,
+      "rank": 106
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1157.0,
-      "win_rate": 33.3,
-      "rank": 79
+      "elo": 1154.0,
+      "win_rate": 33.0,
+      "rank": 82
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1168.0,
-      "win_rate": 35.6,
-      "rank": 86
+      "elo": 1160.0,
+      "win_rate": 34.8,
+      "rank": 88
      }
     ]
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 93.19444444444444,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -754,6 +754,63 @@
    "congested_at": null
   },
   {
+   "id": "particle-ai/particle-1:free",
+   "name": "Particle AI: Particle-1 (free)",
+   "description": "Particle-1 is a token-efficient agentic coding model from Particle AI, post-trained on DeepSeek V4.1 Flash. It is suited for software engineering work such as terminal workflows, codebase changes, and data...",
+   "context_length": 1048576,
+   "max_completion_tokens": 131072,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_parameters": [
+    "frequency_penalty",
+    "include_reasoning",
+    "logprobs",
+    "max_tokens",
+    "min_p",
+    "presence_penalty",
+    "reasoning",
+    "reasoning_effort",
+    "repetition_penalty",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_k",
+    "top_logprobs",
+    "top_p"
+   ],
+   "created": 1793207893,
+   "expiration_date": null,
+   "knowledge_cutoff": null,
+   "is_free_variant": true,
+   "is_router": false,
+   "benchmarks": {
+    "intelligence": null,
+    "coding": null,
+    "agentic": null,
+    "design_arena": []
+   },
+   "reliability": {
+    "uptime_30m": 100.0,
+    "uptime_1d": 100.0,
+    "latency_30m": null,
+    "throughput_30m": null,
+    "providers": 1
+   },
+   "first_seen": "2026-11-13T01:52:25.645393Z",
+   "access": null,
+   "access_checked_at": null,
+   "congested_at": null
+  },
+  {
    "id": "recursive/flint-v1.0:free",
    "name": "Recursive: Flint (free)",
    "description": "Flint is an open-weight mixture-of-experts model from Recursive, with about 2.5B active parameters out of 40B total, built by Recursive's autoresearch system Eureka Machine for coding agents. It is suited...",
@@ -804,7 +861,7 @@
   {
    "id": "thinkingmachines/inkling-2-small:free",
    "name": "Thinking Machines: Inkling 2 Small (free)",
-   "description": "Inkling 2 Small is a multimodal mixture-of-experts reasoning model from Thinking Machines Lab, with 17B active parameters out of 594B total. It is the first model in the second Inkling...",
+   "description": "Inkling 2 Small is an open-weight multimodal mixture-of-experts reasoning model from Thinking Machines Lab, with 17B active parameters out of 594B total. It is the first model in the second...",
    "context_length": 1048576,
    "max_completion_tokens": 131072,
    "input_modalities": [

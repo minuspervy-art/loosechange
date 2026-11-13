@@ -122,6 +122,13 @@
     "apodex/apodex-1.1-mini:free"
    ],
    "removed": []
+  },
+  {
+   "ts": "2026-11-13T01:52:25.645393Z",
+   "added": [
+    "particle-ai/particle-1:free"
+   ],
+   "removed": []
   }
  ]
 }
