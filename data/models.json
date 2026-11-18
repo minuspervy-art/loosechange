@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-17T16:07:13.499839Z",
- "reliability_at": "2026-11-17T16:07:13.499839Z",
+ "generated_at": "2026-11-18T00:59:18.377245Z",
+ "reliability_at": "2026-11-18T00:59:18.377245Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 470,
+ "total_models": 478,
  "models": [
   {
    "id": "baidu/ernie-5.5-flash-preview:free",
@@ -137,7 +137,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 96.66666666666667,
+    "uptime_30m": 100.0,
     "uptime_1d": 99.86111111111111,
     "latency_30m": null,
     "throughput_30m": null,
@@ -185,7 +185,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -233,7 +233,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -335,7 +335,7 @@
    "is_free_variant": true,
    "is_router": false,
    "benchmarks": {
-    "intelligence": null,
+    "intelligence": 6.0,
     "coding": null,
     "agentic": null,
     "design_arena": []
@@ -390,7 +390,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.86111111111111,
+    "uptime_1d": 99.79166666666667,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -438,7 +438,7 @@
       "category": "3d",
       "elo": 1109.0,
       "win_rate": 37.9,
-      "rank": 90
+      "rank": 89
      },
      {
       "arena": "models",
@@ -458,13 +458,13 @@
       "arena": "models",
       "category": "dataviz",
       "elo": 1137.0,
-      "win_rate": 37.2,
+      "win_rate": 37.1,
       "rank": 87
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1126.0,
+      "elo": 1125.0,
       "win_rate": 35.3,
       "rank": 89
      },
@@ -478,7 +478,7 @@
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1125.0,
+      "elo": 1124.0,
       "win_rate": 35.2,
       "rank": 95
      },
@@ -493,7 +493,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.68055555555556,
+    "uptime_1d": 93.47222222222223,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -587,44 +587,44 @@
      {
       "arena": "agents",
       "category": "pdf",
-      "elo": 984.0,
-      "win_rate": 22.6,
-      "rank": 36
+      "elo": 959.0,
+      "win_rate": 22.9,
+      "rank": 38
      },
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1116.0,
-      "win_rate": 30.3,
+      "elo": 1117.0,
+      "win_rate": 30.4,
       "rank": 86
      },
      {
       "arena": "models",
       "category": "codecategories",
       "elo": 1138.0,
-      "win_rate": 32.3,
-      "rank": 94
+      "win_rate": 32.4,
+      "rank": 95
      },
      {
       "arena": "models",
       "category": "dataviz",
       "elo": 1087.0,
-      "win_rate": 26.4,
+      "win_rate": 26.2,
       "rank": 105
      },
      {
       "arena": "models",
       "category": "gamedev",
       "elo": 1082.0,
-      "win_rate": 27.5,
+      "win_rate": 27.6,
       "rank": 107
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1155.0,
+      "elo": 1156.0,
       "win_rate": 33.1,
-      "rank": 80
+      "rank": 78
      },
      {
       "arena": "models",
@@ -637,7 +637,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.86111111111111,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -752,7 +752,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.375,
+    "uptime_1d": 98.58256555634301,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -835,7 +835,7 @@
     "top_p"
    ],
    "created": 1794261847,
-   "expiration_date": null,
+   "expiration_date": "2026-11-19",
    "knowledge_cutoff": null,
    "is_free_variant": true,
    "is_router": false,
@@ -847,7 +847,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.30555555555556,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
