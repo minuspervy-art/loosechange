@@ -145,6 +145,13 @@
    "removed": [
     "liquid/lfm-2.5-2.6b:free"
    ]
+  },
+  {
+   "ts": "2026-11-19T20:42:43.068191Z",
+   "added": [],
+   "removed": [
+    "thinkingmachines/inkling-2-small:free"
+   ]
   }
  ]
 }
