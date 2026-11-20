@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-20T11:47:32.257664Z",
- "reliability_at": "2026-11-20T11:47:32.257664Z",
+ "generated_at": "2026-11-20T20:27:12.943225Z",
+ "reliability_at": "2026-11-20T20:27:12.943225Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 477,
+ "total_models": 476,
  "models": [
   {
    "id": "baidu/ernie-5.5-flash-preview:free",
@@ -88,8 +88,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 73.33333333333333,
-    "uptime_1d": 96.875,
+    "uptime_30m": 100.0,
+    "uptime_1d": 97.56944444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -136,7 +136,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -184,7 +184,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
+    "uptime_30m": null,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -292,8 +292,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 0.0,
-    "uptime_1d": 53.40277777777778,
+    "uptime_30m": 3.3333333333333335,
+    "uptime_1d": 23.125,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -387,8 +387,8 @@
      {
       "arena": "agents",
       "category": "pdf",
-      "elo": 1107.0,
-      "win_rate": 35.5,
+      "elo": 1116.0,
+      "win_rate": 36.4,
       "rank": 39
      },
      {
@@ -403,7 +403,7 @@
       "category": "asciiart",
       "elo": 1080.0,
       "win_rate": 36.3,
-      "rank": 68
+      "rank": 69
      },
      {
       "arena": "models",
@@ -415,8 +415,8 @@
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1136.0,
-      "win_rate": 37.2,
+      "elo": 1135.0,
+      "win_rate": 37.1,
       "rank": 90
      },
      {
@@ -545,14 +545,14 @@
      {
       "arena": "agents",
       "category": "pdf",
-      "elo": 1002.0,
-      "win_rate": 30.4,
+      "elo": 1018.0,
+      "win_rate": 29.3,
       "rank": 43
      },
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1103.0,
+      "elo": 1105.0,
       "win_rate": 29.8,
       "rank": 89
      },
@@ -561,20 +561,20 @@
       "category": "codecategories",
       "elo": 1132.0,
       "win_rate": 32.1,
-      "rank": 96
+      "rank": 97
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1081.0,
-      "win_rate": 25.8,
+      "elo": 1083.0,
+      "win_rate": 26.2,
       "rank": 111
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1075.0,
-      "win_rate": 27.6,
+      "elo": 1074.0,
+      "win_rate": 27.5,
       "rank": 107
      },
      {
