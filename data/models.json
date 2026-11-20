@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-19T20:42:43.068191Z",
- "reliability_at": "2026-11-19T20:42:43.068191Z",
+ "generated_at": "2026-11-20T02:21:54.680241Z",
+ "reliability_at": "2026-11-20T02:21:54.680241Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 479,
+ "total_models": 477,
  "models": [
   {
    "id": "baidu/ernie-5.5-flash-preview:free",
@@ -53,55 +53,6 @@
    "congested_at": null
   },
   {
-   "id": "cohere/north-mini-code:free",
-   "name": "Cohere: North Mini Code (free)",
-   "description": "North Mini Code is Cohere's first agentic coding model and the debut of its North family. A sparse mixture-of-experts model with 30B total parameters and 3B active, it is optimized...",
-   "context_length": 256000,
-   "max_completion_tokens": 64000,
-   "input_modalities": [
-    "text"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "presence_penalty",
-    "reasoning",
-    "seed",
-    "stop",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_p"
-   ],
-   "created": 1781723748,
-   "expiration_date": null,
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": 3.4,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 99.79166666666667,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z",
-   "access": "open",
-   "access_checked_at": "2026-10-13T21:49:00.286214Z",
-   "congested_at": null
-  },
-  {
    "id": "dots-studio/dots-3-note-preview:free",
    "name": "Dots Studio: Dots3-Note Preview (free)",
    "description": "Dots3-Note Preview is an open-weight mixture-of-experts model from Dots Studio, with 16B active parameters out of 280B total. It is the lightest model in the Dots 3 family and is...",
@@ -138,7 +89,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 97.77777777777777,
+    "uptime_1d": 97.84722222222221,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -341,8 +292,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 99.51388888888889,
+    "uptime_30m": 10.0,
+    "uptime_1d": 89.58333333333334,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -389,8 +340,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 98.61111111111111,
+    "uptime_30m": 83.33333333333334,
+    "uptime_1d": 97.84722222222221,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -436,16 +387,16 @@
      {
       "arena": "agents",
       "category": "pdf",
-      "elo": 1135.0,
-      "win_rate": 38.5,
-      "rank": 33
+      "elo": 1107.0,
+      "win_rate": 35.5,
+      "rank": 39
      },
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1102.0,
+      "elo": 1097.0,
       "win_rate": 37.9,
-      "rank": 90
+      "rank": 91
      },
      {
       "arena": "models",
@@ -457,44 +408,44 @@
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1124.0,
+      "elo": 1125.0,
       "win_rate": 35.3,
-      "rank": 98
+      "rank": 101
      },
      {
       "arena": "models",
       "category": "dataviz",
       "elo": 1136.0,
-      "win_rate": 37.1,
-      "rank": 89
-     },
-     {
-      "arena": "models",
-      "category": "gamedev",
-      "elo": 1119.0,
-      "win_rate": 35.3,
+      "win_rate": 37.2,
       "rank": 90
      },
      {
       "arena": "models",
+      "category": "gamedev",
+      "elo": 1116.0,
+      "win_rate": 35.3,
+      "rank": 91
+     },
+     {
+      "arena": "models",
       "category": "svg",
-      "elo": 1056.0,
-      "win_rate": 32.0,
-      "rank": 80
+      "elo": 1055.0,
+      "win_rate": 31.9,
+      "rank": 81
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1123.0,
+      "elo": 1120.0,
       "win_rate": 35.1,
-      "rank": 97
+      "rank": 98
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1126.0,
+      "elo": 1125.0,
       "win_rate": 34.3,
-      "rank": 105
+      "rank": 106
      }
     ]
    },
@@ -545,7 +496,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.30555555555556,
+    "uptime_1d": 99.09722222222223,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -594,22 +545,22 @@
      {
       "arena": "agents",
       "category": "pdf",
-      "elo": 973.0,
-      "win_rate": 21.9,
-      "rank": 41
+      "elo": 1002.0,
+      "win_rate": 30.4,
+      "rank": 43
      },
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1108.0,
-      "win_rate": 29.7,
-      "rank": 88
+      "elo": 1103.0,
+      "win_rate": 29.8,
+      "rank": 89
      },
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1131.0,
-      "win_rate": 32.3,
+      "elo": 1132.0,
+      "win_rate": 32.1,
       "rank": 96
      },
      {
@@ -617,28 +568,28 @@
       "category": "dataviz",
       "elo": 1081.0,
       "win_rate": 25.8,
-      "rank": 110
+      "rank": 111
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1077.0,
+      "elo": 1075.0,
       "win_rate": 27.6,
-      "rank": 106
+      "rank": 107
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1154.0,
-      "win_rate": 32.6,
-      "rank": 81
+      "elo": 1145.0,
+      "win_rate": 31.9,
+      "rank": 87
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1155.0,
-      "win_rate": 34.5,
-      "rank": 93
+      "elo": 1152.0,
+      "win_rate": 34.4,
+      "rank": 95
      }
     ]
    },
@@ -759,7 +710,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.05555555555556,
+    "uptime_1d": 99.7907949790795,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1

@@ -152,6 +152,13 @@
    "removed": [
     "thinkingmachines/inkling-2-small:free"
    ]
+  },
+  {
+   "ts": "2026-11-20T02:21:54.680241Z",
+   "added": [],
+   "removed": [
+    "cohere/north-mini-code:free"
+   ]
   }
  ]
 }
