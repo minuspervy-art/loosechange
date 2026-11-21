@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-21T02:22:44.982458Z",
- "reliability_at": "2026-11-21T02:22:44.982458Z",
+ "generated_at": "2026-11-21T11:14:28.110115Z",
+ "reliability_at": "2026-11-21T11:14:28.110115Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 477,
+ "total_models": 476,
  "models": [
   {
    "id": "baidu/ernie-5.5-flash-preview:free",
@@ -53,53 +53,6 @@
    "congested_at": null
   },
   {
-   "id": "dots-studio/dots-3-note-preview:free",
-   "name": "Dots Studio: Dots3-Note Preview (free)",
-   "description": "Dots3-Note Preview is an open-weight mixture-of-experts model from Dots Studio, with 16B active parameters out of 280B total. It is the lightest model in the Dots 3 family and is...",
-   "context_length": 512000,
-   "max_completion_tokens": 460800,
-   "input_modalities": [
-    "text",
-    "image"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "include_reasoning",
-    "max_tokens",
-    "reasoning",
-    "response_format",
-    "structured_outputs",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_p"
-   ],
-   "created": 1786680361,
-   "expiration_date": "2026-12-31",
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": null,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
-    "uptime_30m": 100.0,
-    "uptime_1d": 97.43055555555556,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z",
-   "access": "open",
-   "access_checked_at": "2026-10-13T21:49:03.392861Z",
-   "congested_at": null
-  },
-  {
    "id": "google/gemma-4-26b-a4b-it:free",
    "name": "Google: Gemma 4 26B A4B  (free)",
    "description": "Gemma 4 26B A4B IT is an instruction-tuned Mixture-of-Experts (MoE) model from Google DeepMind. Despite 25.2B total parameters, only 3.8B activate per token during inference — delivering near-31B quality at...",
@@ -136,7 +89,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
+    "uptime_30m": 100.0,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -184,7 +137,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
+    "uptime_30m": 100.0,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -292,8 +245,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 6.666666666666667,
-    "uptime_1d": 17.84722222222222,
+    "uptime_30m": 100.0,
+    "uptime_1d": 36.11111111111111,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -341,7 +294,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.16666666666667,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -451,7 +404,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.86111111111111,
+    "uptime_1d": 99.93055555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -495,8 +448,8 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": 96.66666666666667,
-    "uptime_1d": 98.88888888888889,
+    "uptime_30m": 100.0,
+    "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1

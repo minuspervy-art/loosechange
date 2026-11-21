@@ -159,6 +159,13 @@
    "removed": [
     "cohere/north-mini-code:free"
    ]
+  },
+  {
+   "ts": "2026-11-21T11:14:28.110115Z",
+   "added": [],
+   "removed": [
+    "dots-studio/dots-3-note-preview:free"
+   ]
   }
  ]
 }
