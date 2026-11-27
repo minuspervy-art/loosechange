@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-27T01:46:05.991552Z",
- "reliability_at": "2026-11-27T01:46:05.991552Z",
+ "generated_at": "2026-11-27T12:34:04.471198Z",
+ "reliability_at": "2026-11-27T12:34:04.471198Z",
  "source": "https://openrouter.ai/api/v1/models",
  "total_models": 477,
  "models": [
@@ -89,7 +89,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
+    "uptime_30m": 100.0,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -137,65 +137,13 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
-    "uptime_1d": 100.0,
-    "latency_30m": null,
-    "throughput_30m": null,
-    "providers": 1
-   },
-   "first_seen": "2026-10-13T08:38:51.638578Z",
-   "access": null,
-   "access_checked_at": null,
-   "congested_at": null
-  },
-  {
-   "id": "inclusionai/ling-3.2-flash:free",
-   "name": "inclusionAI: Ling 3.2 Flash (free)",
-   "description": "Ling 3.2 Flash is a hybrid reasoning model from inclusionAI that accepts text and image input, with a 1M-token context window and up to 200 images per request. Thinking can...",
-   "context_length": 1048576,
-   "max_completion_tokens": 262144,
-   "input_modalities": [
-    "text",
-    "image"
-   ],
-   "output_modalities": [
-    "text"
-   ],
-   "supported_parameters": [
-    "frequency_penalty",
-    "include_reasoning",
-    "max_tokens",
-    "presence_penalty",
-    "reasoning",
-    "response_format",
-    "seed",
-    "stop",
-    "structured_outputs",
-    "temperature",
-    "tool_choice",
-    "tools",
-    "top_k",
-    "top_p"
-   ],
-   "created": 1794591958,
-   "expiration_date": null,
-   "knowledge_cutoff": null,
-   "is_free_variant": true,
-   "is_router": false,
-   "benchmarks": {
-    "intelligence": null,
-    "coding": null,
-    "agentic": null,
-    "design_arena": []
-   },
-   "reliability": {
     "uptime_30m": 100.0,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
    },
-   "first_seen": "2026-11-13T19:47:03.164511Z",
+   "first_seen": "2026-10-13T08:38:51.638578Z",
    "access": null,
    "access_checked_at": null,
    "congested_at": null
@@ -294,7 +242,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.95833333333334,
+    "uptime_1d": 98.33333333333333,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -340,7 +288,7 @@
      {
       "arena": "agents",
       "category": "pdf",
-      "elo": 1105.0,
+      "elo": 1104.0,
       "win_rate": 35.5,
       "rank": 44
      },
@@ -349,7 +297,7 @@
       "category": "3d",
       "elo": 1094.0,
       "win_rate": 37.8,
-      "rank": 91
+      "rank": 90
      },
      {
       "arena": "models",
@@ -449,7 +397,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.54166666666667,
+    "uptime_1d": 97.77777777777777,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -505,30 +453,30 @@
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1094.0,
-      "win_rate": 28.9,
-      "rank": 90
+      "elo": 1093.0,
+      "win_rate": 28.8,
+      "rank": 92
      },
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1190.0,
-      "win_rate": 32.0,
+      "elo": 1189.0,
+      "win_rate": 31.9,
       "rank": 94
      },
      {
       "arena": "models",
       "category": "dataviz",
-      "elo": 1090.0,
-      "win_rate": 27.1,
-      "rank": 111
+      "elo": 1088.0,
+      "win_rate": 26.7,
+      "rank": 112
      },
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1066.0,
-      "win_rate": 27.0,
-      "rank": 108
+      "elo": 1065.0,
+      "win_rate": 26.9,
+      "rank": 111
      },
      {
       "arena": "models",
@@ -548,7 +496,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 98.75,
+    "uptime_1d": 99.93055555555556,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1

@@ -180,6 +180,13 @@
    "removed": [
     "dots-studio/dots-3-note-preview:free"
    ]
+  },
+  {
+   "ts": "2026-11-27T12:34:04.471198Z",
+   "added": [],
+   "removed": [
+    "inclusionai/ling-3.2-flash:free"
+   ]
   }
  ]
 }
