@@ -1,9 +1,9 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-28T07:56:03.688836Z",
- "reliability_at": "2026-11-28T07:56:03.688836Z",
+ "generated_at": "2026-11-28T17:36:45.670724Z",
+ "reliability_at": "2026-11-28T17:36:45.670724Z",
  "source": "https://openrouter.ai/api/v1/models",
- "total_models": 475,
+ "total_models": 476,
  "models": [
   {
    "id": "baidu/ernie-5.5-flash-preview:free",
@@ -89,7 +89,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
+    "uptime_30m": 100.0,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -137,7 +137,7 @@
     "design_arena": []
    },
    "reliability": {
-    "uptime_30m": null,
+    "uptime_30m": 100.0,
     "uptime_1d": 100.0,
     "latency_30m": null,
     "throughput_30m": null,
@@ -242,7 +242,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.16666666666667,
+    "uptime_1d": 98.88888888888889,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -288,16 +288,16 @@
      {
       "arena": "agents",
       "category": "pdf",
-      "elo": 1114.0,
-      "win_rate": 36.5,
+      "elo": 1103.0,
+      "win_rate": 35.3,
       "rank": 43
      },
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1094.0,
+      "elo": 1093.0,
       "win_rate": 37.8,
-      "rank": 90
+      "rank": 91
      },
      {
       "arena": "models",
@@ -311,7 +311,7 @@
       "category": "codecategories",
       "elo": 1184.0,
       "win_rate": 35.4,
-      "rank": 96
+      "rank": 97
      },
      {
       "arena": "models",
@@ -324,7 +324,7 @@
       "arena": "models",
       "category": "gamedev",
       "elo": 1108.0,
-      "win_rate": 35.2,
+      "win_rate": 35.3,
       "rank": 92
      },
      {
@@ -344,15 +344,15 @@
      {
       "arena": "models",
       "category": "website",
-      "elo": 1180.0,
+      "elo": 1179.0,
       "win_rate": 34.4,
-      "rank": 103
+      "rank": 104
      }
     ]
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 94.16666666666667,
+    "uptime_1d": 98.81944444444444,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -397,7 +397,7 @@
    },
    "reliability": {
     "uptime_30m": 100.0,
-    "uptime_1d": 99.93055555555556,
+    "uptime_1d": 99.65277777777779,
     "latency_30m": null,
     "throughput_30m": null,
     "providers": 1
@@ -446,23 +446,23 @@
      {
       "arena": "agents",
       "category": "pdf",
-      "elo": 1074.0,
+      "elo": 1073.0,
       "win_rate": 34.7,
       "rank": 47
      },
      {
       "arena": "models",
       "category": "3d",
-      "elo": 1092.0,
+      "elo": 1091.0,
       "win_rate": 28.7,
       "rank": 93
      },
      {
       "arena": "models",
       "category": "codecategories",
-      "elo": 1190.0,
+      "elo": 1189.0,
       "win_rate": 31.9,
-      "rank": 94
+      "rank": 95
      },
      {
       "arena": "models",
@@ -474,23 +474,23 @@
      {
       "arena": "models",
       "category": "gamedev",
-      "elo": 1064.0,
+      "elo": 1065.0,
       "win_rate": 26.8,
       "rank": 111
      },
      {
       "arena": "models",
       "category": "uicomponent",
-      "elo": 1142.0,
-      "win_rate": 32.7,
+      "elo": 1140.0,
+      "win_rate": 32.5,
       "rank": 87
      },
      {
       "arena": "models",
       "category": "website",
-      "elo": 1207.0,
-      "win_rate": 34.6,
-      "rank": 92
+      "elo": 1205.0,
+      "win_rate": 34.5,
+      "rank": 94
      }
     ]
    },
